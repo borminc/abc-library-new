@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import PrivateRoute from "./components/PrivateRoute";
 import Login from "./components/Login";
+import Register from "./components/Register";
 import Home from "./Views/Home";
 
 const Index = () => {
@@ -28,6 +29,9 @@ const Index = () => {
                     <Switch>
                         <Route path="/login">
                             <Login />
+                        </Route>
+                        <Route path="/register">
+                            <Register />
                         </Route>
                         <Route path="/">
                             <PrivateRoute component={<Home />} />
