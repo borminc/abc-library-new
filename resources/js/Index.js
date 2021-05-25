@@ -2,8 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
+import PrivateRoute from "./components/PrivateRoute";
 import Login from "./components/Login";
-import Home from "./components/Home";
+import Home from "./Views/Home";
 
 const Index = () => {
     return (
@@ -29,7 +30,7 @@ const Index = () => {
                             <Login />
                         </Route>
                         <Route path="/">
-                            <Home />
+                            <PrivateRoute component={<Home />} />
                         </Route>
                     </Switch>
                 </div>

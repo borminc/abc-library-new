@@ -42,7 +42,6 @@ const Login = () => {
                 // Invalid credentials
                 console.log(err);
                 setCookie("token", "");
-                console.log("invalid");
             });
     };
 
