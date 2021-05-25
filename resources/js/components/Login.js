@@ -1,27 +1,48 @@
 import axios from "axios";
 import { set } from "lodash";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
+import { setCookie, getCookie } from "./../functions/cookies";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loggedIn, setLoggedIn] = useState(false);
 
+    useEffect(() => {
+        if (getCookie("token")) {
+            axios
+                .get("/api/auth/user")
+                .then((res) => {
+                    // Authorized
+                    location.href = "/";
+                })
+                .catch((err) => {
+                    // Unauthorized
+                    setCookie("token", "");
+                    location.reload();
+                });
+        }
+    }, []);
+
     const submitHandler = () => {
         const loginInfo = {
             email: email,
             password: password,
         };
-        console.log(loginInfo);
+
         axios
             .post("/api/auth/login", loginInfo)
             .then((res) => {
                 setLoggedIn(true);
-                console.log(res.data);
+                setCookie("token", res.data.access_token);
+                location.href = "/";
             })
             .catch((err) => {
+                // Invalid credentials
                 console.log(err);
+                setCookie("token", "");
+                console.log("invalid");
             });
     };
 
