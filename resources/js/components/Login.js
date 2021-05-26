@@ -10,6 +10,7 @@ const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [rememberMe, setRememberMe] = useState(false);
+	const [isProcessing, setProcessing] = useState(false);
 
 	useEffect(() => {
 		if (getCookie('token')) {
@@ -28,6 +29,7 @@ const Login = () => {
 	}, []);
 
 	const submitHandler = () => {
+		setProcessing(true);
 		loginUser(email, password, rememberMe);
 	};
 
@@ -74,13 +76,27 @@ const Login = () => {
 									/>
 								</div>
 								<div className='form-group'>
-									<button
-										type='button'
-										className='form-control btn btn-primary rounded submit px-3'
-										onClick={submitHandler}
-									>
-										Sign In
-									</button>
+									{isProcessing ? (
+										<button
+											className='form-control btn btn-primary rounded submit px-3'
+											type='button'
+											disabled
+										>
+											<span
+												className='spinner-border spinner-border-sm'
+												role='status'
+												aria-hidden='true'
+											></span>
+										</button>
+									) : (
+										<button
+											type='button'
+											className='form-control btn btn-primary rounded submit px-3'
+											onClick={submitHandler}
+										>
+											Sign In
+										</button>
+									)}
 								</div>
 								<div className='form-group d-md-flex mt-3 align-items-center'>
 									<input

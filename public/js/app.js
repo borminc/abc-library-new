@@ -1992,8 +1992,8 @@ var Index = function Index() {
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Index);
 
-if (document.getElementById("index")) {
-  react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(Index, {}), document.getElementById("index"));
+if (document.getElementById('index')) {
+  react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(Index, {}), document.getElementById('index'));
 }
 
 /***/ }),
@@ -2045,16 +2045,16 @@ var Home = function Home() {
       setUserInfo = _useState2[1];
 
   (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(function () {
-    axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/auth/user").then(function (res) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/auth/user').then(function (res) {
       // console.log(res.data);
       setUserInfo(res.data);
     });
   }, []);
 
   var logoutHandler = function logoutHandler() {
-    axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/auth/logout").then(function (res) {
-      (0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.setCookie)("token", "");
-      location.href = "/login";
+    axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/auth/logout').then(function (res) {
+      (0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.setCookie)('token', '');
+      location.href = '/login';
     })["catch"](function (err) {
       console.log(err);
     });
@@ -2142,11 +2142,11 @@ try {
 
 
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
-var token = "Bearer " + (0,_functions_cookies__WEBPACK_IMPORTED_MODULE_0__.getCookie)("token");
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+var token = 'Bearer ' + (0,_functions_cookies__WEBPACK_IMPORTED_MODULE_0__.getCookie)('token');
 
 if (token) {
-  window.axios.defaults.headers.common["Authorization"] = token;
+  window.axios.defaults.headers.common['Authorization'] = token;
 }
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -2184,14 +2184,14 @@ var Loading = function Loading(props) {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
     className: "d-flex justify-content-center align-items-center m-5",
     style: {
-      height: "100vh"
+      height: '100vh'
     },
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "spinner-border",
       role: "status",
       style: {
-        width: "4rem",
-        height: "4rem"
+        width: '4rem',
+        height: '4rem'
       },
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
         className: "sr-only"
@@ -2248,12 +2248,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 var Login = function Login() {
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(""),
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(''),
       _useState2 = _slicedToArray(_useState, 2),
       email = _useState2[0],
       setEmail = _useState2[1];
 
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(""),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(''),
       _useState4 = _slicedToArray(_useState3, 2),
       password = _useState4[0],
       setPassword = _useState4[1];
@@ -2263,26 +2263,32 @@ var Login = function Login() {
       rememberMe = _useState6[0],
       setRememberMe = _useState6[1];
 
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(false),
+      _useState8 = _slicedToArray(_useState7, 2),
+      isProcessing = _useState8[0],
+      setProcessing = _useState8[1];
+
   (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(function () {
-    if ((0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.getCookie)("token")) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/auth/user").then(function (res) {
+    if ((0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.getCookie)('token')) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/auth/user').then(function (res) {
         // Authorized
-        location.href = "/";
+        location.href = '/';
       })["catch"](function (err) {
         // Unauthorized
-        (0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.setCookie)("token", "");
+        (0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.setCookie)('token', '');
         location.reload();
       });
     }
   }, []);
 
   var submitHandler = function submitHandler() {
+    setProcessing(true);
     (0,_functions_loginFunction__WEBPACK_IMPORTED_MODULE_6__.loginUser)(email, password, rememberMe);
   };
 
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
     style: {
-      padding: "8rem 0"
+      padding: '8rem 0'
     },
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
       className: "row justify-content-center",
@@ -2294,10 +2300,10 @@ var Login = function Login() {
             className: "img",
             style: {
               backgroundImage: "url(\"/img/bg-books.jpg\")",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center center",
-              minWidth: "30vw"
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center center',
+              minWidth: '30vw'
             }
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
             className: "p-4 p-md-5 w-100",
@@ -2337,7 +2343,16 @@ var Login = function Login() {
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
                 className: "form-group",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+                children: isProcessing ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+                  className: "form-control btn btn-primary rounded submit px-3",
+                  type: "button",
+                  disabled: true,
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
+                    className: "spinner-border spinner-border-sm",
+                    role: "status",
+                    "aria-hidden": "true"
+                  })
+                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
                   type: "button",
                   className: "form-control btn btn-primary rounded submit px-3",
                   onClick: submitHandler,
@@ -2374,50 +2389,50 @@ var Login = function Login() {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Login);
 {
   /* <form>
-              <div className="mb-3">
-                  <label htmlFor="exampleInputEmail1" className="form-label">
-                      Email address
-                  </label>
-                  <input
-                      type="email"
-                      className="form-control"
-                      id="exampleInputEmail1"
-                      aria-describedby="emailHelp"
-                      onChange={(e) => setEmail(e.target.value)}
-                  />
-              </div>
-              <div className="mb-3">
-                  <label
-                      htmlFor="exampleInputPassword1"
-                      className="form-label"
-                  >
-                      Password
-                  </label>
-                  <input
-                      type="password"
-                      className="form-control"
-                      id="exampleInputPassword1"
-                      onChange={(e) => setPassword(e.target.value)}
-                  />
-              </div>
-              <div className="mb-3 form-check">
-                  <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="exampleCheck1"
-                  />
-                  <label className="form-check-label" htmlFor="exampleCheck1">
-                      Check me out
-                  </label>
-              </div>
-              <button
-                  type="button"
-                  onClick={submitHandler}
-                  className="btn btn-primary"
-              >
-                  Submit
-              </button>
-          </form> */
+                 <div className="mb-3">
+                     <label htmlFor="exampleInputEmail1" className="form-label">
+                         Email address
+                     </label>
+                     <input
+                         type="email"
+                         className="form-control"
+                         id="exampleInputEmail1"
+                         aria-describedby="emailHelp"
+                         onChange={(e) => setEmail(e.target.value)}
+                     />
+                 </div>
+                 <div className="mb-3">
+                     <label
+                         htmlFor="exampleInputPassword1"
+                         className="form-label"
+                     >
+                         Password
+                     </label>
+                     <input
+                         type="password"
+                         className="form-control"
+                         id="exampleInputPassword1"
+                         onChange={(e) => setPassword(e.target.value)}
+                     />
+                 </div>
+                 <div className="mb-3 form-check">
+                     <input
+                         type="checkbox"
+                         className="form-check-input"
+                         id="exampleCheck1"
+                     />
+                     <label className="form-check-label" htmlFor="exampleCheck1">
+                         Check me out
+                     </label>
+                 </div>
+                 <button
+                     type="button"
+                     onClick={submitHandler}
+                     className="btn btn-primary"
+                 >
+                     Submit
+                 </button>
+             </form> */
 }
 
 /***/ }),
@@ -2472,19 +2487,19 @@ var PrivateRoute = function PrivateRoute(props) {
       setLoginStatus = _useState2[1]; // -1=not logged in; 0=loading; 1=logged in
 
 
-  if (!(0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.getCookie)("token")) {
+  if (!(0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.getCookie)('token')) {
     /*#__PURE__*/
     (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_router__WEBPACK_IMPORTED_MODULE_7__.Redirect, {
       to: "/login"
     });
   }
 
-  axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/auth/user").then(function (res) {
+  axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/auth/user').then(function (res) {
     // Authorized
     setLoginStatus(1);
   })["catch"](function (err) {
     // Unauthorized
-    (0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.setCookie)("token", "");
+    (0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.setCookie)('token', '');
     setLoginStatus(-1);
   });
 
@@ -2547,58 +2562,65 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 var Register = function Register() {
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(""),
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(''),
       _useState2 = _slicedToArray(_useState, 2),
       name = _useState2[0],
       setName = _useState2[1];
 
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(""),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(''),
       _useState4 = _slicedToArray(_useState3, 2),
       email = _useState4[0],
       setEmail = _useState4[1];
 
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(""),
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(''),
       _useState6 = _slicedToArray(_useState5, 2),
       password = _useState6[0],
       setPassword = _useState6[1];
 
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(""),
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(''),
       _useState8 = _slicedToArray(_useState7, 2),
       confirmPassword = _useState8[0],
       setConfirmPassword = _useState8[1];
 
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(false),
+      _useState10 = _slicedToArray(_useState9, 2),
+      isProcessing = _useState10[0],
+      setProcessing = _useState10[1];
+
   (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(function () {
-    if ((0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.getCookie)("token")) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/auth/user").then(function (res) {
+    if ((0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.getCookie)('token')) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/auth/user').then(function (res) {
         // Authorized
-        location.href = "/";
+        location.href = '/';
       })["catch"](function (err) {
         // Unauthorized
-        (0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.setCookie)("token", "");
+        (0,_functions_cookies__WEBPACK_IMPORTED_MODULE_4__.setCookie)('token', '');
         location.reload();
       });
     }
   }, []);
 
   var submitHandler = function submitHandler() {
+    setProcessing(true);
     var registerInfo = {
       name: name,
       email: email,
       password: password,
       password_confirmation: confirmPassword
     };
-    axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/auth/register", registerInfo).then(function (res) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/auth/register', registerInfo).then(function (res) {
       console.log(res);
       (0,_functions_loginFunction__WEBPACK_IMPORTED_MODULE_5__.loginUser)(email, password);
     })["catch"](function (err) {
       // Invalid credentials
+      setProcessing(false);
       console.log(err); // setCookie("token", "");
     });
   };
 
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
     style: {
-      padding: "8rem 0"
+      padding: '8rem 0'
     },
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
       className: "row justify-content-center",
@@ -2610,10 +2632,10 @@ var Register = function Register() {
             className: "img",
             style: {
               backgroundImage: "url(\"/img/bg-books.jpg\")",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center center",
-              minWidth: "30vw"
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center center',
+              minWidth: '30vw'
             }
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
             className: "p-4 p-md-5 w-100",
@@ -2677,7 +2699,16 @@ var Register = function Register() {
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
                 className: "form-group",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+                children: isProcessing ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+                  className: "form-control btn btn-primary rounded submit px-3",
+                  type: "button",
+                  disabled: true,
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+                    className: "spinner-border spinner-border-sm",
+                    role: "status",
+                    "aria-hidden": "true"
+                  })
+                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
                   type: "button",
                   className: "form-control btn btn-primary rounded submit px-3",
                   onClick: submitHandler,
@@ -2715,14 +2746,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "setCookie": () => (/* binding */ setCookie)
 /* harmony export */ });
 function getCookie(cname) {
-  var name = cname + "=";
+  var name = cname + '=';
   var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(";");
+  var ca = decodedCookie.split(';');
 
   for (var i = 0; i < ca.length; i++) {
     var c = ca[i];
 
-    while (c.charAt(0) == " ") {
+    while (c.charAt(0) == ' ') {
       c = c.substring(1);
     }
 
@@ -2731,14 +2762,14 @@ function getCookie(cname) {
     }
   }
 
-  return "";
+  return '';
 }
 function setCookie(cname, cvalue) {
   var exdays = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
   var d = new Date();
   d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-  var expires = "expires=" + d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  var expires = 'expires=' + d.toUTCString();
+  document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
 }
 
 /***/ }),
@@ -2763,13 +2794,13 @@ function loginUser(email, password) {
     password: password,
     remember_me: rememberMe
   };
-  axios.post("/api/auth/login", loginInfo).then(function (res) {
-    (0,_cookies__WEBPACK_IMPORTED_MODULE_0__.setCookie)("token", res.data.access_token);
-    location.href = "/";
+  axios.post('/api/auth/login', loginInfo).then(function (res) {
+    (0,_cookies__WEBPACK_IMPORTED_MODULE_0__.setCookie)('token', res.data.access_token);
+    location.href = '/';
   })["catch"](function (err) {
     // Invalid credentials
     console.log(err);
-    (0,_cookies__WEBPACK_IMPORTED_MODULE_0__.setCookie)("token", "");
+    (0,_cookies__WEBPACK_IMPORTED_MODULE_0__.setCookie)('token', '');
   });
 }
 

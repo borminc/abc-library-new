@@ -11,6 +11,8 @@ const Register = () => {
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 
+	const [isProcessing, setProcessing] = useState(false);
+
 	useEffect(() => {
 		if (getCookie('token')) {
 			axios
@@ -28,6 +30,7 @@ const Register = () => {
 	}, []);
 
 	const submitHandler = () => {
+		setProcessing(true);
 		const registerInfo = {
 			name: name,
 			email: email,
@@ -43,6 +46,7 @@ const Register = () => {
 			})
 			.catch(err => {
 				// Invalid credentials
+				setProcessing(false);
 				console.log(err);
 				// setCookie("token", "");
 			});
@@ -112,13 +116,27 @@ const Register = () => {
 									/>
 								</div>
 								<div className='form-group'>
-									<button
-										type='button'
-										className='form-control btn btn-primary rounded submit px-3'
-										onClick={submitHandler}
-									>
-										Create account
-									</button>
+									{isProcessing ? (
+										<button
+											className='form-control btn btn-primary rounded submit px-3'
+											type='button'
+											disabled
+										>
+											<span
+												className='spinner-border spinner-border-sm'
+												role='status'
+												aria-hidden='true'
+											></span>
+										</button>
+									) : (
+										<button
+											type='button'
+											className='form-control btn btn-primary rounded submit px-3'
+											onClick={submitHandler}
+										>
+											Create account
+										</button>
+									)}
 								</div>
 							</form>
 							<p className='mt-5 text-center'>
