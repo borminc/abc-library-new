@@ -1,18 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
-import PrivateRoute from "./components/PrivateRoute";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import Home from "./Views/Home";
+import PrivateRoute from './components/PrivateRoute';
+import Login from './components/Login';
+import Register from './components/Register';
+import Home from './Views/Home';
 
 const Index = () => {
-    return (
-        <div className="container">
-            <Router>
-                <div>
-                    {/* <nav>
+	return (
+		<div className='container'>
+			<Router>
+				<div>
+					{/* <nav>
                         <ul>
                             <li>
                                 <Link to="/">Home</Link>
@@ -26,25 +26,25 @@ const Index = () => {
                         </ul>
                     </nav> */}
 
-                    <Switch>
-                        <Route path="/login">
-                            <Login />
-                        </Route>
-                        <Route path="/register">
-                            <Register />
-                        </Route>
-                        <Route path="/">
-                            <PrivateRoute component={<Home />} />
-                        </Route>
-                    </Switch>
-                </div>
-            </Router>
-        </div>
-    );
+					<Switch>
+						<Route path='/login'>
+							<Login />
+						</Route>
+						<Route path='/register'>
+							<Register />
+						</Route>
+						<Route path='/'>
+							<PrivateRoute component={<Home />} />
+						</Route>
+					</Switch>
+				</div>
+			</Router>
+		</div>
+	);
 };
 
 export default Index;
 
-if (document.getElementById("index")) {
-    ReactDOM.render(<Index />, document.getElementById("index"));
+if (document.getElementById('index')) {
+	ReactDOM.render(<Index />, document.getElementById('index'));
 }
