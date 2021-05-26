@@ -2,11 +2,12 @@ import axios from 'axios';
 import { set } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import validator from 'validator';
 
-import { setCookie, getCookie } from './../functions/cookies';
-import { Loading, LoadingButton } from './Loading';
-import { loginUser } from './../functions/loginFunction';
-import MessageAlert from './MessageAlert';
+import { setCookie, getCookie } from '../functions/cookies';
+import { Loading, LoadingButton } from '../components/Loading';
+import { loginUser } from '../functions/loginFunction';
+import MessageAlert from '../components/MessageAlert';
 
 const Login = () => {
 	const [email, setEmail] = useState('');
@@ -15,6 +16,10 @@ const Login = () => {
 	const [isProcessing, setProcessing] = useState(false);
 
 	const [msg, setMsg] = useState({ text: '', success: 0 });
+	const [errors, setErrors] = useState({
+		email: false,
+		password: false,
+	});
 
 	useEffect(() => {
 		if (getCookie('token')) {
@@ -35,6 +40,16 @@ const Login = () => {
 	const submitHandler = () => {
 		setProcessing(true);
 		setMsg({ text: '', success: 0 });
+
+		if (!validator.isEmail(email)) {
+			setErrors({ ...errors, email: true });
+			setProcessing(false);
+			return;
+		} else if (password === '') {
+			setErrors({ ...errors, password: true });
+			setProcessing(false);
+			return;
+		}
 
 		const loginInfo = {
 			email: email,
@@ -89,22 +104,46 @@ const Login = () => {
 								<div className='form-group mb-3'>
 									<input
 										id='email'
-										type='text'
-										className='form-control'
+										type='email'
+										className={
+											'form-control' + (errors.email ? ' is-invalid' : '')
+										}
 										placeholder='Email'
-										onChange={e => setEmail(e.target.value)}
+										onChange={e => {
+											setEmail(e.target.value);
+											setMsg({ text: '', success: 0 });
+											setErrors({ ...errors, email: false });
+										}}
 										required
 									/>
+									{errors.email && (
+										<small className='form-text text-danger'>
+											Enter a valid email.
+										</small>
+									)}
 								</div>
 								<div className='form-group mb-3'>
 									<input
 										id='password'
 										type='password'
-										className='form-control'
+										className={
+											'form-control' + (errors.password ? ' is-invalid' : '')
+										}
 										placeholder='Password'
-										onChange={e => setPassword(e.target.value)}
+										onChange={e => {
+											setPassword(e.target.value);
+											setMsg({ text: '', success: 0 });
+											if (e.target.value === '')
+												setErrors({ ...errors, password: true });
+											else setErrors({ ...errors, password: false });
+										}}
 										required
 									/>
+									{errors.password && (
+										<small className='form-text text-danger'>
+											This field is required.
+										</small>
+									)}
 								</div>
 								<div className='form-group'>
 									{isProcessing ? (
@@ -112,7 +151,10 @@ const Login = () => {
 									) : (
 										<button
 											type='button'
-											className='form-control btn btn-primary rounded submit px-3'
+											className={
+												'form-control btn btn-primary rounded submit px-3' +
+												(errors.email || errors.password ? ' disabled' : '')
+											}
 											onClick={submitHandler}
 										>
 											Sign In

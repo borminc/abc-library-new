@@ -2,11 +2,12 @@ import axios from 'axios';
 import { set } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import validator from 'validator';
 
-import { setCookie, getCookie } from './../functions/cookies';
-import { Loading, LoadingButton } from './Loading';
-import { loginUser } from './../functions/loginFunction';
-import MessageAlert from './MessageAlert';
+import { setCookie, getCookie } from '../functions/cookies';
+import { Loading, LoadingButton } from '../components/Loading';
+import { loginUser } from '../functions/loginFunction';
+import MessageAlert from '../components/MessageAlert';
 
 const Register = () => {
 	const [name, setName] = useState('');
@@ -16,6 +17,13 @@ const Register = () => {
 
 	const [isProcessing, setProcessing] = useState(false);
 	const [msg, setMsg] = useState({ text: '', success: 0 });
+
+	const [errors, setErrors] = useState({
+		name: false,
+		email: false,
+		password: false,
+		confirmPassword: false,
+	});
 
 	useEffect(() => {
 		if (getCookie('token')) {
@@ -33,9 +41,28 @@ const Register = () => {
 		}
 	}, []);
 
+	const hasInputErrors = () => {
+		return (
+			errors.name ||
+			errors.email ||
+			errors.password ||
+			errors.confirmPassword ||
+			name == '' ||
+			email == '' ||
+			password == '' ||
+			confirmPassword == ''
+		);
+	};
+
 	const submitHandler = () => {
 		setProcessing(true);
 		setMsg({ text: '', success: 0 });
+
+		if (hasInputErrors()) {
+			setProcessing(false);
+			return;
+		}
+
 		const registerInfo = {
 			name: name,
 			email: email,
@@ -92,43 +119,100 @@ const Register = () => {
 							<form>
 								<div className='form-group mb-3'>
 									<input
-										id='text'
+										id='name'
 										type='text'
-										className='form-control'
+										className={
+											'form-control' + (errors.name ? ' is-invalid' : '')
+										}
 										placeholder='Name'
-										onChange={e => setName(e.target.value)}
+										onChange={e => {
+											setName(e.target.value);
+											setMsg({ text: '', success: 0 });
+											if (e.target.value === '')
+												setErrors({ ...errors, name: true });
+											else setErrors({ ...errors, name: false });
+										}}
 										required
 									/>
+
+									{errors.name && (
+										<small className='form-text text-danger'>
+											This field is required.
+										</small>
+									)}
 								</div>
 								<div className='form-group mb-3'>
 									<input
 										id='email'
-										type='text'
-										className='form-control'
+										type='email'
+										className={
+											'form-control' + (errors.email ? ' is-invalid' : '')
+										}
 										placeholder='Email'
-										onChange={e => setEmail(e.target.value)}
+										onChange={e => {
+											setEmail(e.target.value);
+											setMsg({ text: '', success: 0 });
+											if (
+												!validator.isEmail(e.target.value) &&
+												e.target.value != ''
+											)
+												setErrors({ ...errors, email: true });
+											else setErrors({ ...errors, email: false });
+										}}
 										required
 									/>
+									{errors.email && (
+										<small className='form-text text-danger'>
+											Enter a valid email.
+										</small>
+									)}
 								</div>
 								<div className='form-group mb-3'>
 									<input
 										id='password'
 										type='password'
-										className='form-control'
+										className={
+											'form-control' + (errors.password ? ' is-invalid' : '')
+										}
 										placeholder='Password'
-										onChange={e => setPassword(e.target.value)}
+										onChange={e => {
+											setPassword(e.target.value);
+											setMsg({ text: '', success: 0 });
+											if (e.target.value === '')
+												setErrors({ ...errors, password: true });
+											else setErrors({ ...errors, password: false });
+										}}
 										required
 									/>
+									{errors.password && (
+										<small className='form-text text-danger'>
+											This field is required.
+										</small>
+									)}
 								</div>
 								<div className='form-group mb-3'>
 									<input
 										id='confirm-password'
 										type='password'
-										className='form-control'
+										className={
+											'form-control' +
+											(errors.confirmPassword ? ' is-invalid' : '')
+										}
 										placeholder='Confirm password'
-										onChange={e => setConfirmPassword(e.target.value)}
+										onChange={e => {
+											setConfirmPassword(e.target.value);
+											setMsg({ text: '', success: 0 });
+											if (e.target.value != password)
+												setErrors({ ...errors, confirmPassword: true });
+											else setErrors({ ...errors, confirmPassword: false });
+										}}
 										required
 									/>
+									{errors.confirmPassword && (
+										<small className='form-text text-danger'>
+											Password does not match.
+										</small>
+									)}
 								</div>
 								<div className='form-group'>
 									{isProcessing ? (
@@ -136,7 +220,10 @@ const Register = () => {
 									) : (
 										<button
 											type='button'
-											className='form-control btn btn-primary rounded submit px-3'
+											className={
+												'form-control btn btn-primary rounded submit px-3' +
+												(hasInputErrors() ? ' disabled' : '')
+											}
 											onClick={submitHandler}
 										>
 											Create account

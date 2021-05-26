@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import PrivateRoute from './components/PrivateRoute';
-import Login from './components/Login';
-import Register from './components/Register';
+import Login from './views/Login';
+import Register from './views/Register';
 import Home from './Views/Home';
 
 const Index = () => {
