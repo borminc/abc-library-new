@@ -2,8 +2,11 @@ import axios from 'axios';
 import { set } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+
 import { setCookie, getCookie } from './../functions/cookies';
+import { Loading, LoadingButton } from './Loading';
 import { loginUser } from './../functions/loginFunction';
+import MessageAlert from './MessageAlert';
 
 const Register = () => {
 	const [name, setName] = useState('');
@@ -12,6 +15,7 @@ const Register = () => {
 	const [confirmPassword, setConfirmPassword] = useState('');
 
 	const [isProcessing, setProcessing] = useState(false);
+	const [msg, setMsg] = useState({ text: '', success: 0 });
 
 	useEffect(() => {
 		if (getCookie('token')) {
@@ -31,6 +35,7 @@ const Register = () => {
 
 	const submitHandler = () => {
 		setProcessing(true);
+		setMsg({ text: '', success: 0 });
 		const registerInfo = {
 			name: name,
 			email: email,
@@ -45,10 +50,15 @@ const Register = () => {
 				loginUser(email, password);
 			})
 			.catch(err => {
-				// Invalid credentials
-				setProcessing(false);
 				console.log(err);
+				setMsg({
+					text: 'There was an error creating your account. Try again later!',
+					success: 0,
+				});
 				// setCookie("token", "");
+			})
+			.finally(() => {
+				setProcessing(false);
 			});
 	};
 
@@ -74,6 +84,11 @@ const Register = () => {
 									<h3 className='mb-4'>Register</h3>
 								</div>
 							</div>
+
+							{msg && msg.text && (
+								<MessageAlert msg={msg.text} success={msg.success} />
+							)}
+
 							<form>
 								<div className='form-group mb-3'>
 									<input
@@ -117,17 +132,7 @@ const Register = () => {
 								</div>
 								<div className='form-group'>
 									{isProcessing ? (
-										<button
-											className='form-control btn btn-primary rounded submit px-3'
-											type='button'
-											disabled
-										>
-											<span
-												className='spinner-border spinner-border-sm'
-												role='status'
-												aria-hidden='true'
-											></span>
-										</button>
+										<LoadingButton />
 									) : (
 										<button
 											type='button'

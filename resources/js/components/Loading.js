@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Loading = props => {
+export const Loading = props => {
 	return (
 		<div
 			className='d-flex justify-content-center align-items-center m-5'
@@ -17,4 +17,18 @@ const Loading = props => {
 	);
 };
 
-export default Loading;
+export const LoadingButton = () => {
+	return (
+		<button
+			className='form-control btn btn-primary rounded submit px-3'
+			type='button'
+			disabled
+		>
+			<span
+				className='spinner-border spinner-border-sm'
+				role='status'
+				aria-hidden='true'
+			></span>
+		</button>
+	);
+};

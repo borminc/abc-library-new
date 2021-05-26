@@ -2,6 +2,7 @@ import axios from 'axios';
 import { set } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+
 import { setCookie, getCookie } from '../functions/cookies';
 
 const Home = () => {

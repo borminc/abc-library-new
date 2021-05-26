@@ -3,9 +3,9 @@ import { set } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Redirect } from 'react-router';
-import { setCookie, getCookie } from './../functions/cookies';
 
-import Loading from './Loading';
+import { setCookie, getCookie } from './../functions/cookies';
+import { Loading } from './Loading';
 
 const PrivateRoute = props => {
 	const [loginStatus, setLoginStatus] = useState(0); // -1=not logged in; 0=loading; 1=logged in

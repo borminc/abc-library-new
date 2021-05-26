@@ -2,15 +2,19 @@ import axios from 'axios';
 import { set } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+
 import { setCookie, getCookie } from './../functions/cookies';
-import Loading from './Loading';
+import { Loading, LoadingButton } from './Loading';
 import { loginUser } from './../functions/loginFunction';
+import MessageAlert from './MessageAlert';
 
 const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [rememberMe, setRememberMe] = useState(false);
 	const [isProcessing, setProcessing] = useState(false);
+
+	const [msg, setMsg] = useState({ text: '', success: 0 });
 
 	useEffect(() => {
 		if (getCookie('token')) {
@@ -30,7 +34,29 @@ const Login = () => {
 
 	const submitHandler = () => {
 		setProcessing(true);
-		loginUser(email, password, rememberMe);
+		setMsg({ text: '', success: 0 });
+
+		const loginInfo = {
+			email: email,
+			password: password,
+			remember_me: rememberMe,
+		};
+
+		axios
+			.post('/api/auth/login', loginInfo)
+			.then(res => {
+				setCookie('token', res.data.access_token);
+				location.href = '/';
+			})
+			.catch(err => {
+				// Invalid credentials
+				// console.log(err);
+				setMsg({ text: 'Invalid email or password', success: 0 });
+				setCookie('token', '');
+			})
+			.finally(() => {
+				setProcessing(false);
+			});
 	};
 
 	return (
@@ -54,6 +80,11 @@ const Login = () => {
 									<h3 className='mb-4'>Sign In</h3>
 								</div>
 							</div>
+
+							{msg && msg.text && (
+								<MessageAlert msg={msg.text} success={msg.success} />
+							)}
+
 							<form>
 								<div className='form-group mb-3'>
 									<input
@@ -77,17 +108,7 @@ const Login = () => {
 								</div>
 								<div className='form-group'>
 									{isProcessing ? (
-										<button
-											className='form-control btn btn-primary rounded submit px-3'
-											type='button'
-											disabled
-										>
-											<span
-												className='spinner-border spinner-border-sm'
-												role='status'
-												aria-hidden='true'
-											></span>
-										</button>
+										<LoadingButton />
 									) : (
 										<button
 											type='button'
