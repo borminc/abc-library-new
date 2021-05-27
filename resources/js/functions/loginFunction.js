@@ -1,4 +1,5 @@
-import { setCookie, getCookie } from './cookies';
+import axios from './../functions/axios';
+import { setCookie, getCookie, deleteCookie } from './cookies';
 
 export function loginUser(email, password, rememberMe = true) {
 	const loginInfo = {
@@ -14,8 +15,6 @@ export function loginUser(email, password, rememberMe = true) {
 			location.href = '/';
 		})
 		.catch(err => {
-			// Invalid credentials
-			console.log(err);
-			setCookie('token', '');
+			deleteCookie('token');
 		});
 }

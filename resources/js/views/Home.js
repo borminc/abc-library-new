@@ -1,15 +1,18 @@
-import axios from 'axios';
+import axios from './../functions/axios';
 import { set } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import { useHistory } from 'react-router-dom';
 
-import { setCookie, getCookie } from '../functions/cookies';
+import { setCookie, getCookie, deleteCookie } from '../functions/cookies';
 
 const Home = () => {
+	const history = useHistory();
+
 	const [userInfo, setUserInfo] = useState();
+
 	useEffect(() => {
 		axios.get('/api/auth/user').then(res => {
-			// console.log(res.data);
 			setUserInfo(res.data);
 		});
 	}, []);
@@ -18,8 +21,8 @@ const Home = () => {
 		axios
 			.get('/api/auth/logout')
 			.then(res => {
-				setCookie('token', '');
-				location.href = '/login';
+				deleteCookie('token');
+				history.push('/login');
 			})
 			.catch(err => {
 				console.log(err);

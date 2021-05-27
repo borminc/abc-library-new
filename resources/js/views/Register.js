@@ -1,15 +1,18 @@
-import axios from 'axios';
+import axios from './../functions/axios';
 import { set } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import validator from 'validator';
+import { useHistory, Link } from 'react-router-dom';
 
-import { setCookie, getCookie } from '../functions/cookies';
+import { setCookie, getCookie, deleteCookie } from '../functions/cookies';
 import { Loading, LoadingButton } from '../components/Loading';
-import { loginUser } from '../functions/loginFunction';
+// import { loginUser } from '../functions/loginFunction';
 import MessageAlert from '../components/MessageAlert';
 
 const Register = () => {
+	const history = useHistory();
+
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -26,17 +29,15 @@ const Register = () => {
 	});
 
 	useEffect(() => {
+		// if token exist -> login immediately
 		if (getCookie('token')) {
 			axios
 				.get('/api/auth/user')
 				.then(res => {
-					// Authorized
-					location.href = '/';
+					history.push('/');
 				})
 				.catch(err => {
-					// Unauthorized
-					setCookie('token', '');
-					location.reload();
+					deleteCookie('token');
 				});
 		}
 	}, []);
@@ -54,7 +55,7 @@ const Register = () => {
 		);
 	};
 
-	const submitHandler = () => {
+	const RegisterHandler = () => {
 		setProcessing(true);
 		setMsg({ text: '', success: 0 });
 
@@ -73,19 +74,35 @@ const Register = () => {
 		axios
 			.post('/api/auth/register', registerInfo)
 			.then(res => {
-				console.log(res);
-				loginUser(email, password);
+				logInUser(email, password);
 			})
 			.catch(err => {
-				console.log(err);
 				setMsg({
 					text: 'There was an error creating your account. Try again later!',
 					success: 0,
 				});
-				// setCookie("token", "");
 			})
 			.finally(() => {
 				setProcessing(false);
+			});
+	};
+
+	const logInUser = (email, password) => {
+		const loginInfo = {
+			email: email,
+			password: password,
+			remember_me: true,
+		};
+
+		axios
+			.post('/api/auth/login', loginInfo)
+			.then(res => {
+				setCookie('token', res.data.access_token);
+				history.push('/');
+			})
+			.catch(err => {
+				deleteCookie('token');
+				history.push('/login');
 			});
 	};
 
@@ -108,7 +125,8 @@ const Register = () => {
 						<div className='p-4 p-md-5 w-100'>
 							<div className='d-flex'>
 								<div className='w-100'>
-									<h3 className='mb-4'>Register</h3>
+									<h6 className=''>ABC Library</h6>
+									<h2 className='mb-4'>Register</h2>
 								</div>
 							</div>
 
@@ -224,7 +242,7 @@ const Register = () => {
 												'form-control btn btn-primary rounded submit px-3' +
 												(hasInputErrors() ? ' disabled' : '')
 											}
-											onClick={submitHandler}
+											onClick={RegisterHandler}
 										>
 											Create account
 										</button>
@@ -233,7 +251,7 @@ const Register = () => {
 							</form>
 							<p className='mt-5 text-center'>
 								Already have an account? &ensp;
-								<a href='/login'>Log in</a>
+								<Link to='/login'>Log in</Link>
 							</p>
 						</div>
 					</div>

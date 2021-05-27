@@ -6,6 +6,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Login from './views/Login';
 import Register from './views/Register';
 import Home from './Views/Home';
+import Test from './views/Test';
 
 const Index = () => {
 	return (
@@ -33,7 +34,10 @@ const Index = () => {
 						<Route path='/register'>
 							<Register />
 						</Route>
-						<Route path='/'>
+						<Route path='/test'>
+							<PrivateRoute component={<Test />} />
+						</Route>
+						<Route exact path='/'>
 							<PrivateRoute component={<Home />} />
 						</Route>
 					</Switch>

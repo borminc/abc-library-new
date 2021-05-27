@@ -1,15 +1,18 @@
-import axios from 'axios';
+import axios from './../functions/axios';
 import { set } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import validator from 'validator';
+import { useHistory, Link } from 'react-router-dom';
 
-import { setCookie, getCookie } from '../functions/cookies';
+import { setCookie, getCookie, deleteCookie } from '../functions/cookies';
 import { Loading, LoadingButton } from '../components/Loading';
 import { loginUser } from '../functions/loginFunction';
 import MessageAlert from '../components/MessageAlert';
 
 const Login = () => {
+	const history = useHistory();
+
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [rememberMe, setRememberMe] = useState(false);
@@ -22,35 +25,40 @@ const Login = () => {
 	});
 
 	useEffect(() => {
+		// if token exist -> login immediately
 		if (getCookie('token')) {
 			axios
 				.get('/api/auth/user')
 				.then(res => {
-					// Authorized
-					location.href = '/';
+					if (history.length) history.goBack();
+					else history.push('/');
 				})
 				.catch(err => {
-					// Unauthorized
-					setCookie('token', '');
-					location.reload();
+					deleteCookie('token');
 				});
 		}
 	}, []);
 
-	const submitHandler = () => {
+	const hasInputErrors = () => {
+		if (!validator.isEmail(email)) {
+			setErrors({ ...errors, email: true });
+			return true;
+		} else if (password === '') {
+			setErrors({ ...errors, password: true });
+			return true;
+		}
+	};
+
+	const LogInHandler = () => {
 		setProcessing(true);
 		setMsg({ text: '', success: 0 });
 
-		if (!validator.isEmail(email)) {
-			setErrors({ ...errors, email: true });
-			setProcessing(false);
-			return;
-		} else if (password === '') {
-			setErrors({ ...errors, password: true });
+		if (hasInputErrors()) {
 			setProcessing(false);
 			return;
 		}
 
+		var success = false;
 		const loginInfo = {
 			email: email,
 			password: password,
@@ -61,16 +69,20 @@ const Login = () => {
 			.post('/api/auth/login', loginInfo)
 			.then(res => {
 				setCookie('token', res.data.access_token);
-				location.href = '/';
+				success = true;
 			})
 			.catch(err => {
-				// Invalid credentials
-				// console.log(err);
+				// TO IMPLEMENT => Check for server error 500
+
 				setMsg({ text: 'Invalid email or password', success: 0 });
-				setCookie('token', '');
+				deleteCookie('token');
 			})
 			.finally(() => {
 				setProcessing(false);
+				if (success) {
+					if (history.length) history.goBack();
+					else history.push('/');
+				}
 			});
 	};
 
@@ -92,7 +104,8 @@ const Login = () => {
 						<div className='p-4 p-md-5 w-100'>
 							<div className='d-flex'>
 								<div className='w-100'>
-									<h3 className='mb-4'>Sign In</h3>
+									<h6 className=''>ABC Library</h6>
+									<h2 className='mb-4'>Log In</h2>
 								</div>
 							</div>
 
@@ -155,7 +168,7 @@ const Login = () => {
 												'form-control btn btn-primary rounded submit px-3' +
 												(errors.email || errors.password ? ' disabled' : '')
 											}
-											onClick={submitHandler}
+											onClick={LogInHandler}
 										>
 											Sign In
 										</button>
@@ -168,7 +181,7 @@ const Login = () => {
 										onChange={e => setRememberMe(e.target.checked)}
 									/>
 									<label htmlFor='checkbox' className='text-left'>
-										Remember Me
+										&ensp; Remember Me
 									</label>
 									{/* <div className="w-50 text-md-right">
 											<a href="#">Forgot Password</a>
@@ -177,7 +190,7 @@ const Login = () => {
 							</form>
 							<p className='mt-5 text-center'>
 								Don't have an account? &ensp;
-								<a href='/register'>Register</a>
+								<Link to='/register'>Register</Link>
 							</p>
 						</div>
 					</div>
@@ -188,51 +201,3 @@ const Login = () => {
 };
 
 export default Login;
-
-{
-	/* <form>
-                <div className="mb-3">
-                    <label htmlFor="exampleInputEmail1" className="form-label">
-                        Email address
-                    </label>
-                    <input
-                        type="email"
-                        className="form-control"
-                        id="exampleInputEmail1"
-                        aria-describedby="emailHelp"
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
-                <div className="mb-3">
-                    <label
-                        htmlFor="exampleInputPassword1"
-                        className="form-label"
-                    >
-                        Password
-                    </label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        id="exampleInputPassword1"
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                <div className="mb-3 form-check">
-                    <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id="exampleCheck1"
-                    />
-                    <label className="form-check-label" htmlFor="exampleCheck1">
-                        Check me out
-                    </label>
-                </div>
-                <button
-                    type="button"
-                    onClick={submitHandler}
-                    className="btn btn-primary"
-                >
-                    Submit
-                </button>
-            </form> */
-}
