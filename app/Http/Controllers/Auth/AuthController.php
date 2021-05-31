@@ -65,6 +65,18 @@ class AuthController extends Controller
         if ($request->remember_me)
             $token->expires_at = Carbon::now()->addWeeks(1);
         $token->save();
+
+        if (auth()->user()->is_admin == 1) {
+            return response()->json([
+                'access_token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'is_admin' => true,
+                'expires_at' => Carbon::parse(
+                    $tokenResult->token->expires_at
+                )->toDateTimeString()
+            ]);
+        }
+        
         return response()->json([
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',

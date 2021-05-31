@@ -101,6 +101,10 @@ const Register = () => {
 				history.push('/');
 			})
 			.catch(err => {
+				setMsg({
+					text: 'Your account was created, but there was a problem logging you in. Try again later!',
+					success: 0,
+				});
 				deleteCookie('token');
 				history.push('/login');
 			});

@@ -35,6 +35,15 @@ const PrivateRoute = props => {
 	}
 
 	return <Redirect push to='/login' />;
+
+	switch (loginStatus) {
+		case 0:
+			return <Loading />;
+		case 1:
+			return <div> {props.component} </div>;
+		case -1:
+			return <Redirect push to='/login' />;
+	}
 };
 
 export default PrivateRoute;

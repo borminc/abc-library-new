@@ -59,6 +59,7 @@ const Login = () => {
 		}
 
 		var success = false;
+		var isAdmin = false;
 		const loginInfo = {
 			email: email,
 			password: password,
@@ -70,18 +71,27 @@ const Login = () => {
 			.then(res => {
 				setCookie('token', res.data.access_token);
 				success = true;
+				isAdmin = res.data.is_admin || false;
 			})
 			.catch(err => {
-				// TO IMPLEMENT => Check for server error 500
-
-				setMsg({ text: 'Invalid email or password', success: 0 });
+				if (err.response.status == 500) var message = 'Internal server error';
+				else var message = err.response.data.message;
+				setMsg({
+					text: err.response.data.message,
+					success: 0,
+				});
 				deleteCookie('token');
 			})
 			.finally(() => {
 				setProcessing(false);
 				if (success) {
-					if (history.length) history.goBack();
-					else history.push('/');
+					if (isAdmin) {
+						history.push('/admin');
+						return;
+					} else {
+						if (history.length) history.goBack();
+						else history.push('/');
+					}
 				}
 			});
 	};
