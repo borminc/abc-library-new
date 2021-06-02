@@ -74,10 +74,11 @@ const Login = () => {
 				isAdmin = res.data.is_admin || false;
 			})
 			.catch(err => {
-				if (err.response.status == 500) var message = 'Internal server error';
+				if (err.response.status == 500)
+					var message = 'Internal server error. Try again later.';
 				else var message = err.response.data.message;
 				setMsg({
-					text: err.response.data.message,
+					text: message,
 					success: 0,
 				});
 				deleteCookie('token');
