@@ -17,7 +17,13 @@ class Book extends Model
         'publisher', 
         'year', 
         'image', 
-        'category_id'
+        'category_id',
+        'stock'
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 
     public function category() {

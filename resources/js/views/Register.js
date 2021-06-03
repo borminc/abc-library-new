@@ -15,6 +15,7 @@ const Register = () => {
 
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
+	const [phone, setPhone] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -24,6 +25,7 @@ const Register = () => {
 	const [errors, setErrors] = useState({
 		name: false,
 		email: false,
+		phone: false,
 		password: false,
 		confirmPassword: false,
 	});
@@ -46,10 +48,12 @@ const Register = () => {
 		return (
 			errors.name ||
 			errors.email ||
+			errors.phone ||
 			errors.password ||
 			errors.confirmPassword ||
 			name == '' ||
 			email == '' ||
+			phone == '' ||
 			password == '' ||
 			confirmPassword == ''
 		);
@@ -67,6 +71,7 @@ const Register = () => {
 		const registerInfo = {
 			name: name,
 			email: email,
+			phone: phone,
 			password: password,
 			password_confirmation: confirmPassword,
 		};
@@ -186,6 +191,29 @@ const Register = () => {
 									{errors.email && (
 										<small className='form-text text-danger'>
 											Enter a valid email.
+										</small>
+									)}
+								</div>
+								<div className='form-group mb-3'>
+									<input
+										id='phone'
+										type='text'
+										className={
+											'form-control' + (errors.phone ? ' is-invalid' : '')
+										}
+										placeholder='Phone'
+										onChange={e => {
+											setPhone(e.target.value);
+											setMsg({ text: '', success: 0 });
+											if (e.target.value === '')
+												setErrors({ ...errors, phone: true });
+											else setErrors({ ...errors, phone: false });
+										}}
+										required
+									/>
+									{errors.phone && (
+										<small className='form-text text-danger'>
+											This field is required.
 										</small>
 									)}
 								</div>
