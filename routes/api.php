@@ -41,22 +41,12 @@ Route::group([
 Route::group([
     'middleware' => ['auth:api', 'is_admin']
 ], function() {
-    Route::get('/test', function() {
-        return "hello";
-    });    
+    Route::get('user/search', [AuthController::class, 'search']);
 });
 
-
-// Route::get('/categories', [CategoryController::class, 'index']);
-// Route::post('/add-category', [CategoryController::class, 'add']);
-
-// Route::get('/books', [BookController::class, 'index']);
-// Route::post('/add-book', [BookController::class, 'add']);
-
-// Route::get('category/{id}', [CategoryController::class, 'getBooksByCategory']);
 
 Route::resource('category', 'App\Http\Controllers\CategoryController');
 Route::resource('book', 'App\Http\Controllers\BookController');
 
-Route::get('category/name/{name}', [CategoryController::class, 'searchByName']);
-Route::post('search/title', [BookController::class, 'getBookByTitle']);
+// Route::get('category/name/{name}', [CategoryController::class, 'showBooksByCategoryName']);
+Route::get('search', [BookController::class, 'search']);

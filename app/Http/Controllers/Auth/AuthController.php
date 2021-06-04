@@ -110,4 +110,19 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
+
+    public function search(Request $request) {
+        $params = ['name', 'email', 'phone'];
+
+        $by = $request->query('by');
+        $value = $request->query('value');
+
+        if (!($by && $value) || !in_array($by, $params)) {
+            // invalid params
+            return response()->json([
+                'error' => 'Bad request'
+            ], 400); 
+        }
+        return User::where($by, 'LIKE', '%'.$value.'%')->get(); 
+    }
 }

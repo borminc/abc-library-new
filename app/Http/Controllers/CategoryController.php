@@ -61,7 +61,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        return Category::find($id)->books;
+        return Category::find($id);
     }
 
     /**
@@ -98,13 +98,13 @@ class CategoryController extends Controller
         //
     }
 
-    public function searchByName($name) {
-        $category = Category::where('name', '=', $name)->get()->first();
-        if ($category && $category->id)
-            return Category::find($category->id)->books;
-        else
-            return response()->json([
-                'message' => 'No category called "' . $name . '"' 
-            ]);        
-    }
+    // public function showBooksByCategoryName($name) {
+    //     $category = Category::where('name', '=', $name)->get()->first();
+    //     if ($category && $category->id)
+    //         return Category::find($category->id)->books;
+    //     else
+    //         return response()->json([
+    //             'message' => 'No category called ' . $name . '.' 
+    //         ]);        
+    // }
 }

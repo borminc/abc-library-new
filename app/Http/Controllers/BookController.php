@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Book;
+use App\Models\Category;
 
 class BookController extends Controller
 {
@@ -105,17 +106,20 @@ class BookController extends Controller
         //
     }
 
-    public function getBookByTitle(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-        ]);
+    public function search(Request $request) {
+        // allowed search parameters 
+        $params = ['title', 'author', 'description', 'publisher', 'year', 'category_id'];
 
-        if ($validator->fails()) {
+        $by = $request->query('by');
+        $value = $request->query('value');
+
+        if (!($by && $value) || !in_array($by, $params)) {
+            // invalid params
             return response()->json([
-                'error' => 'Input is valid'
-            ], 422);
+                'error' => 'Bad request'
+            ], 400); 
         }
-        // return $request->title;
-        return Book::where('title', 'LIKE', '%'.$request->title.'%')->get(); 
+
+        return Book::where($by, 'LIKE', '%'.$value.'%')->get(); 
     }
 }
