@@ -16,7 +16,13 @@ class BookController extends Controller
      */
     public function index()
     {
-        return Book::all();
+        $result = Book::all();
+
+        // attach category name
+        foreach($result as $item) {
+            $item['category'] = Category::find($item->category_id)->name;
+        }
+        return $result;
     }
 
     /**
@@ -69,7 +75,11 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        return Book::find($id);
+        $result = Book::find($id);
+
+        // attach category name
+        $result['category'] = Category::find($result->category_id)->name;
+        return $result;
     }
 
     /**
@@ -92,7 +102,22 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $book = Book::findOrFail($id);
+        
+        $book->title = $request->title;
+        $book->author = $request->author;
+        $book->description = $request->description;
+        $book->publisher = $request->publisher;
+        $book->year = $request->year;
+        $book->image = $request->image;
+        $book->category_id = $request->category_id;
+        $book->stock = $request->stock;
+
+        $book->save();
+
+        return response()->json([
+            'message' => 'Successfully updated ' . $request->title . '!'
+            ]); 
     }
 
     /**
@@ -103,7 +128,11 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $book = Book::findOrFail($id);
+        $book->delete();
+        return response()->json([
+            'message' => 'Successfully deleted ' . $book->title . '!'
+            ]); 
     }
 
     public function search(Request $request) {
@@ -120,6 +149,13 @@ class BookController extends Controller
             ], 400); 
         }
 
-        return Book::where($by, 'LIKE', '%'.$value.'%')->get(); 
+        $result = Book::where($by, 'LIKE', '%'.$value.'%')->get();
+        
+        //attach category name
+        foreach($result as $item) {
+            $item['category'] = Category::find($item->category_id)->name;
+        }
+
+        return $result; 
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Category;
 use App\Models\Book;
 
@@ -84,7 +85,14 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $category = Category::findOrFail($id);
+
+        $category->name = $request->name;
+        $category->save();
+
+        return response()->json([
+            'message' => 'Successfully updated ' . $request->name . '!'
+            ]);
     }
 
     /**
@@ -95,7 +103,11 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = Category::findOrFail($id);
+        $category->delete();
+        return response()->json([
+            'message' => 'Successfully deleted ' . $category->name . '!'
+            ]); 
     }
 
     // public function showBooksByCategoryName($name) {
