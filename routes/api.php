@@ -6,6 +6,11 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BookUserController;
+
+use App\Models\User;
+use App\Models\Book;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -39,14 +44,24 @@ Route::group([
 });
 
 Route::group([
+        'middleware' => 'auth:api'
+    ], function() {
+        Route::post('borrow', [BookUserController::class, 'borrow']);
+        Route::get('user/books', [BookUserController::class, 'getUserBooks']);
+    }
+);
+
+Route::group([
     'middleware' => ['auth:api', 'is_admin']
 ], function() {
     Route::get('user/search', [AuthController::class, 'search']);
+    Route::post('books/return', [BookUserController::class, 'returnBook']);
+    
 });
 
-
-Route::resource('category', 'App\Http\Controllers\CategoryController');
-Route::resource('book', 'App\Http\Controllers\BookController');
-
 // Route::get('category/name/{name}', [CategoryController::class, 'showBooksByCategoryName']);
-Route::get('search', [BookController::class, 'search']);
+Route::resource('categories', 'App\Http\Controllers\CategoryController');
+
+Route::get('books/search', [BookController::class, 'search'])->name('books.search');
+Route::resource('books', 'App\Http\Controllers\BookController');
+

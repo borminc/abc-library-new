@@ -38,7 +38,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-             'name' => 'required|string'
+             'name' => 'required|string|unique:categories'
         ]);
 
         if ($validator->fails()) {
@@ -62,7 +62,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        return Category::find($id);
+        return Category::findOrFail($id);
     }
 
     /**
@@ -113,7 +113,7 @@ class CategoryController extends Controller
     // public function showBooksByCategoryName($name) {
     //     $category = Category::where('name', '=', $name)->get()->first();
     //     if ($category && $category->id)
-    //         return Category::find($category->id)->books;
+    //         return Category::findOrFail($category->id)->books;
     //     else
     //         return response()->json([
     //             'message' => 'No category called ' . $name . '.' 

@@ -17,11 +17,7 @@ class BookController extends Controller
     public function index()
     {
         $result = Book::all();
-
-        // attach category name
-        foreach($result as $item) {
-            $item['category'] = Category::find($item->category_id)->name;
-        }
+        if ($result) $result->load('category');
         return $result;
     }
 
@@ -75,11 +71,9 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        $result = Book::find($id);
-
-        // attach category name
-        $result['category'] = Category::find($result->category_id)->name;
-        return $result;
+        $book = Book::findOrFail($id);
+        if($book) $book->load('category');
+        return $book;
     }
 
     /**
@@ -151,10 +145,7 @@ class BookController extends Controller
 
         $result = Book::where($by, 'LIKE', '%'.$value.'%')->get();
         
-        //attach category name
-        foreach($result as $item) {
-            $item['category'] = Category::find($item->category_id)->name;
-        }
+        if ($result) $result->load('category');
 
         return $result; 
     }
