@@ -24,11 +24,13 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|email|unique:users',
+            'phone' => 'required',
             'password' => 'required|string|confirmed'
         ]);
         $user = new User([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => bcrypt($request->password)
         ]);
         $user->save();
@@ -107,5 +109,20 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         return response()->json($request->user());
+    }
+
+    public function search(Request $request) {
+        $params = ['name', 'email', 'phone'];
+
+        $by = $request->query('by');
+        $value = $request->query('value');
+
+        if (!($by && $value) || !in_array($by, $params)) {
+            // invalid params
+            return response()->json([
+                'error' => 'Bad request'
+            ], 400); 
+        }
+        return User::where($by, 'LIKE', '%'.$value.'%')->get(); 
     }
 }
