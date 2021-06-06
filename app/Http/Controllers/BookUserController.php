@@ -19,7 +19,7 @@ class BookUserController extends Controller
         $cost_per_day = 1;
         
         foreach ($books as $book) {
-            $book->return_time = time() + 2*24*3600; // for testing expired
+            // $book->return_time = time() + 2*24*3600; // for testing expired
             if ($book->return_time > $time_now) {
                 $book->expired = true;
                 $book->days_past_expired = ($book->return_time - $time_now) / (24*3600);
