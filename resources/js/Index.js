@@ -13,9 +13,12 @@ import Test from './views/Test';
 import Admin from './views/Admin';
 import NotFound from './views/NotFound';
 
+import ABCNav from './components/ABCNav';
+
 const Index = () => {
 	return (
 		<div className='container'>
+			<ABCNav />
 			<Router>
 				<div>
 					{/* <nav>
