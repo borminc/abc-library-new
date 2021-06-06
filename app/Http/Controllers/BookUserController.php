@@ -13,7 +13,23 @@ class BookUserController extends Controller
 {
 
     public function getUserBooks() {
-        return Auth::user()->books;
+        $books = Auth::user()->books;
+        $books->load('category');
+        $time_now = time();
+        $cost_per_day = 1;
+        
+        foreach ($books as $book) {
+            $book->return_time = time() + 2*24*3600; // for testing expired
+            if ($book->return_time > $time_now) {
+                $book->expired = true;
+                $book->days_past_expired = ($book->return_time - $time_now) / (24*3600);
+                $book->cost = $cost_per_day * $book->days_past_expired;
+            } else {
+                 $book->expired = false;
+                 $book->cost = 0;
+            }
+        }
+        return $books;
     }
 
     public function borrow(Request $request) {
