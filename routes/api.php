@@ -27,6 +27,7 @@ use App\Models\Book;
 //     return $request->user();
 // });
 
+// ---------------------------------------------------- Auth routes
 Route::group([
     'prefix' => 'auth'
 ], function () {
@@ -43,6 +44,7 @@ Route::group([
     });
 });
 
+// ---------------------------------------------------- Routes that require user account
 Route::group([
         'middleware' => 'auth:api'
     ], function() {
@@ -51,17 +53,26 @@ Route::group([
     }
 );
 
+// ---------------------------------------------------- Admin routes
 Route::group([
     'middleware' => ['auth:api', 'is_admin']
 ], function() {
     Route::get('user/search', [AuthController::class, 'search']);
-    Route::post('books/return', [BookUserController::class, 'returnBook']);
     
+    Route::resource('categories', CategoryController::class)->except([
+        'index', 'show'
+    ]);
+    Route::resource('books', BookController::class)->except([
+        'index', 'show'
+    ]);
+    Route::post('books/return', [BookUserController::class, 'returnBook']);
 });
 
-// Route::get('category/name/{name}', [CategoryController::class, 'showBooksByCategoryName']);
-Route::resource('categories', 'App\Http\Controllers\CategoryController');
-
+// ---------------------------------------------------- Public routes
+Route::resource('categories', CategoryController::class)->only([
+    'index', 'show'
+]);
 Route::get('books/search', [BookController::class, 'search'])->name('books.search');
-Route::resource('books', 'App\Http\Controllers\BookController');
-
+Route::resource('books', BookController::class)->only([
+    'index', 'show'
+]);
