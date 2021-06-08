@@ -65,10 +65,19 @@ class BookUserController extends Controller
                 ], 406);
         }
 
+        if ($book->stock <= 0) {
+            return response()->json([
+                    'error' => 'This book is out of stock.'
+                ], 400);
+        }
+
         $user->books()->attach($request->book_id, [
             'borrow_time' => $borrow_time,
             'return_time' => $return_time
         ]);
+
+        $book->stock = $book->stock - 1;
+        $book->save();
 
         return response()->json([
             'message' => 'Successfully borrowed ' . $book->title . '!'
@@ -89,7 +98,23 @@ class BookUserController extends Controller
 
         $user = User::findOrFail($request->user_id);
         $book = Book::findOrFail($request->book_id);
+
+        $found = false; // find if user has actually borrowed  this book
+
+        foreach($user->books as $user_book) {
+            if ($user_book->id == $book->id)
+                $found = true;
+        }
+
+        if (!$found) {
+            return response()->json([
+                'error' => 'User did not borrow this book.'
+            ], 400);
+        }
+
         $user->books()->detach($book);
+        $book->stock = $book->stock + 1;
+        $book->save();
         
         return response()->json([
             'message' => 'Successfully returned ' . $book->title . '!'
