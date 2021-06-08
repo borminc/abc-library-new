@@ -4,12 +4,12 @@ export const Loading = props => {
 	return (
 		<div
 			className='d-flex justify-content-center align-items-center m-5'
-			style={{ height: '100vh' }}
+			style={{ height: props.height || '100vh' }}
 		>
 			<div
 				className='spinner-border'
 				role='status'
-				style={{ width: '4rem', height: '4rem' }}
+				style={{ width: props.size || '4rem', height: props.size || '4rem' }}
 			>
 				<span className='sr-only'></span>
 			</div>
@@ -17,10 +17,14 @@ export const Loading = props => {
 	);
 };
 
-export const LoadingButton = () => {
+export const LoadingButton = props => {
 	return (
 		<button
-			className='form-control btn btn-primary rounded submit px-3'
+			className={
+				'form-control btn btn-' +
+				(props.color || 'primary') +
+				' rounded submit px-3'
+			}
 			type='button'
 			disabled
 		>

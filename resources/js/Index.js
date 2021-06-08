@@ -11,14 +11,15 @@ import Register from './views/Register';
 import Home from './Views/Home';
 import Test from './views/Test';
 import Admin from './views/Admin';
+import AdminLayout from './views/admin/AdminLayout';
 import NotFound from './views/NotFound';
 
 import ABCNav from './components/ABCNav';
 
 const Index = () => {
 	return (
-		<div className='container'>
-			<ABCNav />
+		<div>
+			{/* <ABCNav /> */}
 			<Router>
 				<div>
 					{/* <nav>
@@ -46,7 +47,7 @@ const Index = () => {
 							<PrivateRoute component={<Test />} />
 						</Route>
 						<Route path='/admin'>
-							<AdminRoute component={<Admin />} />
+							<AdminRoute component={<AdminLayout />} />
 						</Route>
 
 						<Route path='/unauthorized'>
