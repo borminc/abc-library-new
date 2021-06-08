@@ -31,6 +31,8 @@ const Books = () => {
 	const [fileName, setFileName] = useState();
 	const [isProcessing, setProcessing] = useState(false);
 
+	const [searchValue, setSearchValue] = useState();
+
 	const [newBook, setNewBook] = useState({
 		title: '',
 		author: '',
@@ -270,9 +272,32 @@ const Books = () => {
 			});
 	};
 
+	const searchMatches = (item, value) => {
+		return (
+			item.id == value ||
+			item.title.toLowerCase().includes(value.toLowerCase()) ||
+			item.author.toLowerCase().includes(value.toLowerCase()) ||
+			item.publisher.toLowerCase().includes(value.toLowerCase()) ||
+			item.year == value ||
+			item.category.name.toLowerCase().includes(value.toLowerCase())
+		);
+	};
+
 	return (
 		<div className='overflow-auto'>
-			<h4>All books</h4>
+			<div className='row mt-2 mb-2'>
+				<h4 className='col-lg-4'>All books</h4>
+				<input
+					type='text'
+					className='col-lg-8 form-control bg-none border-0 small'
+					placeholder='Search for id, title, author, publisher, year, category...'
+					aria-label='Search'
+					aria-describedby='basic-addon2'
+					onChange={e => {
+						setSearchValue(e.target.value);
+					}}
+				/>
+			</div>
 			<table className='table'>
 				<thead>
 					<tr>
@@ -300,51 +325,60 @@ const Books = () => {
 				</thead>
 				<tbody>
 					{books &&
-						books.map((item, i) => (
-							<tr key={i}>
-								<th scope='row'>{item.id}</th>
-								<td>{item.title}</td>
-								<td>{item.author}</td>
-								<td>{item.publisher}</td>
-								<td>{item.year}</td>
-								<td>{item.category.name}</td>
-								<td>{item.stock}</td>
-								<td>
-									<button
-										className='btn btn-outline-primary mr-2 mb-1'
-										data-bs-toggle='modal'
-										data-bs-target='#editBookModal'
-										onClick={e => {
-											selectBookHandler(i);
-											setEditErrors({
-												title: false,
-												author: false,
-												description: false,
-												publisher: false,
-												year: false,
-												image: false,
-												category_id: false,
-												stock: false,
-											});
-											setFileName('');
-											setMsg({ ...msg, text: '' });
-										}}
-									>
-										Edit
-									</button>
-									<button
-										className='btn btn-outline-danger mb-1'
-										data-bs-toggle='modal'
-										data-bs-target='#deleteBookModal'
-										onClick={e => {
-											selectBookHandler(i);
-										}}
-									>
-										Delete
-									</button>
-								</td>
-							</tr>
-						))}
+						books.map((item, i) => {
+							if (
+								searchValue &&
+								(searchValue == '' || !searchMatches(item, searchValue))
+							)
+								return null;
+							else {
+								return (
+									<tr key={i}>
+										<th scope='row'>{item.id}</th>
+										<td>{item.title}</td>
+										<td>{item.author}</td>
+										<td>{item.publisher}</td>
+										<td>{item.year}</td>
+										<td>{item.category.name}</td>
+										<td>{item.stock}</td>
+										<td>
+											<button
+												className='btn btn-outline-primary mr-2 mb-1'
+												data-bs-toggle='modal'
+												data-bs-target='#editBookModal'
+												onClick={e => {
+													selectBookHandler(i);
+													setEditErrors({
+														title: false,
+														author: false,
+														description: false,
+														publisher: false,
+														year: false,
+														image: false,
+														category_id: false,
+														stock: false,
+													});
+													setFileName('');
+													setMsg({ ...msg, text: '' });
+												}}
+											>
+												Edit
+											</button>
+											<button
+												className='btn btn-outline-danger mb-1'
+												data-bs-toggle='modal'
+												data-bs-target='#deleteBookModal'
+												onClick={e => {
+													selectBookHandler(i);
+												}}
+											>
+												Delete
+											</button>
+										</td>
+									</tr>
+								);
+							}
+						})}
 				</tbody>
 			</table>
 			{/* --------------------------------- Add Modal ---------------------------------*/}

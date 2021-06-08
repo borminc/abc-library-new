@@ -25,6 +25,8 @@ const Categories = () => {
 	const [categories, setCategories] = useState();
 	const [isProcessing, setProcessing] = useState(false);
 
+	const [searchValue, setSearchValue] = useState();
+
 	useEffect(() => {
 		getCategoriesFromServer();
 	}, []);
@@ -121,9 +123,27 @@ const Categories = () => {
 			});
 	};
 
+	const searchMatches = (item, value) => {
+		return (
+			item.id == value || item.name.toLowerCase().includes(value.toLowerCase())
+		);
+	};
+
 	return (
 		<div className='overflow-auto'>
-			<h4>All categories</h4>
+			<div className='row mt-2 mb-2'>
+				<h4 className='col-lg-4'>All categories</h4>
+				<input
+					type='text'
+					className='col-lg-8 form-control bg-none border-0 small'
+					placeholder='Search for id, category name...'
+					aria-label='Search'
+					aria-describedby='basic-addon2'
+					onChange={e => {
+						setSearchValue(e.target.value);
+					}}
+				/>
+			</div>
 			<table className='table'>
 				<thead>
 					<tr>
@@ -143,34 +163,43 @@ const Categories = () => {
 				</thead>
 				<tbody>
 					{categories &&
-						categories.map((item, i) => (
-							<tr key={i}>
-								<th scope='row'>{item.id}</th>
-								<td>{item.name}</td>
-								<td>
-									<button
-										className='btn btn-outline-primary'
-										data-bs-toggle='modal'
-										data-bs-target='#editCategoryModal'
-										onClick={e => {
-											selectCategoryHandler(i);
-										}}
-									>
-										Edit
-									</button>
-									<button
-										className='btn btn-outline-danger ml-2'
-										data-bs-toggle='modal'
-										data-bs-target='#deleteCategoryModal'
-										onClick={e => {
-											selectCategoryHandler(i);
-										}}
-									>
-										Delete
-									</button>
-								</td>
-							</tr>
-						))}
+						categories.map((item, i) => {
+							if (
+								searchValue &&
+								(searchValue == '' || !searchMatches(item, searchValue))
+							)
+								return null;
+							else {
+								return (
+									<tr key={i}>
+										<th scope='row'>{item.id}</th>
+										<td>{item.name}</td>
+										<td>
+											<button
+												className='btn btn-outline-primary'
+												data-bs-toggle='modal'
+												data-bs-target='#editCategoryModal'
+												onClick={e => {
+													selectCategoryHandler(i);
+												}}
+											>
+												Edit
+											</button>
+											<button
+												className='btn btn-outline-danger ml-2'
+												data-bs-toggle='modal'
+												data-bs-target='#deleteCategoryModal'
+												onClick={e => {
+													selectCategoryHandler(i);
+												}}
+											>
+												Delete
+											</button>
+										</td>
+									</tr>
+								);
+							}
+						})}
 				</tbody>
 			</table>
 
