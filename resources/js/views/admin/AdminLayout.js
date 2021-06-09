@@ -29,7 +29,7 @@ const AdminLayout = () => {
 
 	useEffect(() => {
 		axios
-			.get('/api/auth/admin')
+			.get('/api/auth/user')
 			.then(res => {
 				setAdminInfo(res.data);
 			})

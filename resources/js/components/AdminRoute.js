@@ -18,9 +18,8 @@ const AdminRoute = props => {
 
 	useEffect(() => {
 		axios
-			.get('/api/auth/admin')
+			.get('/api/auth/user')
 			.then(res => {
-				// Authorized
 				if (res.data.is_admin) {
 					setLoginStatus(1);
 				} else {
@@ -28,7 +27,6 @@ const AdminRoute = props => {
 				}
 			})
 			.catch(err => {
-				// Unauthorized
 				deleteCookie('token');
 				setLoginStatus(-1);
 			});

@@ -5,9 +5,6 @@ import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 
 import { setCookie, getCookie, deleteCookie } from '../../../functions/cookies';
-import '../imports/sb-admin-2.min.css';
-import '../imports/sb-admin-2.js';
-import '../imports/sb-admin-2.min.js';
 
 const AdminDashboard = () => {
 	const history = useHistory();

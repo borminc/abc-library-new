@@ -18,11 +18,9 @@ const PrivateRoute = props => {
 		axios
 			.get('/api/auth/user')
 			.then(res => {
-				// Authorized
 				setLoginStatus(1);
 			})
 			.catch(err => {
-				// Unauthorized
 				deleteCookie('token');
 				setLoginStatus(-1);
 			});

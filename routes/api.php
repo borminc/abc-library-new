@@ -23,9 +23,6 @@ use App\Models\Book;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
 // ---------------------------------------------------- Auth routes
 Route::group([
@@ -34,13 +31,12 @@ Route::group([
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('register', [AuthController::class, 'register'])->name('register');
 
+    // requires user login
     Route::group([
         'middleware' => 'auth:api'
     ], function() {
         Route::get('logout', [AuthController::class, 'logout']);
         Route::get('user', [AuthController::class, 'user']);
-
-        Route::get('/admin', [AdminController::class, 'admin']);
     });
 });
 
@@ -53,7 +49,7 @@ Route::group([
     }
 );
 
-// ---------------------------------------------------- Admin routes
+// ---------------------------------------------------- Routes that require admin account
 Route::group([
     'middleware' => ['auth:api', 'is_admin']
 ], function() {
@@ -69,10 +65,13 @@ Route::group([
 });
 
 // ---------------------------------------------------- Public routes
+
+Route::get('books/search', [BookController::class, 'search'])->name('books.search');
+Route::get('books/latest', [BookController::class, 'getLatestBooks'])->name('books.latest');
+
 Route::resource('categories', CategoryController::class)->only([
     'index', 'show'
 ]);
-Route::get('books/search', [BookController::class, 'search'])->name('books.search');
 Route::resource('books', BookController::class)->only([
     'index', 'show'
 ]);

@@ -132,7 +132,16 @@ const Categories = () => {
 	return (
 		<div className='overflow-auto'>
 			<div className='row mt-2 mb-2'>
-				<h4 className='col-lg-4'>All categories</h4>
+				<h4 className='col-lg-4'>
+					All categories
+					<button
+						className='btn btn-link'
+						data-bs-toggle='modal'
+						data-bs-target='#addCategoryModal'
+					>
+						+
+					</button>
+				</h4>
 				<input
 					type='text'
 					className='col-lg-8 form-control bg-none border-0 small'
@@ -148,16 +157,7 @@ const Categories = () => {
 				<thead>
 					<tr>
 						<th scope='col'>ID</th>
-						<th scope='col'>
-							Categories
-							<button
-								className='btn btn-link'
-								data-bs-toggle='modal'
-								data-bs-target='#addCategoryModal'
-							>
-								+
-							</button>
-						</th>
+						<th scope='col'>Categories</th>
 						<th scope='col'>Actions</th>
 					</tr>
 				</thead>

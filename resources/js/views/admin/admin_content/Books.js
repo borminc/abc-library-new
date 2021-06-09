@@ -286,7 +286,20 @@ const Books = () => {
 	return (
 		<div className='overflow-auto'>
 			<div className='row mt-2 mb-2'>
-				<h4 className='col-lg-4'>All books</h4>
+				<h4 className='col-lg-4'>
+					All books
+					<button
+						className='btn btn-link'
+						data-bs-toggle='modal'
+						data-bs-target='#addBookModal'
+						onClick={e => {
+							setMsg({ text: '', success: 1 });
+						}}
+					>
+						+
+					</button>
+				</h4>
+
 				<input
 					type='text'
 					className='col-lg-8 form-control bg-none border-0 small'
@@ -302,19 +315,7 @@ const Books = () => {
 				<thead>
 					<tr>
 						<th scope='col'>ID</th>
-						<th scope='col'>
-							Title
-							<button
-								className='btn btn-link'
-								data-bs-toggle='modal'
-								data-bs-target='#addBookModal'
-								onClick={e => {
-									setMsg({ text: '', success: 1 });
-								}}
-							>
-								+
-							</button>
-						</th>
+						<th scope='col'>Title</th>
 						<th scope='col'>Author</th>
 						<th scope='col'>Publisher</th>
 						<th scope='col'>Year</th>
