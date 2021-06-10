@@ -1,8 +1,16 @@
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import React, {useEffect,useState} from 'react';
 
 function ABCNav() {
+	const [categories,setCategory] = useState ([]);
+	useEffect(()=> {
+        axios.get('/api/categories')
+        .then(res => {
+            setCategory(res.data);
+        });
+    },[]);
 	return (
 		<Navbar
 			collapseOnSelect
@@ -18,18 +26,14 @@ function ABCNav() {
 				className='justify-content-center'
 			>
 				<Nav className='mr-auto'>
-					<NavDropdown title='Category' id='collasible-nav-dropdown'>
-						<NavDropdown.Item href='#action/3.1'>
-							Computer Science
-						</NavDropdown.Item>
-						<NavDropdown.Item href='#action/3.2'>
-							Management Information System
-						</NavDropdown.Item>
-						<NavDropdown.Item href='#action/3.3'>
-							International Relation
-						</NavDropdown.Item>
-						<NavDropdown.Divider />
-						<NavDropdown.Item href='#action/3.4'>All</NavDropdown.Item>
+					<NavDropdown title='Category' id='collasible-nav-dropdown' class='p-2'>
+						{categories.map((cate,i) => (
+							<div key={i}>
+								<NavDropdown.Item href='#action/3.1'>
+									{cate.name}
+								</NavDropdown.Item>
+							</div>
+						))}
 					</NavDropdown>
 				</Nav>
 				<Nav>

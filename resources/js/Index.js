@@ -8,10 +8,12 @@ import Unauthorized from './views/Unauthorized';
 
 import Login from './views/Login';
 import Register from './views/Register';
-import Home from './Views/Home';
+import Home from './views/Home';
 import Test from './views/Test';
 import Admin from './views/Admin';
 import NotFound from './views/NotFound';
+import Search from './views/Search';
+import Borrow from './views/Borrow';
 
 import ABCNav from './components/ABCNav';
 
@@ -36,6 +38,13 @@ const Index = () => {
                     </nav> */}
 
 					<Switch>
+						
+						<Route path='/search'>
+							<Search />
+						</Route>
+						<Route path='/borrow'>
+							<Borrow />
+						</Route>
 						<Route path='/login'>
 							<Login />
 						</Route>
@@ -60,6 +69,8 @@ const Index = () => {
 						<Route>
 							<NotFound />
 						</Route>
+
+						
 					</Switch>
 				</div>
 			</Router>
