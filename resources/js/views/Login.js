@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import validator from 'validator';
 import { useHistory, Link } from 'react-router-dom';
-
 import { setCookie, getCookie, deleteCookie } from '../functions/cookies';
 import { Loading, LoadingButton } from '../components/Loading';
 import { loginUser } from '../functions/loginFunction';

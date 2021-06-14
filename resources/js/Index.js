@@ -12,14 +12,14 @@ import Home from './views/Home';
 import Test from './views/Test';
 import Admin from './views/Admin';
 import NotFound from './views/NotFound';
-import Search from './views/Search';
 import Borrow from './views/Borrow';
 
 import ABCNav from './components/ABCNav';
 
 const Index = () => {
+
 	return (
-		<div className='container'>
+		<div>
 			<ABCNav />
 			<Router>
 				<div>
@@ -38,19 +38,17 @@ const Index = () => {
                     </nav> */}
 
 					<Switch>
-						
-						<Route path='/search'>
-							<Search />
-						</Route>
-						<Route path='/borrow'>
-							<Borrow />
-						</Route>
+
+						<Route path="/borrow/:bookId" children={<PrivateRoute component ={<Borrow />} /> } />
+
 						<Route path='/login'>
 							<Login />
 						</Route>
+
 						<Route path='/register'>
 							<Register />
 						</Route>
+
 						<Route path='/test'>
 							<PrivateRoute component={<Test />} />
 						</Route>
@@ -63,14 +61,13 @@ const Index = () => {
 						</Route>
 
 						<Route exact path='/'>
-							<PrivateRoute component={<Home />} />
+							<Home />
 						</Route>
 
 						<Route>
 							<NotFound />
 						</Route>
 
-						
 					</Switch>
 				</div>
 			</Router>

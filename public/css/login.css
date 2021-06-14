@@ -14,7 +14,7 @@ header.masthead {
     padding-top: calc(8rem + 57px);
     padding-bottom: 8rem;
     background: no-repeat center center;
-    background-color: rgb(194, 187, 187);
+    background-color: #6c757d;
     background-size: cover;
     background-attachment: scroll;
 }
@@ -88,6 +88,10 @@ header.masthead .post-heading .meta a {
 }
 
 @media (min-width: 992px) {
+    header.masthead {
+        padding-top: 12.5rem;
+        padding-bottom: 12.5rem;
+    }
     header.masthead .page-heading h1,
     header.masthead .page-heading .h1,
     header.masthead .site-heading h1,
@@ -101,4 +105,8 @@ header.masthead .post-heading .meta a {
     header.masthead .post-heading .subheading {
         font-size: 1.875rem;
     }
+}
+
+html {
+    font-size: calc(0.5em + 0.6vw);
 }

@@ -23,10 +23,10 @@ function ABCNav() {
 			<Navbar.Toggle aria-controls='responsive-navbar-nav' />
 			<Navbar.Collapse
 				id='responsive-navbar-nav'
-				className='justify-content-center'
+				className='justify-content-end'
 			>
 				<Nav className='mr-auto'>
-					<NavDropdown title='Category' id='collasible-nav-dropdown' class='p-2'>
+					<NavDropdown title='Category' id='collasible-nav-dropdown' className='p-2'>
 						{categories.map((cate,i) => (
 							<div key={i}>
 								<NavDropdown.Item href='#action/3.1'>
