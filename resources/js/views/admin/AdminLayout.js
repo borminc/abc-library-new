@@ -20,6 +20,7 @@ import './imports/sb-admin-2.min.js';
 import AdminDashboard from './admin_content/AdminDashboard';
 import Categories from './admin_content/Categories';
 import Books from './admin_content/Books';
+import Users from './admin_content/Users';
 
 const AdminLayout = () => {
 	let { path, url } = useRouteMatch();
@@ -114,6 +115,13 @@ const AdminLayout = () => {
 							</div>
 						</div>
 					</li>
+
+					<li className='nav-item'>
+						<Link to={`${url}/users`} className='nav-link'>
+							<i className='fas fa-fw fa-tachometer-alt'></i>
+							<span>Users</span>
+						</Link>
+					</li>
 				</ul>
 				{/* -----------------------------------------  End of Sidebar ----------------------------------------- */}
 
@@ -192,6 +200,10 @@ const AdminLayout = () => {
 
 								<Route path={`${path}/books`}>
 									<Books />
+								</Route>
+
+								<Route path={`${path}/users`}>
+									<Users />
 								</Route>
 
 								<Route exact path={path}>

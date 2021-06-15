@@ -11,6 +11,28 @@ use App\Models\Book;
 
 class BookUserController extends Controller
 {
+    public function getAllUsersBooks() {
+        $users = User::all();
+        foreach ($users as $user) {
+            $time_now = time();
+            $cost_per_day = 1;
+            
+            foreach ($user->books as $book) {
+                // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
+                if ($book->pivot->return_time < $time_now) {
+                    $book->expired = true;
+                    $book->days_past_expired = ($time_now - $book->pivot->return_time) / (24*3600);
+                    $book->cost = $cost_per_day * $book->days_past_expired;
+                } else {
+                    $book->expired = false;
+                    $book->cost = 0;
+                }
+                $book->borrow_date = date('d.m.y', $book->pivot->borrow_time);
+                $book->return_date = date('d.m.y', $book->pivot->return_time);
+            }
+        }
+        return $users;
+    }
 
     public function getUserBooks() {
         $books = Auth::user()->books;
@@ -19,15 +41,17 @@ class BookUserController extends Controller
         $cost_per_day = 1;
         
         foreach ($books as $book) {
-            // $book->return_time = time() + 2*24*3600; // for testing expired
-            if ($book->return_time > $time_now) {
+            // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
+            if ($book->pivot->return_time < $time_now) {
                 $book->expired = true;
-                $book->days_past_expired = ($book->return_time - $time_now) / (24*3600);
+                $book->days_past_expired = ($time_now - $book->pivot->return_time) / (24*3600);
                 $book->cost = $cost_per_day * $book->days_past_expired;
             } else {
                  $book->expired = false;
                  $book->cost = 0;
             }
+            $book->borrow_date = date('d.m.y', $book->pivot->borrow_time);
+            $book->return_date = date('d.m.y', $book->pivot->return_time);
         }
         return $books;
     }
@@ -35,7 +59,6 @@ class BookUserController extends Controller
     public function borrow(Request $request) {
         $validator = Validator::make($request->all(), [
             'book_id' => 'required|integer',
-            'duration' => ''
         ]);
 
         if ($validator->fails()) {
@@ -44,7 +67,7 @@ class BookUserController extends Controller
             ], 400);
         }
 
-        $duration = $request->duration || 7; // days
+        $duration = 7; // days
         $borrow_time = time();
         $return_time = $borrow_time + ($duration*24*3600);
 

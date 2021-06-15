@@ -54,6 +54,7 @@ Route::group([
     'middleware' => ['auth:api', 'is_admin']
 ], function() {
     Route::get('user/search', [AuthController::class, 'search']);
+    Route::get('all-users-books', [BookUserController::class, 'getAllUsersBooks']);
     
     Route::resource('categories', CategoryController::class)->except([
         'index', 'show'
