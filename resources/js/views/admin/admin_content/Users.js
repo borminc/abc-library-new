@@ -75,7 +75,7 @@ const Users = () => {
 	};
 
 	return (
-		<div className='overflow-auto'>
+		<div>
 			<div className='row mt-2 mb-2'>
 				<h4 className='col-lg-4'>All users</h4>
 				<input
@@ -89,54 +89,55 @@ const Users = () => {
 					}}
 				/>
 			</div>
-
-			<table className='table'>
-				<thead>
-					<tr>
-						<th scope='col'>ID</th>
-						<th scope='col'>Name</th>
-						<th scope='col'>Email</th>
-						<th scope='col'>Phone</th>
-						<th scope='col'>Books borrowed</th>
-						<th scope='col'>Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					{users &&
-						users.map((user, i) => {
-							if (
-								searchValue &&
-								(searchValue == '' || !searchMatches(user, searchValue))
-							)
-								return null;
-							else {
-								return (
-									<tr key={i}>
-										<td>{user.id}</td>
-										<td>{user.name}</td>
-										<td>{user.email}</td>
-										<td>{user.phone}</td>
-										<td>{user.books.length}</td>
-										<td>
-											<button
-												type='button'
-												className='btn btn-outline-primary'
-												id='open-user-info-modal-button'
-												data-bs-toggle='modal'
-												data-bs-target='#user-info-modal'
-												onClick={e => {
-													setSelectedUser(user);
-												}}
-											>
-												More info
-											</button>
-										</td>
-									</tr>
-								);
-							}
-						})}
-				</tbody>
-			</table>
+			<div className='overflow-auto'>
+				<table className='table'>
+					<thead>
+						<tr>
+							<th scope='col'>ID</th>
+							<th scope='col'>Name</th>
+							<th scope='col'>Email</th>
+							<th scope='col'>Phone</th>
+							<th scope='col'>Books borrowed</th>
+							<th scope='col'>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{users &&
+							users.map((user, i) => {
+								if (
+									searchValue &&
+									(searchValue == '' || !searchMatches(user, searchValue))
+								)
+									return null;
+								else {
+									return (
+										<tr key={i}>
+											<td>{user.id}</td>
+											<td>{user.name}</td>
+											<td>{user.email}</td>
+											<td>{user.phone}</td>
+											<td>{user.books.length}</td>
+											<td>
+												<button
+													type='button'
+													className='btn btn-outline-primary'
+													id='open-user-info-modal-button'
+													data-bs-toggle='modal'
+													data-bs-target='#user-info-modal'
+													onClick={e => {
+														setSelectedUser(user);
+													}}
+												>
+													More info
+												</button>
+											</td>
+										</tr>
+									);
+								}
+							})}
+					</tbody>
+				</table>
+			</div>
 
 			{/* User detail modal */}
 			<div

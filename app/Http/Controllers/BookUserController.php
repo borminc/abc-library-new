@@ -22,7 +22,7 @@ class BookUserController extends Controller
                 // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
                 if ($book->pivot->return_time < $time_now) {
                     $book->expired = true;
-                    $book->days_past_expired = ($time_now - $book->pivot->return_time) / (24*3600);
+                    $book->days_past_expired = floor(($time_now - $book->pivot->return_time) / (24*3600));
                     $book->cost = $cost_per_day * $book->days_past_expired;
                 } else {
                     $book->expired = false;

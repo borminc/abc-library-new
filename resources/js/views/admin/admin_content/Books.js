@@ -284,7 +284,7 @@ const Books = () => {
 	};
 
 	return (
-		<div className='overflow-auto'>
+		<div>
 			<div className='row mt-2 mb-2'>
 				<h4 className='col-lg-4'>
 					All books
@@ -311,77 +311,79 @@ const Books = () => {
 					}}
 				/>
 			</div>
-			<table className='table'>
-				<thead>
-					<tr>
-						<th scope='col'>ID</th>
-						<th scope='col'>Title</th>
-						<th scope='col'>Author</th>
-						<th scope='col'>Publisher</th>
-						<th scope='col'>Year</th>
-						<th scope='col'>Category</th>
-						<th scope='col'>Stock</th>
-						<th scope='col'>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{books &&
-						books.map((item, i) => {
-							if (
-								searchValue &&
-								(searchValue == '' || !searchMatches(item, searchValue))
-							)
-								return null;
-							else {
-								return (
-									<tr key={i}>
-										<th scope='row'>{item.id}</th>
-										<td>{item.title}</td>
-										<td>{item.author}</td>
-										<td>{item.publisher}</td>
-										<td>{item.year}</td>
-										<td>{item.category.name}</td>
-										<td>{item.stock}</td>
-										<td>
-											<button
-												className='btn btn-outline-primary mr-2 mb-1'
-												data-bs-toggle='modal'
-												data-bs-target='#editBookModal'
-												onClick={e => {
-													selectBookHandler(i);
-													setEditErrors({
-														title: false,
-														author: false,
-														description: false,
-														publisher: false,
-														year: false,
-														image: false,
-														category_id: false,
-														stock: false,
-													});
-													setFileName('');
-													setMsg({ ...msg, text: '' });
-												}}
-											>
-												Edit
-											</button>
-											<button
-												className='btn btn-outline-danger mb-1'
-												data-bs-toggle='modal'
-												data-bs-target='#deleteBookModal'
-												onClick={e => {
-													selectBookHandler(i);
-												}}
-											>
-												Delete
-											</button>
-										</td>
-									</tr>
-								);
-							}
-						})}
-				</tbody>
-			</table>
+			<div className='overflow-auto'>
+				<table className='table'>
+					<thead>
+						<tr>
+							<th scope='col'>ID</th>
+							<th scope='col'>Title</th>
+							<th scope='col'>Author</th>
+							<th scope='col'>Publisher</th>
+							<th scope='col'>Year</th>
+							<th scope='col'>Category</th>
+							<th scope='col'>Stock</th>
+							<th scope='col'>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{books &&
+							books.map((item, i) => {
+								if (
+									searchValue &&
+									(searchValue == '' || !searchMatches(item, searchValue))
+								)
+									return null;
+								else {
+									return (
+										<tr key={i}>
+											<th scope='row'>{item.id}</th>
+											<td>{item.title}</td>
+											<td>{item.author}</td>
+											<td>{item.publisher}</td>
+											<td>{item.year}</td>
+											<td>{item.category.name}</td>
+											<td>{item.stock}</td>
+											<td>
+												<button
+													className='btn btn-outline-primary mr-2 mb-1'
+													data-bs-toggle='modal'
+													data-bs-target='#editBookModal'
+													onClick={e => {
+														selectBookHandler(i);
+														setEditErrors({
+															title: false,
+															author: false,
+															description: false,
+															publisher: false,
+															year: false,
+															image: false,
+															category_id: false,
+															stock: false,
+														});
+														setFileName('');
+														setMsg({ ...msg, text: '' });
+													}}
+												>
+													Edit
+												</button>
+												<button
+													className='btn btn-outline-danger mb-1'
+													data-bs-toggle='modal'
+													data-bs-target='#deleteBookModal'
+													onClick={e => {
+														selectBookHandler(i);
+													}}
+												>
+													Delete
+												</button>
+											</td>
+										</tr>
+									);
+								}
+							})}
+					</tbody>
+				</table>
+			</div>
 			{/* --------------------------------- Add Modal ---------------------------------*/}
 			<div
 				className='modal fade'

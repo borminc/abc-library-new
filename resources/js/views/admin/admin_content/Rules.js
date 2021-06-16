@@ -92,57 +92,99 @@ const Rules = () => {
 	};
 
 	return (
-		<div className='overflow-auto'>
+		<div>
 			<div className='d-flex justify-content-between mt-2 mb-2'>
 				<h4 className='col-lg-4 pl-0'>Library Rules</h4>
 				<div>
 					{isSaving ? (
 						<LoadingButton />
 					) : (
-						<button
-							type='button'
-							className={'btn btn-primary' + (hasChanged ? '' : ' disabled')}
-							data-bs-dismiss='modal'
-							onClick={saveRulesToServer}
-						>
-							Save
-						</button>
+						hasChanged && (
+							<span className='d-flex'>
+								<button
+									type='button'
+									className={
+										'btn btn-secondary mr-2' + (hasChanged ? '' : ' disabled')
+									}
+									data-bs-dismiss='modal'
+									onClick={() => {
+										getRulesFromServer();
+										setChanged(false);
+									}}
+								>
+									Cancel
+								</button>
+
+								<button
+									type='button'
+									className={
+										'btn btn-primary' + (hasChanged ? '' : ' disabled')
+									}
+									data-bs-dismiss='modal'
+									onClick={saveRulesToServer}
+								>
+									Save
+								</button>
+							</span>
+						)
 					)}
 				</div>
 			</div>
 
 			{msg && msg.text && <MessageAlert msg={msg.text} success={msg.success} />}
 
-			<table className='table'>
-				<thead>
-					<tr>
-						<th scope='col'>ID</th>
-						<th scope='col'>Rule</th>
-						<th scope='col'>Book limit per user</th>
-						<th scope='col'>Duration per borrow</th>
-						<th scope='col'>Cost per late for late return</th>
-					</tr>
-				</thead>
-				<tbody>
-					{rules &&
-						rules.map((rule, i) => (
-							<tr key={i}>
-								<th scope='row'>{rule.id}</th>
-								<td>
-									{rule == defaultRule ? (
-										<input
-											type='text'
-											className='form-control'
-											value={rule.name}
-											disabled
-										/>
-									) : (
+			<div className='overflow-auto'>
+				<table className='table'>
+					<thead>
+						<tr>
+							<th scope='col'>ID</th>
+							<th scope='col'>Rule</th>
+							<th scope='col'>Book limit per user (books)</th>
+							<th scope='col'>Duration per borrow (days)</th>
+							<th scope='col'>Cost per late for late return ($)</th>
+						</tr>
+					</thead>
+					<tbody>
+						{rules &&
+							rules.map((rule, i) => (
+								<tr key={i}>
+									<th scope='row'>{rule.id}</th>
+									<td>
+										{rule == defaultRule ? (
+											<input
+												type='text'
+												className='form-control'
+												value={rule.name}
+												disabled
+											/>
+										) : (
+											<input
+												type='text'
+												className={
+													'form-control' +
+													(rule.name == '' ||
+													(rule.name == 'default' && rule != defaultRule)
+														? ' is-invalid'
+														: '')
+												}
+												required
+												onChange={e => {
+													setChanged(true);
+													let rules_copy = [...rules];
+													rules_copy[i].name = e.target.value;
+													setRules(rules_copy);
+												}}
+												value={rule.name}
+											/>
+										)}
+									</td>
+									<td>
 										<input
 											type='text'
 											className={
 												'form-control' +
-												(rule.name == '' ||
-												(rule.name == 'default' && rule != defaultRule)
+												(rule.num_of_books_per_user == '' ||
+												isNaN(rule.num_of_books_per_user)
 													? ' is-invalid'
 													: '')
 											}
@@ -150,77 +192,57 @@ const Rules = () => {
 											onChange={e => {
 												setChanged(true);
 												let rules_copy = [...rules];
-												rules_copy[i].name = e.target.value;
+												rules_copy[i].num_of_books_per_user = e.target.value;
 												setRules(rules_copy);
 											}}
-											value={rule.name}
+											value={rule.num_of_books_per_user}
 										/>
-									)}
-								</td>
-								<td>
-									<input
-										type='text'
-										className={
-											'form-control' +
-											(rule.num_of_books_per_user == '' ||
-											isNaN(rule.num_of_books_per_user)
-												? ' is-invalid'
-												: '')
-										}
-										required
-										onChange={e => {
-											setChanged(true);
-											let rules_copy = [...rules];
-											rules_copy[i].num_of_books_per_user = e.target.value;
-											setRules(rules_copy);
-										}}
-										value={rule.num_of_books_per_user}
-									/>
-								</td>
-								<td>
-									<input
-										type='text'
-										className={
-											'form-control' +
-											(rule.duration_per_borrow == '' ||
-											isNaN(rule.duration_per_borrow)
-												? ' is-invalid'
-												: '')
-										}
-										required
-										onChange={e => {
-											setChanged(true);
-											let rules_copy = [...rules];
-											rules_copy[i].duration_per_borrow = e.target.value;
-											setRules(rules_copy);
-										}}
-										value={rule.duration_per_borrow}
-									/>
-								</td>
-								<td>
-									<input
-										type='text'
-										className={
-											'form-control' +
-											(rule.cost_per_day_late_return == '' ||
-											isNaN(rule.cost_per_day_late_return)
-												? ' is-invalid'
-												: '')
-										}
-										required
-										onChange={e => {
-											setChanged(true);
-											let rules_copy = [...rules];
-											rules_copy[i].cost_per_day_late_return = e.target.value;
-											setRules(rules_copy);
-										}}
-										value={rule.cost_per_day_late_return}
-									/>
-								</td>
-							</tr>
-						))}
-				</tbody>
-			</table>
+									</td>
+									<td>
+										<input
+											type='text'
+											className={
+												'form-control' +
+												(rule.duration_per_borrow == '' ||
+												isNaN(rule.duration_per_borrow)
+													? ' is-invalid'
+													: '')
+											}
+											required
+											onChange={e => {
+												setChanged(true);
+												let rules_copy = [...rules];
+												rules_copy[i].duration_per_borrow = e.target.value;
+												setRules(rules_copy);
+											}}
+											value={rule.duration_per_borrow}
+										/>
+									</td>
+									<td>
+										<input
+											type='text'
+											className={
+												'form-control' +
+												(rule.cost_per_day_late_return == '' ||
+												isNaN(rule.cost_per_day_late_return)
+													? ' is-invalid'
+													: '')
+											}
+											required
+											onChange={e => {
+												setChanged(true);
+												let rules_copy = [...rules];
+												rules_copy[i].cost_per_day_late_return = e.target.value;
+												setRules(rules_copy);
+											}}
+											value={rule.cost_per_day_late_return}
+										/>
+									</td>
+								</tr>
+							))}
+					</tbody>
+				</table>
+			</div>
 
 			{isLoading && <Loading height='1vh' size='2rem' />}
 		</div>

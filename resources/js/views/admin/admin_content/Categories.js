@@ -130,7 +130,7 @@ const Categories = () => {
 	};
 
 	return (
-		<div className='overflow-auto'>
+		<div>
 			<div className='row mt-2 mb-2'>
 				<h4 className='col-lg-4'>
 					All categories
@@ -153,55 +153,57 @@ const Categories = () => {
 					}}
 				/>
 			</div>
-			<table className='table'>
-				<thead>
-					<tr>
-						<th scope='col'>ID</th>
-						<th scope='col'>Categories</th>
-						<th scope='col'>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{categories &&
-						categories.map((item, i) => {
-							if (
-								searchValue &&
-								(searchValue == '' || !searchMatches(item, searchValue))
-							)
-								return null;
-							else {
-								return (
-									<tr key={i}>
-										<th scope='row'>{item.id}</th>
-										<td>{item.name}</td>
-										<td>
-											<button
-												className='btn btn-outline-primary'
-												data-bs-toggle='modal'
-												data-bs-target='#editCategoryModal'
-												onClick={e => {
-													selectCategoryHandler(i);
-												}}
-											>
-												Edit
-											</button>
-											<button
-												className='btn btn-outline-danger ml-2'
-												data-bs-toggle='modal'
-												data-bs-target='#deleteCategoryModal'
-												onClick={e => {
-													selectCategoryHandler(i);
-												}}
-											>
-												Delete
-											</button>
-										</td>
-									</tr>
-								);
-							}
-						})}
-				</tbody>
-			</table>
+			<div className='overflow-auto'>
+				<table className='table'>
+					<thead>
+						<tr>
+							<th scope='col'>ID</th>
+							<th scope='col'>Categories</th>
+							<th scope='col'>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{categories &&
+							categories.map((item, i) => {
+								if (
+									searchValue &&
+									(searchValue == '' || !searchMatches(item, searchValue))
+								)
+									return null;
+								else {
+									return (
+										<tr key={i}>
+											<th scope='row'>{item.id}</th>
+											<td>{item.name}</td>
+											<td>
+												<button
+													className='btn btn-outline-primary'
+													data-bs-toggle='modal'
+													data-bs-target='#editCategoryModal'
+													onClick={e => {
+														selectCategoryHandler(i);
+													}}
+												>
+													Edit
+												</button>
+												<button
+													className='btn btn-outline-danger ml-2'
+													data-bs-toggle='modal'
+													data-bs-target='#deleteCategoryModal'
+													onClick={e => {
+														selectCategoryHandler(i);
+													}}
+												>
+													Delete
+												</button>
+											</td>
+										</tr>
+									);
+								}
+							})}
+					</tbody>
+				</table>
+			</div>
 
 			{/* Edit Modal */}
 			<div
