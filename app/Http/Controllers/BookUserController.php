@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\User;
 use App\Models\Book;
+use App\Models\LibraryRuleSet;
 
 class BookUserController extends Controller
 {
@@ -15,7 +16,7 @@ class BookUserController extends Controller
         $users = User::all();
         foreach ($users as $user) {
             $time_now = time();
-            $cost_per_day = 1;
+            $cost_per_day = LibraryRuleSet::where('name', 'default')->first()->cost_per_day_late_return;
             
             foreach ($user->books as $book) {
                 // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
@@ -38,7 +39,7 @@ class BookUserController extends Controller
         $books = Auth::user()->books;
         $books->load('category');
         $time_now = time();
-        $cost_per_day = 1;
+        $cost_per_day = LibraryRuleSet::where('name', 'default')->first()->cost_per_day_late_return;
         
         foreach ($books as $book) {
             // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
@@ -67,7 +68,7 @@ class BookUserController extends Controller
             ], 400);
         }
 
-        $duration = 7; // days
+        $duration = LibraryRuleSet::where('name', 'default')->first()->duration_per_borrow;
         $borrow_time = time();
         $return_time = $borrow_time + ($duration*24*3600);
 
@@ -81,7 +82,8 @@ class BookUserController extends Controller
                 ], 406);
         }
 
-        if ($user->books()->get()->count() >= 3) {
+        $borrow_limit = LibraryRuleSet::where('name', 'default')->first()->num_of_books_per_user;
+        if ($user->books()->get()->count() >= $borrow_limit) {
             // exceed borrowed books at a time
             return response()->json([
                     'error' => 'User has exceeded number of borrowed books.'

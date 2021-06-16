@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookUserController;
+use App\Http\Controllers\LibraryRuleSetController;
 
 use App\Models\User;
 use App\Models\Book;
@@ -76,3 +77,8 @@ Route::resource('categories', CategoryController::class)->only([
 Route::resource('books', BookController::class)->only([
     'index', 'show'
 ]);
+
+
+// ---------------- test
+
+Route::resource('library-rules', LibraryRuleSetController::class);
