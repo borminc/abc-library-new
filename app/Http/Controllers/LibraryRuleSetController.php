@@ -55,6 +55,7 @@ class LibraryRuleSetController extends Controller
         ], 201); 
     }
 
+
     /**
      * Display the specified resource.
      *
@@ -87,7 +88,11 @@ class LibraryRuleSetController extends Controller
     public function update(Request $request, $id)
     {
         $rule = LibraryRuleSet::findOrFail($id);
-        // $rule->name = $request->name; // do not change "default"
+
+        if ($rule->name != 'default' && $newRule['name'] != 'default') {
+            $rule->name = $request->name; // do not change "default"
+        }
+
         $rule->num_of_books_per_user = $request->num_of_books_per_user;
         $rule->duration_per_borrow = $request->duration_per_borrow;
         $rule->cost_per_day_late_return = $request->cost_per_day_late_return;
@@ -97,14 +102,41 @@ class LibraryRuleSetController extends Controller
         ], 201); 
     }
 
+    public function updateAll(Request $request)
+    {
+        $newRules = $request->all();
+        
+        foreach ($newRules as $newRule) {
+            $rule = LibraryRuleSet::findOrFail($newRule['id']);
+
+            if ($rule->name != 'default' && $newRule['name'] != 'default') {
+                $rule->name = $newRule['name']; // do not change "default"
+            }
+
+            $rule->num_of_books_per_user = $newRule['num_of_books_per_user'];
+            $rule->duration_per_borrow = $newRule['duration_per_borrow'];
+            $rule->cost_per_day_late_return = $newRule['cost_per_day_late_return'];
+            $rule->save();
+        }
+
+        return response()->json([
+            'message' => 'Successfully updated all rules!'
+        ], 201); 
+    }
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\LibraryRuleSet  $libraryRuleSet
      * @return \Illuminate\Http\Response
      */
-    public function destroy(LibraryRuleSet $libraryRuleSet)
+    public function destroy($id)
     {
-        //
+        $rule = LibraryRuleSet::findOrFail($id);
+        // if ($rule)
+        $rule->delete();
+        return response()->json([
+            'message' => 'Successfully deleted ' . $book->title . '!'
+            ]); 
     }
 }

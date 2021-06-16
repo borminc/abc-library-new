@@ -146,7 +146,10 @@ const Users = () => {
 				aria-labelledby='staticBackdropLabel'
 				aria-hidden='true'
 			>
-				<div className='modal-dialog modal-lg modal-dialog-scrollable'>
+				<div
+					className='modal-dialog modal-xl modal-dialog-scrollable'
+					role='document'
+				>
 					<div className='modal-content'>
 						<div className='modal-header'>
 							<h5 className='modal-title' id='staticBackdropLabel'>

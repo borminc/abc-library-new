@@ -82,3 +82,4 @@ Route::resource('books', BookController::class)->only([
 // ---------------- test
 
 Route::resource('library-rules', LibraryRuleSetController::class);
+Route::put('library-rules', [LibraryRuleSetController::class, 'updateAll']);
