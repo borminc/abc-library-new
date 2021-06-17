@@ -80,7 +80,7 @@ const Users = () => {
 				<h4 className='col-lg-4'>All users</h4>
 				<input
 					type='text'
-					className='col-lg-8 form-control bg-none border-0 small'
+					className='col-lg-8 form-control border-0 small'
 					placeholder='Search for id, name, email, phone...'
 					aria-label='Search'
 					aria-describedby='basic-addon2'
@@ -189,7 +189,7 @@ const Users = () => {
 
 									<div style={{ height: '10px' }}></div>
 
-									<h5>Currently borrowed books</h5>
+									<h5>Currently borrowed books: {selectedUser.books.length}</h5>
 									<table className='table'>
 										<thead>
 											<tr>

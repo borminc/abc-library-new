@@ -12,6 +12,11 @@ use App\Models\LibraryRuleSet;
 
 class BookUserController extends Controller
 {
+
+    public function __construct() {
+        date_default_timezone_set('Asia/Bangkok');
+    }
+
     public function getAllUsersBooks() {
         $users = User::all();
         foreach ($users as $user) {
@@ -20,9 +25,10 @@ class BookUserController extends Controller
             
             foreach ($user->books as $book) {
                 // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
-                if ($book->pivot->return_time < $time_now) {
+                $days_late = floor(($time_now - $book->pivot->return_time) / (24*3600));
+                if ($days_late > 0) {
                     $book->expired = true;
-                    $book->days_past_expired = floor(($time_now - $book->pivot->return_time) / (24*3600));
+                    $book->days_past_expired = $days_late;
                     $book->cost = $cost_per_day * $book->days_past_expired;
                 } else {
                     $book->expired = false;
@@ -43,9 +49,10 @@ class BookUserController extends Controller
         
         foreach ($books as $book) {
             // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
-            if ($book->pivot->return_time < $time_now) {
+            $days_late = floor(($time_now - $book->pivot->return_time) / (24*3600));
+            if ($days_late > 0) {
                 $book->expired = true;
-                $book->days_past_expired = ($time_now - $book->pivot->return_time) / (24*3600);
+                $book->days_past_expired = $days_late;
                 $book->cost = $cost_per_day * $book->days_past_expired;
             } else {
                  $book->expired = false;

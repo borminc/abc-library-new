@@ -302,7 +302,7 @@ const Books = () => {
 
 				<input
 					type='text'
-					className='col-lg-8 form-control bg-none border-0 small'
+					className='col-lg-8 form-control border-0 small'
 					placeholder='Search for id, title, author, publisher, year, category...'
 					aria-label='Search'
 					aria-describedby='basic-addon2'
