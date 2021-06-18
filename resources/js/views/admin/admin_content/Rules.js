@@ -141,7 +141,7 @@ const Rules = () => {
 							<th scope='col'>Rule</th>
 							<th scope='col'>Book limit per user (books)</th>
 							<th scope='col'>Duration per borrow (days)</th>
-							<th scope='col'>Cost per late for late return ($)</th>
+							<th scope='col'>Cost per late for late return ($/day)</th>
 						</tr>
 					</thead>
 					<tbody>

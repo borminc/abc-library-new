@@ -25,7 +25,7 @@ class BookUserController extends Controller
             
             foreach ($user->books as $book) {
                 // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
-                $days_late = floor(($time_now - $book->pivot->return_time) / (24*3600));
+                $days_late = ceil(($time_now - $book->pivot->return_time) / (24*3600));
                 if ($days_late > 0) {
                     $book->expired = true;
                     $book->days_past_expired = $days_late;
@@ -49,7 +49,7 @@ class BookUserController extends Controller
         
         foreach ($books as $book) {
             // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
-            $days_late = floor(($time_now - $book->pivot->return_time) / (24*3600));
+            $days_late = ceil(($time_now - $book->pivot->return_time) / (24*3600));
             if ($days_late > 0) {
                 $book->expired = true;
                 $book->days_past_expired = $days_late;
