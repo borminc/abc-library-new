@@ -127,7 +127,7 @@ class BookController extends Controller
         $book->delete();
         return response()->json([
             'message' => 'Successfully deleted ' . $book->title . '!'
-            ]); 
+            ]);
     }
 
     public function search(Request $request) {

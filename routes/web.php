@@ -19,3 +19,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/{path?}/{path1?}/{path2?}/{path3?}/{path4?}', 'index');
 
+
