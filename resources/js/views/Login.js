@@ -73,8 +73,10 @@ const Login = props => {
 				success = true;
 				isAdmin = res.data.is_admin || false;
 				setUser(res.data.user);
+				console.log(res.data.user);
 			})
 			.catch(err => {
+				console.log(err);
 				if (err.response.status == 500)
 					var message = 'Internal server error. Try again later.';
 				else var message = err.response.data.message;

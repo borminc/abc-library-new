@@ -59,25 +59,24 @@ const AdminLayout = () => {
 					id='accordionSidebar'
 				>
 					{/* Sidebar - Brand */}
-					<Link
+					{/* <Link
 						to={`${url}`}
-						className='sidebar-brand d-flex align-items-center justify-content-center'
+						className='sidebar-brand d-flex align-items-center'
 						href='/'
 					>
 						<div className='sidebar-brand-icon rotate-n-15'>
 							<i className='fas fa-laugh-wink'></i>
 						</div>
-						<div className='sidebar-brand-text mx-3'>ABC Library</div>
-					</Link>
+						<div className='sidebar-brand-text'>Admin Dashboard</div>
+					</Link> */}
 
 					{/* Divider */}
-					<hr className='sidebar-divider my-0' />
+					<hr className='sidebar-divider' />
 
 					{/* Nav Item - Dashboard */}
 					<li className='nav-item'>
 						<Link to={`${url}`} className='nav-link'>
-							<i className='fas fa-fw fa-tachometer-alt'></i>
-							<span>Dashboard</span>
+							Admin Dashboard
 						</Link>
 					</li>
 
@@ -88,14 +87,12 @@ const AdminLayout = () => {
 					<div className='sidebar-heading'>Resources</div>
 					<li className='nav-item'>
 						<Link to={`${url}/categories`} className='nav-link'>
-							<i className='fas fa-fw fa-tachometer-alt'></i>
 							Categories
 						</Link>
 					</li>
 
 					<li className='nav-item'>
 						<Link to={`${url}/books`} className='nav-link'>
-							<i className='fas fa-fw fa-tachometer-alt'></i>
 							Books
 						</Link>
 					</li>
@@ -104,22 +101,20 @@ const AdminLayout = () => {
 					<div className='sidebar-heading'>Management</div>
 					<li className='nav-item'>
 						<Link to={`${url}/users`} className='nav-link'>
-							<i className='fas fa-fw fa-tachometer-alt'></i>
-							<span>Users</span>
+							Users
 						</Link>
 					</li>
 
 					<li className='nav-item'>
 						<Link to={`${url}/rules`} className='nav-link'>
-							<i className='fas fa-fw fa-tachometer-alt'></i>
-							<span>Rules</span>
+							Rules
 						</Link>
 					</li>
 				</ul>
 				{/* -----------------------------------------  End of Sidebar ----------------------------------------- */}
 
 				{/* Content Wrapper */}
-				<div id='content-wrapper' className='d-flex flex-column mt-2'>
+				<div id='content-wrapper' className='d-flex flex-column mt-4'>
 					{/* Main Content */}
 					<div id='content'>
 						{/* Begin Page Content */}

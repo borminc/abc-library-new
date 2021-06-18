@@ -64,6 +64,11 @@ Route::group([
         'index', 'show'
     ]);
     Route::post('books/return', [BookUserController::class, 'returnBook']);
+    Route::get('borrowed-books', [BookUserController::class, 'getAllBooksUsers']);
+    Route::get('low-stock-books', [BookUserController::class, 'getBooksLowStock']);
+
+    Route::resource('library-rules', LibraryRuleSetController::class);
+    Route::put('library-rules', [LibraryRuleSetController::class, 'updateAll']);
 });
 
 // ---------------------------------------------------- Public routes
@@ -81,5 +86,3 @@ Route::resource('books', BookController::class)->only([
 
 // ---------------- test
 
-Route::resource('library-rules', LibraryRuleSetController::class);
-Route::put('library-rules', [LibraryRuleSetController::class, 'updateAll']);

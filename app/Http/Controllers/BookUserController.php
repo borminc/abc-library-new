@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+
 
 use App\Models\User;
 use App\Models\Book;
@@ -19,8 +21,8 @@ class BookUserController extends Controller
 
     public function getAllUsersBooks() {
         $users = User::all();
+        $time_now = time();
         foreach ($users as $user) {
-            $time_now = time();
             $cost_per_day = LibraryRuleSet::where('name', 'default')->first()->cost_per_day_late_return;
             
             foreach ($user->books as $book) {
@@ -151,5 +153,31 @@ class BookUserController extends Controller
         return response()->json([
             'message' => 'Successfully returned ' . $book->title . '!'
             ]); 
+    }
+
+    public function getAllBooksUsers() {
+        $books = Book::has('users')->get();
+        $books->load('users');
+        $time_now = time();
+
+        foreach ($books as $book) {
+            foreach($book->users as $user) {
+                $user->borrow_date = date('d.m.y', $user->pivot->borrow_time);
+                $user->return_date = date('d.m.y', $user->pivot->return_time);
+
+                $days_late = ceil(($time_now - $user->pivot->return_time) / (24*3600));
+                $user->expired = $days_late > 0;
+                if ($user->expired){
+                    $user->days_past_expired = $days_late;
+                }
+                    
+            }
+        }
+        return $books;
+    }
+
+    public function getBooksLowStock() {
+        $books = DB::table('books')->where('stock', '<', 3)->get();
+        return $books;
     }
 }
