@@ -77,7 +77,7 @@ const Index = () => {
 						</Route>
 
 						<Route exact path='/'>
-							<Home />
+							<PrivateRoute component={<Home />} />
 						</Route>
 
 						<Route>
