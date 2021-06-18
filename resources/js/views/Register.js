@@ -10,8 +10,9 @@ import { Loading, LoadingButton } from '../components/Loading';
 // import { loginUser } from '../functions/loginFunction';
 import MessageAlert from '../components/MessageAlert';
 
-const Register = () => {
+const Register = props => {
 	const history = useHistory();
+	const [user, setUser] = [props.user, props.setUser];
 
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
@@ -104,6 +105,7 @@ const Register = () => {
 			.then(res => {
 				setCookie('token', res.data.access_token);
 				history.push('/');
+				setUser(res.data.user);
 			})
 			.catch(err => {
 				setMsg({

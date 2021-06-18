@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
@@ -17,11 +17,25 @@ import Borrow from './views/Borrow';
 import ABCNav from './components/ABCNav';
 
 const Index = () => {
+	const [user, setUser] = useState();
+
+	useEffect(() => {
+		axios
+			.get('/api/auth/user')
+			.then(res => {
+				setUser(res.data);
+			})
+			.catch(err => {
+				setUser(null);
+			});
+	}, []);
 
 	return (
 		<div>
-			<ABCNav />
 			<Router>
+				<div>
+					<ABCNav user={user} setUser={setUser} />
+				</div>
 				<div>
 					{/* <nav>
                         <ul>
@@ -38,15 +52,17 @@ const Index = () => {
                     </nav> */}
 
 					<Switch>
-
-						<Route path="/borrow/:bookId" children={<PrivateRoute component ={<Borrow />} /> } />
+						<Route
+							path='/borrow/:bookId'
+							children={<PrivateRoute component={<Borrow />} />}
+						/>
 
 						<Route path='/login'>
-							<Login />
+							<Login user={user} setUser={setUser} />
 						</Route>
 
 						<Route path='/register'>
-							<Register />
+							<Register user={user} setUser={setUser} />
 						</Route>
 
 						<Route path='/test'>
@@ -67,7 +83,6 @@ const Index = () => {
 						<Route>
 							<NotFound />
 						</Route>
-
 					</Switch>
 				</div>
 			</Router>

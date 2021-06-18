@@ -9,8 +9,9 @@ import { Loading, LoadingButton } from '../components/Loading';
 import { loginUser } from '../functions/loginFunction';
 import MessageAlert from '../components/MessageAlert';
 
-const Login = () => {
+const Login = props => {
 	const history = useHistory();
+	const [user, setUser] = [props.user, props.setUser];
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -71,6 +72,7 @@ const Login = () => {
 				setCookie('token', res.data.access_token);
 				success = true;
 				isAdmin = res.data.is_admin || false;
+				setUser(res.data.user);
 			})
 			.catch(err => {
 				if (err.response.status == 500)

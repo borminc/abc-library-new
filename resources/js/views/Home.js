@@ -5,12 +5,10 @@ import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import { setCookie, getCookie, deleteCookie } from '../functions/cookies';
-import {Link} from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { Loading } from './../components/Loading';
 
-
 const Home = props => {
-
 	const history = useHistory();
 	const [by, setBy] = useState('title');
 	const [value, setValue] = useState('');
@@ -21,7 +19,7 @@ const Home = props => {
 	useEffect(() => {
 		axios.get('/api/books').then(res => {
 			setBook(res.data);
-			console.log(res.data);
+			// console.log(res.data);
 		});
 	}, []);
 
@@ -60,21 +58,35 @@ const Home = props => {
 			});
 	}
 
-	const Modal = (value,i) => {
-		return(
-			<div className="modal fade" id={'modal-book' + value.id} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" key={i}>
-				<div className="modal-dialog modal-dialog-centered modal-xl">
-					<div className="modal-content">
-						<div className="modal-header">
-							<h5 className="modal-title" id="exampleModalLabel">ABC Library</h5>
-							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	const Modal = (value, i) => {
+		return (
+			<div
+				className='modal fade'
+				id={'modal-book' + value.id}
+				tabIndex='-1'
+				aria-labelledby='exampleModalLabel'
+				aria-hidden='true'
+				key={i}
+			>
+				<div className='modal-dialog modal-dialog-centered modal-xl'>
+					<div className='modal-content'>
+						<div className='modal-header'>
+							<h5 className='modal-title' id='exampleModalLabel'>
+								ABC Library
+							</h5>
+							<button
+								type='button'
+								className='btn-close'
+								data-bs-dismiss='modal'
+								aria-label='Close'
+							></button>
 						</div>
-						<div className="modal-body">
+						<div className='modal-body'>
 							<div className='container'>
 								<div className='row'>
 									<div className='col-lg-3'>
 										<img
-											src={value.image}
+											src={value.image || 'img/book-null-img.png'}
 											className='img-fluid rounded'
 											alt='...'
 										/>
@@ -119,23 +131,32 @@ const Home = props => {
 								</div>
 							</div>
 						</div>
-						<div className="modal-footer">
-							<button className='btn btn-outline-primary btn-sm' onClick={e => history.push('/borrow/'+ value.id)} data-bs-dismiss="modal" aria-label="Close">
+						<div className='modal-footer'>
+							<button
+								className='btn btn-outline-primary btn-sm'
+								onClick={e => history.push('/borrow/' + value.id)}
+								data-bs-dismiss='modal'
+								aria-label='Close'
+							>
 								Borrow
 							</button>
 						</div>
 					</div>
 				</div>
 			</div>
-		)
-	}
+		);
+	};
 
 	const renderSearchResult = () => {
 		if (search && search.length == 0) {
 			return (
-				<div className="text-center">
-					<img src={"img/not-found.jpg"} style={{width:"25rem"}} alt ="not-found" />
-					<div className="display-6">No Result Found</div>
+				<div className='text-center'>
+					<img
+						src={'img/not-found.jpg'}
+						style={{ width: '25rem' }}
+						alt='not-found'
+					/>
+					<div className='display-6'>No Result Found</div>
 				</div>
 			);
 		}
@@ -143,26 +164,40 @@ const Home = props => {
 			<div className='container pb-5'>
 				<div className='row'>
 					{search.map((value, i) => (
-						<div className="col-3" key={i}>
-							<div className="card border border-1 p-2">
-									<img src={value.image} className="img-fluid rounded" alt="..." />
-									<ul className="small list-unstyled">
-										<li>{value.title}</li>
-										<li className="fst-italic text-primary">{value.author}</li>
-										<li className="fw-lighter">{value.year}</li>
-									</ul>
-									<div className="text-end">
-										<button type="button" className="btn btn-outline-info btn-sm me-2" data-bs-toggle="modal" data-bs-target={'#modal-book' + value.id}>More</button>
-										<button className='btn btn-outline-primary btn-sm' onClick={e => history.push('/borrow/'+ value.id)}>
-											Borrow
-										</button>
-									</div>
-								{Modal(value,i)}
+						<div className='col-3' key={i}>
+							<div className='card border border-1 p-2'>
+								<img
+									src={value.image || 'img/book-null-img.png'}
+									className='img-fluid rounded'
+									alt='...'
+								/>
+								<ul className='small list-unstyled'>
+									<li>{value.title}</li>
+									<li className='fst-italic text-primary'>{value.author}</li>
+									<li className='fw-lighter'>{value.year}</li>
+								</ul>
+								<div className='text-end'>
+									<button
+										type='button'
+										className='btn btn-outline-info btn-sm me-2'
+										data-bs-toggle='modal'
+										data-bs-target={'#modal-book' + value.id}
+									>
+										More
+									</button>
+									<button
+										className='btn btn-outline-primary btn-sm'
+										onClick={e => history.push('/borrow/' + value.id)}
+									>
+										Borrow
+									</button>
+								</div>
+								{Modal(value, i)}
 							</div>
 						</div>
 					))}
 				</div>
-			 </div>
+			</div>
 		);
 	};
 
@@ -172,27 +207,27 @@ const Home = props => {
 				<div className='jumbotron jumbotron-fluid pb-5'>
 					<div className='container'>
 						<h6 className='display-6 fw-bold text-center'>
-							ALL <span className='text-info'>BOOKS</span>
+							New <span className='text-primary'>Books</span>
 						</h6>
 						<div className='row justify-content-center mb-3 text-center'>
 							<p className='text-wrap col-lg-6 text-secondary'>
-								There are many variations of passages of Lorem Ipsum
-								available, but the majority have suffered lebmid alteration in
-								some ledmid form
+								There are many variations of passages of Lorem Ipsum available,
+								but the majority have suffered lebmid alteration in some ledmid
+								form
 							</p>
 						</div>
 
 						<div className='row row-cols-5'>
-							{books.map((value,i) => (
+							{books.map((value, i) => (
 								<div className='col-2' key={i}>
 									<img
-										src={value.image}
+										src={value.image || 'img/book-null-img.png'}
 										className='img-fluid rounded'
 										alt='...'
-										data-bs-toggle="modal" 
+										data-bs-toggle='modal'
 										data-bs-target={'#modal-book' + value.id}
 									/>
-									{Modal(value,i)}
+									{Modal(value, i)}
 								</div>
 							))}
 						</div>
@@ -204,7 +239,10 @@ const Home = props => {
 
 	return (
 		<div>
-			<header className='masthead'>
+			<header
+				className='masthead'
+				style={{ backgroundImage: `url("/img/bg-books.jpg")` }}
+			>
 				<div className='container position-relative'>
 					<div className='row justify-content-center'>
 						<div className='col-xl-6'>
