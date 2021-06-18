@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
@@ -8,34 +8,19 @@ import Unauthorized from './views/Unauthorized';
 
 import Login from './views/Login';
 import Register from './views/Register';
-import Home from './views/Home';
+import Home from './Views/Home';
 import Test from './views/Test';
 import Admin from './views/Admin';
+import AdminLayout from './views/admin/AdminLayout';
 import NotFound from './views/NotFound';
-import Borrow from './views/Borrow';
 
 import ABCNav from './components/ABCNav';
 
 const Index = () => {
-	const [user, setUser] = useState();
-
-	useEffect(() => {
-		axios
-			.get('/api/auth/user')
-			.then(res => {
-				setUser(res.data);
-			})
-			.catch(err => {
-				setUser(null);
-			});
-	}, []);
-
 	return (
 		<div>
+			{/* <ABCNav /> */}
 			<Router>
-				<div>
-					<ABCNav user={user} setUser={setUser} />
-				</div>
 				<div>
 					{/* <nav>
                         <ul>
@@ -52,24 +37,17 @@ const Index = () => {
                     </nav> */}
 
 					<Switch>
-						<Route
-							path='/borrow/:bookId'
-							children={<PrivateRoute component={<Borrow />} />}
-						/>
-
 						<Route path='/login'>
-							<Login user={user} setUser={setUser} />
+							<Login />
 						</Route>
-
 						<Route path='/register'>
-							<Register user={user} setUser={setUser} />
+							<Register />
 						</Route>
-
 						<Route path='/test'>
 							<PrivateRoute component={<Test />} />
 						</Route>
 						<Route path='/admin'>
-							<AdminRoute component={<Admin />} />
+							<AdminRoute component={<AdminLayout />} />
 						</Route>
 
 						<Route path='/unauthorized'>
