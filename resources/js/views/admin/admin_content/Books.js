@@ -153,13 +153,13 @@ const Books = () => {
 
 	const hasInputErrors = () => {
 		if (
-			newBook.title == '' ||
-			newBook.author == '' ||
-			newBook.description == '' ||
-			newBook.publisher == '' ||
-			newBook.year == '' ||
-			newBook.category_id == '' ||
-			newBook.stock == ''
+			newBook.title === '' ||
+			newBook.author === '' ||
+			newBook.description === '' ||
+			newBook.publisher === '' ||
+			newBook.year === '' ||
+			newBook.category_id === '' ||
+			newBook.stock === ''
 		)
 			return true;
 		return false;
@@ -168,12 +168,12 @@ const Books = () => {
 	const editHasInputErrors = () => {
 		if (
 			selectedBook.title == '' ||
-			selectedBook.author == '' ||
-			selectedBook.description == '' ||
-			selectedBook.publisher == '' ||
-			selectedBook.year == '' ||
-			selectedBook.category_id == '' ||
-			selectedBook.stock == ''
+			selectedBook.author === '' ||
+			selectedBook.description === '' ||
+			selectedBook.publisher === '' ||
+			selectedBook.year === '' ||
+			selectedBook.category_id === '' ||
+			selectedBook.stock === ''
 		)
 			return true;
 		return false;
