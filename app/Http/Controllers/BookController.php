@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Book;
 use App\Models\Category;
@@ -148,5 +149,11 @@ class BookController extends Controller
         if ($result) $result->load('category');
 
         return $result; 
+    }
+
+    public function getLatestBooks(Request $request) {
+        $num = $request->query('number');
+        if (!$num) $num = 10; // default 10
+        return DB::table('books')->latest()->take($num)->get();
     }
 }

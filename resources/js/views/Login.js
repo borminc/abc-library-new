@@ -98,7 +98,7 @@ const Login = () => {
 	};
 
 	return (
-		<div style={{ padding: '8rem 0' }}>
+		<div style={{ padding: '10rem 10rem' }}>
 			<div className='row justify-content-center'>
 				<div className='col-md-12 col-lg-10'>
 					<div className='wrap d-md-flex'>

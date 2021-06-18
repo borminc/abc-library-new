@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookUserController;
+use App\Http\Controllers\LibraryRuleSetController;
 
 use App\Models\User;
 use App\Models\Book;
@@ -23,26 +24,24 @@ use App\Models\Book;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
+// ---------------------------------------------------- Auth routes
 Route::group([
     'prefix' => 'auth'
 ], function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('register', [AuthController::class, 'register'])->name('register');
 
+    // requires user login
     Route::group([
         'middleware' => 'auth:api'
     ], function() {
         Route::get('logout', [AuthController::class, 'logout']);
         Route::get('user', [AuthController::class, 'user']);
-
-        Route::get('/admin', [AdminController::class, 'admin']);
     });
 });
 
+// ---------------------------------------------------- Routes that require user account
 Route::group([
         'middleware' => 'auth:api'
     ], function() {
@@ -51,17 +50,36 @@ Route::group([
     }
 );
 
+// ---------------------------------------------------- Routes that require admin account
 Route::group([
     'middleware' => ['auth:api', 'is_admin']
 ], function() {
     Route::get('user/search', [AuthController::class, 'search']);
-    Route::post('books/return', [BookUserController::class, 'returnBook']);
+    Route::get('all-users-books', [BookUserController::class, 'getAllUsersBooks']);
     
+    Route::resource('categories', CategoryController::class)->except([
+        'index', 'show'
+    ]);
+    Route::resource('books', BookController::class)->except([
+        'index', 'show'
+    ]);
+    Route::post('books/return', [BookUserController::class, 'returnBook']);
 });
 
-// Route::get('category/name/{name}', [CategoryController::class, 'showBooksByCategoryName']);
-Route::resource('categories', 'App\Http\Controllers\CategoryController');
+// ---------------------------------------------------- Public routes
 
 Route::get('books/search', [BookController::class, 'search'])->name('books.search');
-Route::resource('books', 'App\Http\Controllers\BookController');
+Route::get('books/latest', [BookController::class, 'getLatestBooks'])->name('books.latest');
 
+Route::resource('categories', CategoryController::class)->only([
+    'index', 'show'
+]);
+Route::resource('books', BookController::class)->only([
+    'index', 'show'
+]);
+
+
+// ---------------- test
+
+Route::resource('library-rules', LibraryRuleSetController::class);
+Route::put('library-rules', [LibraryRuleSetController::class, 'updateAll']);

@@ -10,7 +10,8 @@ const defaultOptions = {
 // Set the AUTH token for any request
 axios.interceptors.request.use(function (config) {
 	const token = getCookie('token');
-	config.headers.Authorization = token ? `Bearer ${token}` : '';
+	if (config.headers.Authorization == 'NONE') config.headers = {};
+	else config.headers.Authorization = token ? `Bearer ${token}` : '';
 	return config;
 });
 
