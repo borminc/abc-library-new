@@ -42,7 +42,7 @@ function ABCNav(props) {
 			expand='lg'
 			bg='light'
 			variant='light'
-			className='fixed-top p-2'
+			className='p-2'
 		>
 			<Navbar.Brand href='/'>ABC Library</Navbar.Brand>
 			<Navbar.Toggle aria-controls='responsive-navbar-nav' />

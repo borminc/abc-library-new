@@ -150,7 +150,7 @@ const Home = props => {
 	const renderSearchResult = () => {
 		if (search && search.length == 0) {
 			return (
-				<div className='text-center'>
+				<div className='text-center p-5' style={{ marginBottom: '20vh' }}>
 					<img
 						src={'img/not-found.jpg'}
 						style={{ width: '25rem' }}
@@ -164,7 +164,7 @@ const Home = props => {
 			<div className='container pb-5'>
 				<div className='row'>
 					{search.map((value, i) => (
-						<div className='col-3' key={i}>
+						<div className='col-4' key={i}>
 							<div className='card border border-1 p-2'>
 								<img
 									src={value.image || 'img/book-null-img.png'}
@@ -219,7 +219,7 @@ const Home = props => {
 
 						<div className='row row-cols-5'>
 							{books.map((value, i) => (
-								<div className='col-2' key={i}>
+								<div className='col-3 p-3' key={i}>
 									<img
 										src={value.image || 'img/book-null-img.png'}
 										className='img-fluid rounded'
@@ -240,7 +240,7 @@ const Home = props => {
 	return (
 		<div>
 			<header
-				className='masthead'
+				className='masthead m-0'
 				style={{ backgroundImage: `url("/img/bg-books.jpg")` }}
 			>
 				<div className='container position-relative'>
@@ -251,6 +251,7 @@ const Home = props => {
 									className='display-1 fw-bold'
 									style={{ cursor: 'pointer' }}
 									onClick={e => {
+										setValue('');
 										setSearch(null); // reset search
 									}}
 								>
@@ -280,6 +281,7 @@ const Home = props => {
 											className='form-control AutoFocus'
 											type='text'
 											placeholder='Search...'
+											value={value}
 										/>
 										<button
 											type='submit'

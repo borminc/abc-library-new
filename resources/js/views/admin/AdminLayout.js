@@ -85,38 +85,23 @@ const AdminLayout = () => {
 					<hr className='sidebar-divider' />
 
 					{/* Heading */}
-					<div className='sidebar-heading'>Management</div>
-
-					{/* Nav Item - Pages Collapse Menu */}
+					<div className='sidebar-heading'>Resources</div>
 					<li className='nav-item'>
-						<a
-							className='nav-link collapsed'
-							href='/'
-							data-toggle='collapse'
-							data-target='#collapseTwo'
-							aria-expanded='true'
-							aria-controls='collapseTwo'
-						>
-							<i className='fas fa-fw fa-cog'></i>
-							<span>Resources</span>
-						</a>
-						<div
-							id='collapseTwo'
-							className='collapse'
-							aria-labelledby='headingTwo'
-							data-parent='#accordionSidebar'
-						>
-							<div className='bg-white py-2 collapse-inner rounded'>
-								<Link to={`${url}/categories`} className='collapse-item'>
-									Categories
-								</Link>
-								<Link to={`${url}/books`} className='collapse-item'>
-									Books
-								</Link>
-							</div>
-						</div>
+						<Link to={`${url}/categories`} className='nav-link'>
+							<i className='fas fa-fw fa-tachometer-alt'></i>
+							Categories
+						</Link>
 					</li>
 
+					<li className='nav-item'>
+						<Link to={`${url}/books`} className='nav-link'>
+							<i className='fas fa-fw fa-tachometer-alt'></i>
+							Books
+						</Link>
+					</li>
+
+					<hr className='sidebar-divider' />
+					<div className='sidebar-heading'>Management</div>
 					<li className='nav-item'>
 						<Link to={`${url}/users`} className='nav-link'>
 							<i className='fas fa-fw fa-tachometer-alt'></i>
@@ -134,69 +119,9 @@ const AdminLayout = () => {
 				{/* -----------------------------------------  End of Sidebar ----------------------------------------- */}
 
 				{/* Content Wrapper */}
-				<div id='content-wrapper' className='d-flex flex-column'>
+				<div id='content-wrapper' className='d-flex flex-column mt-2'>
 					{/* Main Content */}
 					<div id='content'>
-						{/* Topbar */}
-						<nav
-							className='
-							navbar navbar-expand navbar-light
-							bg-white
-							topbar
-							mb-4
-							static-top
-							shadow
-						'
-						>
-							{/* Sidebar Toggle (Topbar) */}
-							<button
-								id='sidebarToggleTop'
-								className='btn btn-link d-md-none rounded-circle mr-3'
-							>
-								<i className='fa fa-bars'></i>
-							</button>
-
-							{/* Topbar Navbar */}
-							<ul className='navbar-nav mr-auto'>
-								{/* Nav Item - User Information */}
-								<li className='nav-item dropdown no-arrow'>
-									<a
-										className='nav-link dropdown-toggle'
-										href='#'
-										id='userDropdown'
-										role='button'
-										data-toggle='dropdown'
-										aria-haspopup='true'
-										aria-expanded='false'
-									>
-										<img
-											className='img-profile rounded-circle'
-											src='https://res.cloudinary.com/bormin/image/upload/v1623059477/ABC%20Library/resources/default-user-image_qydoi4.png'
-										/>
-										<span className='ml-3 d-none d-lg-inline text-gray-600'>
-											{adminInfo && adminInfo.name}
-										</span>
-									</a>
-									{/* Dropdown - User Information */}
-									<div
-										className='dropdown-menu dropdown-menu-left shadow animated--grow-in'
-										aria-labelledby='userDropdown'
-									>
-										<a className='dropdown-item' href='#'>
-											<i className='fas fa-user fa-sm fa-fw mr-2 text-gray-400'></i>
-											Profile
-										</a>
-										<div className='dropdown-divider'></div>
-										<button className='dropdown-item' onClick={logoutHandler}>
-											<i className='fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400'></i>
-											Logout
-										</button>
-									</div>
-								</li>
-							</ul>
-						</nav>
-						{/* End of Topbar */}
-
 						{/* Begin Page Content */}
 						<div className='container-fluid'>
 							{/* ----------------------------- ROUTER ----------------------------- */}

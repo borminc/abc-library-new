@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
@@ -13,29 +13,31 @@ import Test from './views/Test';
 import Admin from './views/Admin';
 import AdminLayout from './views/admin/AdminLayout';
 import NotFound from './views/NotFound';
-
+import Borrow from './views/Borrow';
 import ABCNav from './components/ABCNav';
 
 const Index = () => {
+	const [user, setUser] = useState();
+
+	useEffect(() => {
+		axios
+			.get('/api/auth/user')
+			.then(res => {
+				setUser(res.data);
+			})
+			.catch(err => {
+				setUser(null);
+			});
+	}, []);
+
 	return (
 		<div>
-			{/* <ABCNav /> */}
 			<Router>
-				<div>
-					{/* <nav>
-                        <ul>
-                            <li>
-                                <Link to="/">Home</Link>
-                            </li>
-                            <li>
-                                <Link to="/Login">About</Link>
-                            </li>
-                            <li>
-                                <Link to="/users">Users</Link>
-                            </li>
-                        </ul>
-                    </nav> */}
+				<div style={{ position: 'sticky', top: 0, zIndex: 2 }}>
+					<ABCNav user={user} setUser={setUser} />
+				</div>
 
+				<div>
 					<Switch>
 						<Route path='/login'>
 							<Login />
@@ -54,8 +56,13 @@ const Index = () => {
 							<Unauthorized />
 						</Route>
 
+						<Route
+							path='/borrow/:bookId'
+							children={<PrivateRoute component={<Borrow />} />}
+						/>
+
 						<Route exact path='/'>
-							<PrivateRoute component={<Home />} />
+							<Home />
 						</Route>
 
 						<Route>
