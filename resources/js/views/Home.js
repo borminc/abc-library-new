@@ -161,7 +161,7 @@ const Home = props => {
 			);
 		}
 		return (
-			<div className='container pb-5'>
+			<div className='container p-5'>
 				<div className='row'>
 					{search.map((value, i) => (
 						<div className='col-4' key={i}>
