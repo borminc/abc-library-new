@@ -28,7 +28,8 @@ function ABCNav(props) {
 			.get('/api/auth/logout')
 			.then(res => {
 				deleteCookie('token');
-				history.push('/');
+				// history.push('/');
+				location.href = '/';
 				setUser(null);
 			})
 			.catch(err => {
@@ -44,7 +45,7 @@ function ABCNav(props) {
 			variant='light'
 			className='p-2 shadow'
 		>
-			<Navbar.Brand href='/' className='pe-5'>
+			<Navbar.Brand href='/' className='ps-3 pe-5'>
 				ABC Library
 			</Navbar.Brand>
 			<Navbar.Toggle aria-controls='responsive-navbar-nav' />
