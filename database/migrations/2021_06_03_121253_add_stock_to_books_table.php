@@ -14,7 +14,7 @@ class AddStockToBooksTable extends Migration
     public function up()
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->bigInteger('stock')->after('category_id');
+            $table->bigInteger('stock')->unsigned()->after('category_id');
         });
     }
 

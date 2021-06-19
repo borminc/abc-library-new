@@ -173,7 +173,8 @@ const Books = () => {
 			selectedBook.publisher === '' ||
 			selectedBook.year === '' ||
 			selectedBook.category_id === '' ||
-			selectedBook.stock === ''
+			selectedBook.stock === '' ||
+			selectedBook.stock < 0
 		)
 			return true;
 		return false;
@@ -562,7 +563,11 @@ const Books = () => {
 								placeholder='Stock'
 								value={newBook.stock}
 								onChange={e => {
-									if (e.target.value == '' || isNaN(e.target.value)) {
+									if (
+										e.target.value == '' ||
+										isNaN(e.target.value) ||
+										e.target.value < 0
+									) {
 										setAddErrors({ ...addErrors, stock: true });
 									} else {
 										setAddErrors({ ...addErrors, stock: false });
@@ -798,7 +803,11 @@ const Books = () => {
 									placeholder='Stock'
 									value={selectedBook.stock}
 									onChange={e => {
-										if (e.target.value == '' || isNaN(e.target.value)) {
+										if (
+											e.target.value == '' ||
+											isNaN(e.target.value) ||
+											e.target.value < 0
+										) {
 											setEditErrors({ ...editErrors, stock: true });
 										} else {
 											setEditErrors({ ...editErrors, stock: false });
