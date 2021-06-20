@@ -106,7 +106,7 @@ const Home = props => {
 												</tr>
 												<tr>
 													<td className='fw-bold'>Publisher</td>
-													<td>{value.publisher}</td>
+													<td>{value.publisher.name}</td>
 												</tr>
 												<tr>
 													<td className='fw-bold'>Year</td>

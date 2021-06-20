@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Publisher;
 
 class Book extends Model
 {
@@ -15,7 +16,7 @@ class Book extends Model
         'title', 
         'author', 
         'description', 
-        'publisher', 
+        'publisher_id', 
         'year', 
         'image', 
         'category_id',
@@ -29,6 +30,10 @@ class Book extends Model
 
     public function category() {
         return $this->belongsTo(Category::class);
+    }
+
+    public function publisher() {
+        return $this->belongsTo(Publisher::class);
     }
 
     public function users() {

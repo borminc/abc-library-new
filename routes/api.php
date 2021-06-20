@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookUserController;
 use App\Http\Controllers\LibraryRuleSetController;
@@ -56,6 +57,7 @@ Route::group([
 ], function() {
     Route::get('user/search', [AuthController::class, 'search']);
     Route::get('all-users-books', [BookUserController::class, 'getAllUsersBooks']);
+    Route::get('all-borrowers', [BookUserController::class, 'getAllBorrowersBooks']);
     
     Route::resource('categories', CategoryController::class)->except([
         'index', 'show'
@@ -65,7 +67,12 @@ Route::group([
     ]);
     Route::post('books/return', [BookUserController::class, 'returnBook']);
     Route::get('borrowed-books', [BookUserController::class, 'getAllBooksUsers']);
-    Route::get('low-stock-books', [BookUserController::class, 'getBooksLowStock']);
+    Route::get('low-stock-books', [BookController::class, 'getBooksLowStock']);
+    Route::get('late-users', [BookUserController::class, 'getLateUsers']);
+    Route::get('books-due-today', [BookUserController::class, 'getBooksDueToday']);
+    Route::get('total-info', [AdminController::class, 'getTotalInfo']);
+    
+    Route::resource('publishers', PublisherController::class);
 
     Route::resource('library-rules', LibraryRuleSetController::class);
     Route::put('library-rules', [LibraryRuleSetController::class, 'updateAll']);

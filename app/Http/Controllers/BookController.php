@@ -18,7 +18,10 @@ class BookController extends Controller
     public function index()
     {
         $result = Book::all();
-        if ($result) $result->load('category');
+        if ($result) {
+            $result->load('category');
+            $result->load('publisher');
+        }
         return $result;
     }
 
@@ -44,10 +47,10 @@ class BookController extends Controller
             'title' => 'required|string|unique:books',
             'author' => 'required|string',
             'description' => 'required|string',
-            'publisher' => 'required|string',
+            'publisher_id' => 'required|integer',
             'year' => 'required',
             'image' => '',
-            'category_id' => 'required',
+            'category_id' => 'required|integer',
             'stock' => 'required'
         ]);
 
@@ -73,7 +76,10 @@ class BookController extends Controller
     public function show($id)
     {
         $book = Book::findOrFail($id);
-        if($book) $book->load('category');
+        if($book) {
+            $book->load('category');
+            $book->load('publisher');
+        }
         return $book;
     }
 
@@ -102,7 +108,7 @@ class BookController extends Controller
         $book->title = $request->title;
         $book->author = $request->author;
         $book->description = $request->description;
-        $book->publisher = $request->publisher;
+        $book->publisher_id = $request->publisher_id;
         $book->year = $request->year;
         $book->image = $request->image;
         $book->category_id = $request->category_id;
@@ -132,7 +138,7 @@ class BookController extends Controller
 
     public function search(Request $request) {
         // allowed search parameters 
-        $params = ['title', 'author', 'description', 'publisher', 'year', 'category_id'];
+        $params = ['title', 'author', 'description', 'publisher_id', 'year', 'category_id'];
 
         $by = $request->query('by');
         $value = $request->query('value');
@@ -146,14 +152,26 @@ class BookController extends Controller
 
         $result = Book::where($by, 'LIKE', '%'.$value.'%')->get();
         
-        if ($result) $result->load('category');
+        if ($result) {
+            $result->load('category');
+            $result->load('publisher');
+        }
 
         return $result; 
     }
 
     public function getLatestBooks(Request $request) {
-        $num = $request->query('number');
-        if (!$num) $num = 10; // default 10
-        return DB::table('books')->latest()->take($num)->get();
+        $num = $request->has('number') ? $request->query('number') : 10;
+        // if (!$num) $num = 10; // default 10
+        $books = Book::latest()->take($num)->get();
+        $books->load('category');
+        $books->load('publisher');
+        // return DB::table('books')->latest()->take($num)->get();
+        return $books;
+    }
+
+    public function getBooksLowStock() {
+        $books = DB::table('books')->where('stock', '<', 3)->get();
+        return $books;
     }
 }
