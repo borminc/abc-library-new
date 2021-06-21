@@ -128,7 +128,7 @@ const AdminLayout = () => {
 				{/* -----------------------------------------  End of Sidebar ----------------------------------------- */}
 
 				{/* Content Wrapper */}
-				<div id='content-wrapper' className='d-flex flex-column mt-4'>
+				<div id='content-wrapper' className='d-flex flex-column pt-4'>
 					{/* Main Content */}
 					<div id='content'>
 						{/* Begin Page Content */}

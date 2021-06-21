@@ -33,7 +33,15 @@ const AdminDashboard = () => {
 			.then(
 				axios.spread((res1, res2, res3, res4, res5) => {
 					setBooks(res1.data);
+
+					let stock = res2.data;
+					stock.sort((a, b) => {
+						if (a.stock > b.stock) return 1;
+						else if (a.stock < b.stock) return -1;
+						return 0;
+					});
 					setLowStockBooks(res2.data);
+
 					setLateUsers(res3.data);
 					setTotalInfo(res4.data);
 					setBooksDueToday(res5.data);
@@ -193,6 +201,7 @@ const AdminDashboard = () => {
 				</div>
 			</div>
 
+			{/* Tables */}
 			<div className='row'>
 				<div className='col-md-6 mb-5'>
 					<h6>
@@ -295,119 +304,6 @@ const AdminDashboard = () => {
 																					>
 																						Accept return
 																					</button>
-																				</td>
-																			</tr>
-																		))}
-																	</tbody>
-																</table>
-															</div>
-														</div>
-													</div>
-												</div>
-											</td>
-										</tr>
-									))
-								) : (
-									<tr>
-										<td>No data</td>
-									</tr>
-								)}
-							</tbody>
-						</table>
-					</div>
-				</div>
-
-				<div className='col-md-6 mb-5'>
-					<h6>
-						<b className='text-primary'>
-							Currently borrowed books: {(books && books.length) || 0}
-						</b>
-					</h6>
-
-					<div>
-						<table className='table'>
-							<thead>
-								<tr>
-									<th scope='col'>ID</th>
-									<th scope='col'>Title</th>
-									<th scope='col'>Stock</th>
-									<th scope='col'>Users</th>
-								</tr>
-							</thead>
-							<tbody>
-								{books && books.length > 0 ? (
-									books.map((book, i) => (
-										<tr key={i}>
-											<th scope='row'>{book.id}</th>
-											<td>{book.title}</td>
-											<td>{book.stock}</td>
-											<td>
-												<a
-													className='text-primary'
-													role='button'
-													data-bs-toggle='modal'
-													data-bs-target={'#modal' + book.id}
-												>
-													{book.users.length}
-												</a>
-
-												{/* Modal */}
-												<div
-													className='modal fade'
-													id={'modal' + book.id}
-													tabIndex='-1'
-													aria-labelledby={'#modalLabel' + book.id}
-													aria-hidden='true'
-												>
-													<div className='modal-dialog'>
-														<div className='modal-content'>
-															<div className='modal-header'>
-																<h5
-																	className='modal-title'
-																	id={'#modalLabel' + book.id}
-																>
-																	{book.title}
-																</h5>
-																<button
-																	type='button'
-																	className='btn-close'
-																	data-bs-dismiss='modal'
-																	aria-label='Close'
-																></button>
-															</div>
-															<div className='modal-body'>
-																<h6>Users that borrowed this book: </h6>
-																<table className='table'>
-																	<thead>
-																		<tr>
-																			<th scope='col'>ID</th>
-																			<th scope='col'>Name</th>
-																			<th scope='col'>Borrow Date</th>
-																			<th scope='col'>Return Date</th>
-																			<th scope='col'>Days late</th>
-																		</tr>
-																	</thead>
-																	<tbody>
-																		{book.users.map((user, i) => (
-																			<tr key={i}>
-																				<th scope='row'>{user.id}</th>
-																				<td>{user.name}</td>
-																				<td>{user.borrow_date}</td>
-																				<td
-																					className={
-																						user.expired ? 'text-danger' : ''
-																					}
-																				>
-																					{user.return_date}
-																				</td>
-																				<td
-																					className={
-																						user.days_past_expired > 0
-																							? 'text-danger'
-																							: ''
-																					}
-																				>
-																					{user.days_past_expired || 'n/a'}
 																				</td>
 																			</tr>
 																		))}
@@ -570,6 +466,119 @@ const AdminDashboard = () => {
 				<div className='col-md-6 mb-5'>
 					<h6>
 						<b className='text-primary'>
+							Currently borrowed books: {(books && books.length) || 0}
+						</b>
+					</h6>
+
+					<div>
+						<table className='table'>
+							<thead>
+								<tr>
+									<th scope='col'>ID</th>
+									<th scope='col'>Title</th>
+									<th scope='col'>Stock</th>
+									<th scope='col'>Users</th>
+								</tr>
+							</thead>
+							<tbody>
+								{books && books.length > 0 ? (
+									books.map((book, i) => (
+										<tr key={i}>
+											<th scope='row'>{book.id}</th>
+											<td>{book.title}</td>
+											<td>{book.stock}</td>
+											<td>
+												<a
+													className='text-primary'
+													role='button'
+													data-bs-toggle='modal'
+													data-bs-target={'#modal' + book.id}
+												>
+													{book.users.length}
+												</a>
+
+												{/* Modal */}
+												<div
+													className='modal fade'
+													id={'modal' + book.id}
+													tabIndex='-1'
+													aria-labelledby={'#modalLabel' + book.id}
+													aria-hidden='true'
+												>
+													<div className='modal-dialog'>
+														<div className='modal-content'>
+															<div className='modal-header'>
+																<h5
+																	className='modal-title'
+																	id={'#modalLabel' + book.id}
+																>
+																	{book.title}
+																</h5>
+																<button
+																	type='button'
+																	className='btn-close'
+																	data-bs-dismiss='modal'
+																	aria-label='Close'
+																></button>
+															</div>
+															<div className='modal-body'>
+																<h6>Users that borrowed this book: </h6>
+																<table className='table'>
+																	<thead>
+																		<tr>
+																			<th scope='col'>ID</th>
+																			<th scope='col'>Name</th>
+																			<th scope='col'>Borrow Date</th>
+																			<th scope='col'>Return Date</th>
+																			<th scope='col'>Days late</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		{book.users.map((user, i) => (
+																			<tr key={i}>
+																				<th scope='row'>{user.id}</th>
+																				<td>{user.name}</td>
+																				<td>{user.borrow_date}</td>
+																				<td
+																					className={
+																						user.expired ? 'text-danger' : ''
+																					}
+																				>
+																					{user.return_date}
+																				</td>
+																				<td
+																					className={
+																						user.days_past_expired > 0
+																							? 'text-danger'
+																							: ''
+																					}
+																				>
+																					{user.days_past_expired || 'n/a'}
+																				</td>
+																			</tr>
+																		))}
+																	</tbody>
+																</table>
+															</div>
+														</div>
+													</div>
+												</div>
+											</td>
+										</tr>
+									))
+								) : (
+									<tr>
+										<td>No data</td>
+									</tr>
+								)}
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div className='col-md-6 mb-5'>
+					<h6>
+						<b className='text-primary'>
 							Low stock: {lowStockBooks ? lowStockBooks.length : 0}
 						</b>
 					</h6>
@@ -580,7 +589,7 @@ const AdminDashboard = () => {
 								<tr>
 									<th scope='col'>ID</th>
 									<th scope='col'>Title</th>
-									<th scope='col'>Late Books</th>
+									<th scope='col'>Stock</th>
 								</tr>
 							</thead>
 							<tbody>
