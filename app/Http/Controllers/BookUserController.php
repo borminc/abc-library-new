@@ -137,6 +137,7 @@ class BookUserController extends Controller
         ]);
 
         $book->stock = $book->stock - 1;
+        $book->borrow_times = $book->borrow_times + 1;
         $book->save();
 
         return response()->json([

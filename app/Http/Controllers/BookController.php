@@ -174,4 +174,12 @@ class BookController extends Controller
         $books = DB::table('books')->where('stock', '<', 3)->get();
         return $books;
     }
+
+    public function getMostPopularBooks(Request $request) {
+        $num = $request->has('number') ? $request->query('number') : 10;
+        $books = Book::orderBy('borrow_times', 'desc')->take($num)->get();
+        $books->load('category');
+        $books->load('publisher');
+        return $books;
+    }
 }

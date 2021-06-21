@@ -82,6 +82,7 @@ Route::group([
 
 Route::get('books/search', [BookController::class, 'search'])->name('books.search');
 Route::get('books/latest', [BookController::class, 'getLatestBooks'])->name('books.latest');
+Route::get('books/popular', [BookController::class, 'getMostPopularBooks'])->name('books.popular');
 
 Route::resource('categories', CategoryController::class)->only([
     'index', 'show'

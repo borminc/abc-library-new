@@ -20,7 +20,8 @@ class Book extends Model
         'year', 
         'image', 
         'category_id',
-        'stock'
+        'stock',
+        'borrow_times'
     ];
 
     protected $hidden = [
