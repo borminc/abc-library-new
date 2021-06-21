@@ -337,7 +337,7 @@ const Users = () => {
 										.click();
 								}}
 							>
-								Close
+								Cancel
 							</button>
 
 							{isReturning ? (

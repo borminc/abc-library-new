@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 
 use App\Models\User;
@@ -27,7 +28,31 @@ class BookUserController extends Controller
             
             foreach ($user->books as $book) {
                 // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
-                $days_late = ceil(($time_now - $book->pivot->return_time) / (24*3600));
+                $days_late = floor(($time_now - $book->pivot->return_time) / (24*3600));
+                if ($days_late > 0) {
+                    $book->expired = true;
+                    $book->days_past_expired = $days_late;
+                    $book->cost = $cost_per_day * $book->days_past_expired;
+                } else {
+                    $book->expired = false;
+                    $book->cost = 0;
+                }
+                $book->borrow_date = date('d.m.y', $book->pivot->borrow_time);
+                $book->return_date = date('d.m.y', $book->pivot->return_time);
+            }
+        }
+        return $users;
+    }
+
+    public function getAllBorrowersBooks() {
+        $users = User::has('books')->get();
+        $time_now = time();
+        foreach ($users as $user) {
+            $cost_per_day = LibraryRuleSet::where('name', 'default')->first()->cost_per_day_late_return;
+            
+            foreach ($user->books as $book) {
+                // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
+                $days_late = floor(($time_now - $book->pivot->return_time) / (24*3600));
                 if ($days_late > 0) {
                     $book->expired = true;
                     $book->days_past_expired = $days_late;
@@ -46,12 +71,13 @@ class BookUserController extends Controller
     public function getUserBooks() {
         $books = Auth::user()->books;
         $books->load('category');
+        $books->load('publisher');
         $time_now = time();
         $cost_per_day = LibraryRuleSet::where('name', 'default')->first()->cost_per_day_late_return;
         
         foreach ($books as $book) {
             // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
-            $days_late = ceil(($time_now - $book->pivot->return_time) / (24*3600));
+            $days_late = floor(($time_now - $book->pivot->return_time) / (24*3600));
             if ($days_late > 0) {
                 $book->expired = true;
                 $book->days_past_expired = $days_late;
@@ -111,6 +137,7 @@ class BookUserController extends Controller
         ]);
 
         $book->stock = $book->stock - 1;
+        $book->borrow_times = $book->borrow_times + 1;
         $book->save();
 
         return response()->json([
@@ -165,7 +192,7 @@ class BookUserController extends Controller
                 $user->borrow_date = date('d.m.y', $user->pivot->borrow_time);
                 $user->return_date = date('d.m.y', $user->pivot->return_time);
 
-                $days_late = ceil(($time_now - $user->pivot->return_time) / (24*3600));
+                $days_late = floor(($time_now - $user->pivot->return_time) / (24*3600));
                 $user->expired = $days_late > 0;
                 if ($user->expired){
                     $user->days_past_expired = $days_late;
@@ -176,8 +203,65 @@ class BookUserController extends Controller
         return $books;
     }
 
-    public function getBooksLowStock() {
-        $books = DB::table('books')->where('stock', '<', 3)->get();
-        return $books;
+    public function getLateUsers() {
+        $time_now = time();
+        $late_users = [];
+        $cost_per_day = LibraryRuleSet::where('name', 'default')->first()->cost_per_day_late_return;
+
+        $users = User::whereHas('books', function (Builder $query) use ($time_now) {
+            $query->where('return_time', '<', $time_now);
+        })->get();
+
+        foreach($users as $user) {
+            $late_books = [];
+            $user->books->makeHidden(['pivot', 'author', 'year', 'image', 'description', 'publisher_id', 'category_id', 'stock']);
+            foreach($user->books as $book) {
+                $days_late = floor(($time_now - $book->pivot->return_time) / (24*3600));
+                if ($days_late > 0){
+                    $book->days_late = $days_late;
+                    $book->borrow_date = date('d.m.y', $book->pivot->borrow_time);
+                    $book->return_date = date('d.m.y', $book->pivot->return_time);
+                    $book->cost = $days_late * $cost_per_day;
+                    array_push($late_books, $book);
+                }
+            }
+
+            if (count($late_books) > 0) {
+                $user->late_books = $late_books;
+                array_push($late_users, $user);
+            }
+        }
+
+        $users->makeHidden(['books', 'is_admin', 'email', 'phone']);
+        
+        return $late_users;
+    }
+
+    public function getBooksDueToday() {
+        $res = [];
+        $books = Book::has('users')->get();
+        $books->load('users');
+        $today = date('d.m.y', time());
+
+        foreach($books as $book) {
+            $users_today = [];
+            foreach($book->users as $user) {
+                if (date('d.m.y', $user->pivot->return_time) == $today) {
+                    $user->borrow_date = date('d.m.y', $user->pivot->borrow_time);
+                    $user->makeHidden(['pivot','is_admin', 'email', 'phone']);
+                    array_push($users_today, $user);
+                }
+            }
+
+            if (count($users_today) > 0) {
+                $book->users = $users_today;
+                $book->return_date = $today;
+                $book->makeHidden(['year', 'image', 'description', 'publisher_id', 'category_id', 'stock']);
+                // $book->makeHidden(['users']);
+                array_push($res, $book);
+            }
+            
+        }
+        return $res;
     }
 }

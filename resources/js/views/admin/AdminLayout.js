@@ -22,6 +22,8 @@ import Categories from './admin_content/Categories';
 import Books from './admin_content/Books';
 import Users from './admin_content/Users';
 import Rules from './admin_content/Rules';
+import Publishers from './admin_content/Publishers';
+import Borrowers from './admin_content/Borrowers';
 
 const AdminLayout = () => {
 	let { path, url } = useRouteMatch();
@@ -92,6 +94,12 @@ const AdminLayout = () => {
 					</li>
 
 					<li className='nav-item'>
+						<Link to={`${url}/publishers`} className='nav-link'>
+							Publishers
+						</Link>
+					</li>
+
+					<li className='nav-item'>
 						<Link to={`${url}/books`} className='nav-link'>
 							Books
 						</Link>
@@ -106,6 +114,12 @@ const AdminLayout = () => {
 					</li>
 
 					<li className='nav-item'>
+						<Link to={`${url}/borrowers`} className='nav-link'>
+							Borrowers
+						</Link>
+					</li>
+
+					<li className='nav-item'>
 						<Link to={`${url}/rules`} className='nav-link'>
 							Rules
 						</Link>
@@ -114,7 +128,7 @@ const AdminLayout = () => {
 				{/* -----------------------------------------  End of Sidebar ----------------------------------------- */}
 
 				{/* Content Wrapper */}
-				<div id='content-wrapper' className='d-flex flex-column mt-4'>
+				<div id='content-wrapper' className='d-flex flex-column pt-4'>
 					{/* Main Content */}
 					<div id='content'>
 						{/* Begin Page Content */}
@@ -126,12 +140,20 @@ const AdminLayout = () => {
 									<Categories />
 								</Route>
 
+								<Route path={`${path}/publishers`}>
+									<Publishers />
+								</Route>
+
 								<Route path={`${path}/books`}>
 									<Books />
 								</Route>
 
 								<Route path={`${path}/users`}>
 									<Users />
+								</Route>
+
+								<Route path={`${path}/borrowers`}>
+									<Borrowers />
 								</Route>
 
 								<Route path={`${path}/rules`}>
