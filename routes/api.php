@@ -65,9 +65,12 @@ Route::group([
     Route::resource('books', BookController::class)->except([
         'index', 'show'
     ]);
+
+
     Route::post('books/return', [BookUserController::class, 'returnBook']);
     Route::get('borrowed-books', [BookUserController::class, 'getAllBooksUsers']);
     Route::get('low-stock-books', [BookController::class, 'getBooksLowStock']);
+    Route::post('add-stock-book', [BookController::class, 'addStockToBook']);
     Route::get('late-users', [BookUserController::class, 'getLateUsers']);
     Route::get('books-due-today', [BookUserController::class, 'getBooksDueToday']);
     Route::get('total-info', [AdminController::class, 'getTotalInfo']);
