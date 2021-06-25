@@ -828,27 +828,71 @@ const Books = () => {
 											</option>
 										))}
 								</select>
+
 								<small>Number available in stock</small>
-								<input
-									className={
-										'form-control mb-2' +
-										(editErrors.stock ? ' is-invalid' : '')
-									}
-									placeholder='Stock'
-									value={selectedBook.stock}
-									onChange={e => {
-										if (
-											e.target.value == '' ||
-											isNaN(e.target.value) ||
-											e.target.value < 0
-										) {
-											setEditErrors({ ...editErrors, stock: true });
-										} else {
-											setEditErrors({ ...editErrors, stock: false });
+								<div className='d-flex'>
+									<input
+										className={
+											'form-control mb-2 mr-2' +
+											(editErrors.stock ? ' is-invalid' : '')
 										}
-										setSelectedBook({ ...selectedBook, stock: e.target.value });
-									}}
-								/>
+										placeholder='Stock'
+										value={selectedBook.stock}
+										onChange={e => {
+											if (
+												e.target.value == '' ||
+												isNaN(e.target.value) ||
+												e.target.value < 0
+											) {
+												setEditErrors({ ...editErrors, stock: true });
+											} else {
+												setEditErrors({ ...editErrors, stock: false });
+											}
+											setSelectedBook({
+												...selectedBook,
+												stock: e.target.value,
+											});
+										}}
+									/>
+									<div
+										className='btn-group me-2 mb-2'
+										role='group'
+										aria-label='First group'
+									>
+										<button
+											type='button'
+											className={
+												'btn btn-outline-secondary' +
+												(editErrors.stock ? ' disabled' : '')
+											}
+											onClick={() => {
+												if (!editErrors.stock && selectedBook.stock != 0)
+													setSelectedBook({
+														...selectedBook,
+														stock: +selectedBook.stock - 1,
+													});
+											}}
+										>
+											-
+										</button>
+										<button
+											type='button'
+											className={
+												'btn btn-outline-secondary' +
+												(editErrors.stock ? ' disabled' : '')
+											}
+											onClick={() => {
+												if (!editErrors.stock)
+													setSelectedBook({
+														...selectedBook,
+														stock: +selectedBook.stock + 1,
+													});
+											}}
+										>
+											+
+										</button>
+									</div>
+								</div>
 								<small>Image (changes will overide the current image)</small>
 								<div className='input-group mb-3'>
 									<div className='custom-file'>

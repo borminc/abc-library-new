@@ -94,14 +94,14 @@ const AdminLayout = () => {
 					</li>
 
 					<li className='nav-item'>
-						<Link to={`${url}/publishers`} className='nav-link'>
-							Publishers
+						<Link to={`${url}/books`} className='nav-link'>
+							Books
 						</Link>
 					</li>
 
 					<li className='nav-item'>
-						<Link to={`${url}/books`} className='nav-link'>
-							Books
+						<Link to={`${url}/publishers`} className='nav-link'>
+							Publishers
 						</Link>
 					</li>
 

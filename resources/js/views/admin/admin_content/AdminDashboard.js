@@ -21,7 +21,7 @@ const AdminDashboard = () => {
 	const [acceptingBookUser, setAcceptingBookUser] = useState();
 	const [restockingBook, setRestockingBook] = useState();
 
-	const [addStockAmount, setAddStockAmount] = useState('');
+	const [addStockAmount, setAddStockAmount] = useState(0);
 	const [addStockAmountErr, setAddStockAmountErr] = useState(false);
 
 	useEffect(() => {
@@ -796,25 +796,60 @@ const AdminDashboard = () => {
 							{restockingBook && restockingBook.title && (
 								<div>
 									<p>Add stock for: {restockingBook.title}</p>
-									<input
-										type='text'
-										className={
-											'form-control' + (addStockAmountErr ? ' is-invalid' : '')
-										}
-										value={addStockAmount}
-										onChange={e => {
-											if (
-												e.target.value == '' ||
-												e.target.value <= 0 ||
-												isNaN(e.target.value)
-											) {
-												setAddStockAmountErr(true);
-											} else {
-												setAddStockAmountErr(false);
+									<div className='d-flex'>
+										<input
+											type='text'
+											className={
+												'form-control mr-2' +
+												(addStockAmountErr ? ' is-invalid' : '')
 											}
-											setAddStockAmount(e.target.value);
-										}}
-									/>
+											value={addStockAmount}
+											onChange={e => {
+												if (
+													e.target.value == '' ||
+													e.target.value < 0 ||
+													isNaN(e.target.value)
+												) {
+													setAddStockAmountErr(true);
+												} else {
+													setAddStockAmountErr(false);
+												}
+												setAddStockAmount(e.target.value);
+											}}
+										/>
+										<div
+											className='btn-group me-2'
+											role='group'
+											aria-label='First group'
+										>
+											<button
+												type='button'
+												className={
+													'btn btn-outline-secondary' +
+													(addStockAmountErr ? ' disabled' : '')
+												}
+												onClick={() => {
+													if (!addStockAmountErr && addStockAmount != 0)
+														setAddStockAmount(+addStockAmount - 1);
+												}}
+											>
+												-
+											</button>
+											<button
+												type='button'
+												className={
+													'btn btn-outline-secondary' +
+													(addStockAmountErr ? ' disabled' : '')
+												}
+												onClick={() => {
+													if (!addStockAmountErr)
+														setAddStockAmount(+addStockAmount + 1);
+												}}
+											>
+												+
+											</button>
+										</div>
+									</div>
 								</div>
 							)}
 						</div>
