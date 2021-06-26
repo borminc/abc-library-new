@@ -9,6 +9,7 @@ use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookUserController;
 use App\Http\Controllers\LibraryRuleSetController;
+use App\Http\Controllers\LogController;
 
 use App\Models\User;
 use App\Models\Book;
@@ -48,6 +49,8 @@ Route::group([
     ], function() {
         Route::post('borrow', [BookUserController::class, 'borrow']);
         Route::get('user/books', [BookUserController::class, 'getUserBooks']);
+
+        Route::get('user/logs', [LogController::class, 'getUserLogs']);
     }
 );
 
@@ -56,6 +59,9 @@ Route::group([
     'middleware' => ['auth:api', 'is_admin']
 ], function() {
     Route::get('user/search', [AuthController::class, 'search']);
+    Route::get('users-names', [AdminController::class, 'getJustUserNames']);
+    Route::get('books-titles', [BookController::class, 'getJustBookTitles']);
+
     Route::get('all-users-books', [BookUserController::class, 'getAllUsersBooks']);
     Route::get('all-borrowers', [BookUserController::class, 'getAllBorrowersBooks']);
     
@@ -68,6 +74,8 @@ Route::group([
 
 
     Route::post('books/return', [BookUserController::class, 'returnBook']);
+    Route::post('books/lost', [BookUserController::class, 'returnLostBook']);
+
     Route::get('borrowed-books', [BookUserController::class, 'getAllBooksUsers']);
     Route::get('low-stock-books', [BookController::class, 'getBooksLowStock']);
     Route::post('add-stock-book', [BookController::class, 'addStockToBook']);
@@ -79,6 +87,8 @@ Route::group([
 
     Route::resource('library-rules', LibraryRuleSetController::class);
     Route::put('library-rules', [LibraryRuleSetController::class, 'updateAll']);
+
+    Route::resource('logs', LogController::class);
 });
 
 // ---------------------------------------------------- Public routes
@@ -94,6 +104,4 @@ Route::resource('books', BookController::class)->only([
     'index', 'show'
 ]);
 
-
-// ---------------- test
 

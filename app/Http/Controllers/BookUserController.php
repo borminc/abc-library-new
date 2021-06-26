@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 
-
+use App\Models\Log;
 use App\Models\User;
 use App\Models\Book;
 use App\Models\LibraryRuleSet;
@@ -140,6 +140,15 @@ class BookUserController extends Controller
         $book->borrow_times = $book->borrow_times + 1;
         $book->save();
 
+        // create log
+        $log = new Log();
+        $log->title = 'Borrow';
+        $log->description = $user->name . ' borrowed ' . $book->title . '.';
+        $log->date_time = date('d.m.y h:m A', $borrow_time);
+        $log->user_id = $user->id;
+        $log->book_id = $book->id;
+        $log->save();
+
         return response()->json([
             'message' => 'Successfully borrowed ' . $book->title . '!'
             ]); 
@@ -176,9 +185,62 @@ class BookUserController extends Controller
         $user->books()->detach($book);
         $book->stock = $book->stock + 1;
         $book->save();
+
+        // create log
+        $log = new Log();
+        $log->title = 'Return';
+        $log->description = $user->name . ' returned ' . $book->title . '.';
+        $log->date_time = date('d.m.y h:m A', time());
+        $log->user_id = $user->id;
+        $log->book_id = $book->id;
+        $log->save();
         
         return response()->json([
             'message' => 'Successfully returned ' . $book->title . '!'
+            ]); 
+    }
+
+    public function returnLostBook(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'book_id' => 'required|integer',
+            'user_id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Input is valid'
+            ], 400);
+        }
+
+        $user = User::findOrFail($request->user_id);
+        $book = Book::findOrFail($request->book_id);
+
+        $found = false; // find if user has actually borrowed  this book
+
+        foreach($user->books as $user_book) {
+            if ($user_book->id == $book->id)
+                $found = true;
+        }
+
+        if (!$found) {
+            return response()->json([
+                'error' => 'User did not borrow this book.'
+            ], 400);
+        }
+
+        $user->books()->detach($book);
+
+        // create log
+        $log = new Log();
+        $log->title = 'Lost';
+        $log->description = $user->name . ' lost ' . $book->title . '.';
+        $log->date_time = date('d.m.y h:m A', time());
+        $log->user_id = $user->id;
+        $log->book_id = $book->id;
+        $log->save();
+        
+        return response()->json([
+            'message' => 'Successfully marked ' . $book->title . ' as lost!'
             ]); 
     }
 

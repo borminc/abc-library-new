@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\Publisher;
+use App\Models\Log;
 
 class Book extends Model
 {
@@ -41,4 +42,7 @@ class Book extends Model
         return $this->belongsToMany(User::class)->withPivot('borrow_time', 'return_time');
     }
 
+    public function logs() {
+        return $this->hasMany(Log::class);
+    }
 }

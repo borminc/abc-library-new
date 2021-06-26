@@ -25,6 +25,11 @@ class BookController extends Controller
         return $result;
     }
 
+    public function getJustBookTitles() {
+        $books = Book::select('id', 'title')->get();
+        return $books;
+    }
+
     /**
      * Show the form for creating a new resource.
      *

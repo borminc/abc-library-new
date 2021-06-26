@@ -24,6 +24,7 @@ import Users from './admin_content/Users';
 import Rules from './admin_content/Rules';
 import Publishers from './admin_content/Publishers';
 import Borrowers from './admin_content/Borrowers';
+import Logs from './admin_content/Logs';
 
 const AdminLayout = () => {
 	let { path, url } = useRouteMatch();
@@ -124,6 +125,12 @@ const AdminLayout = () => {
 							Rules
 						</Link>
 					</li>
+
+					<li className='nav-item'>
+						<Link to={`${url}/logs`} className='nav-link'>
+							Logs
+						</Link>
+					</li>
 				</ul>
 				{/* -----------------------------------------  End of Sidebar ----------------------------------------- */}
 
@@ -158,6 +165,10 @@ const AdminLayout = () => {
 
 								<Route path={`${path}/rules`}>
 									<Rules />
+								</Route>
+
+								<Route path={`${path}/logs`}>
+									<Logs />
 								</Route>
 
 								<Route exact path={path}>

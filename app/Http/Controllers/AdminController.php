@@ -25,4 +25,9 @@ class AdminController extends Controller
         ];
         return response()->json($res);
     }
+
+    public function getJustUserNames() {
+        $users = User::select('id', 'name')->get();
+        return $users;
+    }
 }
