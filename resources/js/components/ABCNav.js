@@ -61,7 +61,7 @@ function ABCNav(props) {
 					>
 						{categories.map((cate, i) => (
 							<div key={i}>
-								<NavDropdown.Item href={'#' + i}>{cate.name}</NavDropdown.Item>
+								<NavDropdown.Item onClick={e => history.push('/categories/' + cate.id)}>{cate.name}</NavDropdown.Item>
 							</div>
 						))}
 					</NavDropdown>
