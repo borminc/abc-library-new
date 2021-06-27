@@ -16,6 +16,7 @@ import NotFound from './views/NotFound';
 import Borrow from './views/Borrow';
 import ABCNav from './components/ABCNav';
 import UserLayout from './views/user/UserLayout';
+import Categories from './views/Categories';
 
 const Index = () => {
 	const [user, setUser] = useState('loading');
@@ -62,10 +63,16 @@ const Index = () => {
 							<Unauthorized />
 						</Route>
 
+						<Route path='/categories/:categoryId' children={<Categories />} />
+
 						<Route
 							path='/borrow/:bookId'
 							children={<PrivateRoute component={<Borrow />} />}
 						/>
+
+						<Route path='/borrow'>
+							<Borrow />
+						</Route>
 
 						<Route exact path='/'>
 							<Home />

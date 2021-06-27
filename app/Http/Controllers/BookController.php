@@ -166,7 +166,7 @@ class BookController extends Controller
     }
 
     public function getLatestBooks(Request $request) {
-        $num = $request->has('number') ? $request->query('number') : 10;
+        $num = $request->has('number') ? $request->query('number') : 8;
         // if (!$num) $num = 10; // default 10
         $books = Book::latest()->take($num)->get();
         $books->load('category');
@@ -181,7 +181,7 @@ class BookController extends Controller
     }
 
     public function getMostPopularBooks(Request $request) {
-        $num = $request->has('number') ? $request->query('number') : 10;
+        $num = $request->has('number') ? $request->query('number') : 8;
         $books = Book::orderBy('borrow_times', 'desc')->take($num)->get();
         $books->load('category');
         $books->load('publisher');

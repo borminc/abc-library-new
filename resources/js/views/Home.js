@@ -1,9 +1,6 @@
 import axios from './../functions/axios';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import OwlCarousel from 'react-owl-carousel';
-import 'owl.carousel/dist/assets/owl.carousel.css';
-import 'owl.carousel/dist/assets/owl.theme.default.css';
 import { setCookie, getCookie, deleteCookie } from '../functions/cookies';
 import { Link } from 'react-router-dom';
 import { Loading } from './../components/Loading';
@@ -13,13 +10,12 @@ const Home = props => {
 	const [by, setBy] = useState('title');
 	const [value, setValue] = useState('');
 	const [search, setSearch] = useState();
-	const [books, setBook] = useState([]);
+	const [latestBooks, setLatestBook] = useState([]);
 	const [isProcessing, setProcessing] = useState(false);
 
 	useEffect(() => {
-		axios.get('/api/books').then(res => {
-			setBook(res.data);
-			// console.log(res.data);
+		axios.get('/api/books/latest').then(res => {
+			setLatestBook(res.data);
 		});
 	}, []);
 
@@ -95,7 +91,9 @@ const Home = props => {
 										<table className='table small'>
 											<thead>
 												<tr>
-													<th className='display-6'>{value.title}</th>
+													<th>
+														<h4>{value.title}</h4>
+													</th>
 													<th></th>
 												</tr>
 											</thead>
@@ -114,11 +112,17 @@ const Home = props => {
 												</tr>
 												<tr>
 													<td className='fw-bold'>Category</td>
-													<td>{value.category.name}</td>
+													{/* <td>{value.category.name}</td> */}
 												</tr>
 												<tr>
 													<td className='fw-bold'>Stock</td>
-													<td>{value.stock}</td>
+													<td>
+														{value.stock == 0 ? (
+															<div className='text-danger'>Out of Stock</div>
+														) : (
+															value.stock
+														)}
+													</td>
 												</tr>
 											</tbody>
 										</table>
@@ -132,14 +136,31 @@ const Home = props => {
 							</div>
 						</div>
 						<div className='modal-footer'>
-							<button
-								className='btn btn-outline-primary btn-sm'
-								onClick={e => history.push('/borrow/' + value.id)}
-								data-bs-dismiss='modal'
-								aria-label='Close'
-							>
-								Borrow
-							</button>
+							{value.stock == 0 ? (
+								<div>
+									<small className='text-danger me-2'>
+										* You can't borrow this books
+									</small>
+									<button
+										disabled
+										className='btn btn-outline-primary btn-sm'
+										onClick={e => history.push('/borrow/' + value.id)}
+										data-bs-dismiss='modal'
+										aria-label='Close'
+									>
+										Borrow
+									</button>
+								</div>
+							) : (
+								<button
+									className='btn btn-outline-primary btn-sm'
+									onClick={e => history.push('/borrow/' + value.id)}
+									data-bs-dismiss='modal'
+									aria-label='Close'
+								>
+									Borrow
+								</button>
+							)}
 						</div>
 					</div>
 				</div>
@@ -164,36 +185,49 @@ const Home = props => {
 			<div className='container p-5'>
 				<div className='row'>
 					{search.map((value, i) => (
-						<div className='col-4 p-2' key={i}>
+						<div className='col-3 p-2' key={i}>
 							<div className='card border border-1 p-2'>
 								<img
 									src={value.image || 'img/book-null-img.png'}
 									className='img-fluid rounded'
 									alt='...'
+									data-bs-toggle='modal'
+									data-bs-target={'#modal-book' + value.id}
 								/>
 								<ul className='small list-unstyled'>
 									<li>{value.title}</li>
 									<li className='fst-italic text-primary'>{value.author}</li>
 									<li className='fw-lighter'>{value.year}</li>
+									{value.stock == 0 ? (
+										<li className='text-danger'>Out of Stock</li>
+									) : (
+										''
+									)}
 								</ul>
 								<div className='text-end'>
-									<button
-										type='button'
-										className='btn btn-outline-info btn-sm me-2'
-										data-bs-toggle='modal'
-										data-bs-target={'#modal-book' + value.id}
-									>
-										More
-									</button>
-									<button
-										className='btn btn-outline-primary btn-sm'
-										onClick={e => history.push('/borrow/' + value.id)}
-									>
-										Borrow
-									</button>
+									{value.stock == 0 ? (
+										<button
+											disabled
+											className='btn btn-outline-primary btn-sm'
+											onClick={e => history.push('/borrow/' + value.id)}
+											data-bs-dismiss='modal'
+											aria-label='Close'
+										>
+											Borrow
+										</button>
+									) : (
+										<button
+											className='btn btn-outline-primary btn-sm'
+											onClick={e => history.push('/borrow/' + value.id)}
+											data-bs-dismiss='modal'
+											aria-label='Close'
+										>
+											Borrow
+										</button>
+									)}
 								</div>
-								{Modal(value, i)}
 							</div>
+							{Modal(value, i)}
 						</div>
 					))}
 				</div>
@@ -217,9 +251,9 @@ const Home = props => {
 							</p>
 						</div>
 
-						<div className='row row-cols-5'>
-							{books.map((value, i) => (
-								<div className='col-3 p-3 ' key={i}>
+						<div className='row'>
+							{latestBooks.map((value, i) => (
+								<div className='col-3 p-3' key={i}>
 									<img
 										src={value.image || 'img/book-null-img.png'}
 										className='img-fluid rounded'

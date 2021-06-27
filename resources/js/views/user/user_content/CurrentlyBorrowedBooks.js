@@ -53,7 +53,7 @@ const CurrentlyBorrowedBooks = () => {
 									<td>
 										<img
 											className='align-middle'
-											style={{ maxHeight: '75%' }}
+											style={{ maxHeight: '20vh' }}
 											src={bookUser.image || '/img/book-null-img.png'}
 											alt='...'
 										/>

@@ -331,10 +331,11 @@ const Users = () => {
 								className='btn btn-secondary'
 								data-bs-dismiss='modal'
 								onClick={() => {
-									setReturnInfo({ user: null, book: null });
 									document
 										.getElementById('open-user-info-modal-button')
 										.click();
+									setSelectedUser(returnInfo.user);
+									setReturnInfo({ user: null, book: null });
 								}}
 							>
 								Cancel
