@@ -25,6 +25,7 @@ const Books = () => {
 	const [isLoading, setLoading] = useState(false);
 
 	const [categories, setCategories] = useState();
+	const [publishers, setPublishers] = useState();
 	const [books, setBooks] = useState();
 	const [selectedBook, setSelectedBook] = useState();
 
@@ -37,7 +38,7 @@ const Books = () => {
 		title: '',
 		author: '',
 		description: '',
-		publisher: '',
+		publisher_id: '',
 		year: '',
 		image: '',
 		category_id: '',
@@ -47,7 +48,7 @@ const Books = () => {
 		title: false,
 		author: false,
 		description: false,
-		publisher: false,
+		publisher_id: false,
 		year: false,
 		image: false,
 		category_id: false,
@@ -57,7 +58,7 @@ const Books = () => {
 		title: false,
 		author: false,
 		description: false,
-		publisher: false,
+		publisher_id: false,
 		year: false,
 		image: false,
 		category_id: false,
@@ -66,6 +67,7 @@ const Books = () => {
 
 	useEffect(() => {
 		getCategoriesFromServer();
+		getPublishersFromServer();
 		getBooksFromServer();
 	}, []);
 
@@ -74,7 +76,7 @@ const Books = () => {
 			title: '',
 			author: '',
 			description: '',
-			publisher: '',
+			publisher_id: '',
 			year: '',
 			image: '',
 			category_id: '',
@@ -86,6 +88,12 @@ const Books = () => {
 	const getCategoriesFromServer = () => {
 		axios.get('/api/categories').then(res => {
 			setCategories(res.data);
+		});
+	};
+
+	const getPublishersFromServer = () => {
+		axios.get('/api/publishers').then(res => {
+			setPublishers(res.data);
 		});
 	};
 
@@ -153,13 +161,13 @@ const Books = () => {
 
 	const hasInputErrors = () => {
 		if (
-			newBook.title == '' ||
-			newBook.author == '' ||
-			newBook.description == '' ||
-			newBook.publisher == '' ||
-			newBook.year == '' ||
-			newBook.category_id == '' ||
-			newBook.stock == ''
+			newBook.title === '' ||
+			newBook.author === '' ||
+			newBook.description === '' ||
+			newBook.publisher_id === '' ||
+			newBook.year === '' ||
+			newBook.category_id === '' ||
+			newBook.stock === ''
 		)
 			return true;
 		return false;
@@ -168,12 +176,13 @@ const Books = () => {
 	const editHasInputErrors = () => {
 		if (
 			selectedBook.title == '' ||
-			selectedBook.author == '' ||
-			selectedBook.description == '' ||
-			selectedBook.publisher == '' ||
-			selectedBook.year == '' ||
-			selectedBook.category_id == '' ||
-			selectedBook.stock == ''
+			selectedBook.author === '' ||
+			selectedBook.description === '' ||
+			selectedBook.publisher_id === '' ||
+			selectedBook.year === '' ||
+			selectedBook.category_id === '' ||
+			selectedBook.stock === '' ||
+			selectedBook.stock < 0
 		)
 			return true;
 		return false;
@@ -277,7 +286,7 @@ const Books = () => {
 			item.id == value ||
 			item.title.toLowerCase().includes(value.toLowerCase()) ||
 			item.author.toLowerCase().includes(value.toLowerCase()) ||
-			item.publisher.toLowerCase().includes(value.toLowerCase()) ||
+			item.publisher.name.toLowerCase().includes(value.toLowerCase()) ||
 			item.year == value ||
 			item.category.name.toLowerCase().includes(value.toLowerCase())
 		);
@@ -339,7 +348,7 @@ const Books = () => {
 											<th scope='row'>{item.id}</th>
 											<td>{item.title}</td>
 											<td>{item.author}</td>
-											<td>{item.publisher}</td>
+											<td>{item.publisher.name}</td>
 											<td>{item.year}</td>
 											<td>{item.category.name}</td>
 											<td>{item.stock}</td>
@@ -354,7 +363,7 @@ const Books = () => {
 															title: false,
 															author: false,
 															description: false,
-															publisher: false,
+															publisher_id: false,
 															year: false,
 															image: false,
 															category_id: false,
@@ -384,6 +393,7 @@ const Books = () => {
 					</tbody>
 				</table>
 			</div>
+
 			{/* --------------------------------- Add Modal ---------------------------------*/}
 			<div
 				className='modal fade'
@@ -417,7 +427,7 @@ const Books = () => {
 											(addErrors.title ||
 											addErrors.author ||
 											addErrors.description ||
-											addErrors.publisher ||
+											addErrors.publisher_id ||
 											addErrors.year ||
 											addErrors.image ||
 											addErrors.category_id ||
@@ -494,23 +504,35 @@ const Books = () => {
 									setNewBook({ ...newBook, description: e.target.value });
 								}}
 							></textarea>
+
 							<small>Publisher</small>
-							<input
+							<select
 								className={
 									'form-control mb-2' +
-									(addErrors.publisher ? ' is-invalid' : '')
+									(addErrors.publisher_id ? ' is-invalid' : '')
 								}
-								placeholder='Publisher'
-								value={newBook.publisher}
+								id='publisherSelector'
 								onChange={e => {
 									if (e.target.value == '') {
-										setAddErrors({ ...addErrors, publisher: true });
+										setAddErrors({ ...addErrors, publisher_id: true });
 									} else {
-										setAddErrors({ ...addErrors, publisher: false });
+										setAddErrors({ ...addErrors, publisher_id: false });
 									}
-									setNewBook({ ...newBook, publisher: e.target.value });
+									setNewBook({ ...newBook, publisher_id: e.target.value });
 								}}
-							/>
+								value={newBook.publisher_id}
+							>
+								<option defaultValue value=''>
+									Publisher...
+								</option>
+								{publishers &&
+									publishers.map((item, index) => (
+										<option key={index} value={item.id}>
+											{item.name}
+										</option>
+									))}
+							</select>
+
 							<small>Year</small>
 							<input
 								className={
@@ -562,7 +584,11 @@ const Books = () => {
 								placeholder='Stock'
 								value={newBook.stock}
 								onChange={e => {
-									if (e.target.value == '' || isNaN(e.target.value)) {
+									if (
+										e.target.value == '' ||
+										isNaN(e.target.value) ||
+										e.target.value < 0
+									) {
 										setAddErrors({ ...addErrors, stock: true });
 									} else {
 										setAddErrors({ ...addErrors, stock: false });
@@ -603,6 +629,7 @@ const Books = () => {
 					</div>
 				</div>
 			</div>
+
 			{/* --------------------------------- Edit Modal --------------------------------- */}
 			<div
 				className='modal fade'
@@ -637,7 +664,7 @@ const Books = () => {
 											(editErrors.title ||
 											editErrors.author ||
 											editErrors.description ||
-											editErrors.publisher ||
+											editErrors.publisher_id ||
 											editErrors.year ||
 											editErrors.image ||
 											editErrors.category_id ||
@@ -723,26 +750,38 @@ const Books = () => {
 										});
 									}}
 								></textarea>
+
 								<small>Publisher</small>
-								<input
+								<select
 									className={
 										'form-control mb-2' +
-										(editErrors.publisher ? ' is-invalid' : '')
+										(editErrors.publisher_id ? ' is-invalid' : '')
 									}
-									placeholder='Publisher'
-									value={selectedBook.publisher}
+									id='publisherSelector'
 									onChange={e => {
 										if (e.target.value == '') {
-											setEditErrors({ ...editErrors, publisher: true });
+											setEditErrors({ ...editErrors, publisher_id: true });
 										} else {
-											setEditErrors({ ...editErrors, publisher: false });
+											setEditErrors({ ...editErrors, publisher_id: false });
 										}
 										setSelectedBook({
 											...selectedBook,
-											publisher: e.target.value,
+											publisher_id: e.target.value,
 										});
 									}}
-								/>
+									value={selectedBook.publisher_id}
+								>
+									<option defaultValue value=''>
+										Publisher...
+									</option>
+									{publishers &&
+										publishers.map((item, index) => (
+											<option key={index} value={item.id}>
+												{item.name}
+											</option>
+										))}
+								</select>
+
 								<small>Year</small>
 								<input
 									className={
@@ -798,7 +837,11 @@ const Books = () => {
 									placeholder='Stock'
 									value={selectedBook.stock}
 									onChange={e => {
-										if (e.target.value == '' || isNaN(e.target.value)) {
+										if (
+											e.target.value == '' ||
+											isNaN(e.target.value) ||
+											e.target.value < 0
+										) {
 											setEditErrors({ ...editErrors, stock: true });
 										} else {
 											setEditErrors({ ...editErrors, stock: false });
@@ -840,6 +883,7 @@ const Books = () => {
 					</div>
 				</div>
 			</div>
+
 			{/* --------------------------------- Delete Modal --------------------------------- */}
 			<div
 				className='modal fade'

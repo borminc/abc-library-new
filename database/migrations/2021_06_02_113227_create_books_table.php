@@ -17,16 +17,23 @@ class CreateBooksTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->string('author');
-            $table->string('description');
-            $table->string('publisher');
-            $table->bigInteger('year');
+            $table->longText('description');
+            $table->bigInteger('year')->unsigned();
             $table->string('image')->nullable();
+
+            $table->bigInteger('publisher_id')->unsigned();
+            $table->foreign('publisher_id')
+                ->references('id')
+                ->on('publishers')
+                ->onCascade('delete');
 
             $table->bigInteger('category_id')->unsigned();
             $table->foreign('category_id')
                 ->references('id')
                 ->on('categories')
                 ->onCascade('delete');
+
+            $table->bigInteger('stock')->unsigned();
 
             $table->timestamps();
         });

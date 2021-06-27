@@ -106,7 +106,7 @@ const Home = props => {
 												</tr>
 												<tr>
 													<td className='fw-bold'>Publisher</td>
-													<td>{value.publisher}</td>
+													<td>{value.publisher.name}</td>
 												</tr>
 												<tr>
 													<td className='fw-bold'>Year</td>
@@ -161,10 +161,10 @@ const Home = props => {
 			);
 		}
 		return (
-			<div className='container pb-5'>
+			<div className='container p-5'>
 				<div className='row'>
 					{search.map((value, i) => (
-						<div className='col-4' key={i}>
+						<div className='col-4 p-2' key={i}>
 							<div className='card border border-1 p-2'>
 								<img
 									src={value.image || 'img/book-null-img.png'}
@@ -219,13 +219,14 @@ const Home = props => {
 
 						<div className='row row-cols-5'>
 							{books.map((value, i) => (
-								<div className='col-3 p-3' key={i}>
+								<div className='col-3 p-3 ' key={i}>
 									<img
 										src={value.image || 'img/book-null-img.png'}
 										className='img-fluid rounded'
 										alt='...'
 										data-bs-toggle='modal'
 										data-bs-target={'#modal-book' + value.id}
+										style={{ cursor: 'pointer' }}
 									/>
 									{Modal(value, i)}
 								</div>
@@ -245,7 +246,7 @@ const Home = props => {
 			>
 				<div className='container position-relative'>
 					<div className='row justify-content-center'>
-						<div className='col-xl-6'>
+						<div className='col-lg-8'>
 							<div className='text-center text-white'>
 								<h1
 									className='display-1 fw-bold'

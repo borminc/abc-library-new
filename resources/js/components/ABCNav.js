@@ -28,7 +28,8 @@ function ABCNav(props) {
 			.get('/api/auth/logout')
 			.then(res => {
 				deleteCookie('token');
-				history.push('/');
+				// history.push('/');
+				location.href = '/';
 				setUser(null);
 			})
 			.catch(err => {
@@ -42,9 +43,11 @@ function ABCNav(props) {
 			expand='lg'
 			bg='light'
 			variant='light'
-			className='p-2'
+			className='p-2 shadow'
 		>
-			<Navbar.Brand href='/'>ABC Library</Navbar.Brand>
+			<Navbar.Brand href='/' className='ps-3 pe-5'>
+				ABC Library
+			</Navbar.Brand>
 			<Navbar.Toggle aria-controls='responsive-navbar-nav' />
 			<Navbar.Collapse
 				id='responsive-navbar-nav'
@@ -65,23 +68,50 @@ function ABCNav(props) {
 				</Nav>
 				<Nav>
 					<Router>
-						{user ? (
-							<div>
-								<button className='btn btn-link'>{user.name}</button>
-								<button className='btn btn-link' onClick={logoutHandler}>
-									log out
-								</button>
+						{user == 'loading' ? (
+							<div
+								className='spinner-border spinner-border-sm p-2 mr-4'
+								role='status'
+							>
+								<span className='visually-hidden'>Loading...</span>
 							</div>
+						) : user ? (
+							<NavDropdown
+								title={user.name}
+								id='collasible-nav-dropdown'
+								className='p-2'
+								alignRight
+							>
+								<NavDropdown.Item>
+									<button className='btn' onClick={() => history.push('/user')}>
+										User Dashboard
+									</button>
+								</NavDropdown.Item>
+
+								{user.is_admin && (
+									<NavDropdown.Item>
+										<button
+											className='btn'
+											onClick={() => history.push('/admin')}
+										>
+											Admin Dashboard
+										</button>
+									</NavDropdown.Item>
+								)}
+
+								<NavDropdown.Item>
+									<button className='btn' onClick={logoutHandler}>
+										Log out
+									</button>
+								</NavDropdown.Item>
+							</NavDropdown>
 						) : (
 							<div>
-								<button
-									className='btn btn-link'
-									onClick={() => history.push('/login')}
-								>
+								<button className='btn' onClick={() => history.push('/login')}>
 									Login
 								</button>
 								<button
-									className='btn btn-link'
+									className='btn'
 									onClick={() => history.push('/register')}
 								>
 									Register

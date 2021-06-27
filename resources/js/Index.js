@@ -15,10 +15,10 @@ import AdminLayout from './views/admin/AdminLayout';
 import NotFound from './views/NotFound';
 import Borrow from './views/Borrow';
 import ABCNav from './components/ABCNav';
-import UserDashboard from "./views/user/UserDashboard";
+import UserDashboard from './views/user/UserDashboard';
 
 const Index = () => {
-	const [user, setUser] = useState();
+	const [user, setUser] = useState('loading');
 
 	useEffect(() => {
 		axios
@@ -34,17 +34,17 @@ const Index = () => {
 	return (
 		<div>
 			<Router>
-				<div style={{ position: 'sticky', top: 0, zIndex: 2 }}>
+				<div style={{ position: 'sticky', top: 0, zIndex: 3 }}>
 					<ABCNav user={user} setUser={setUser} />
 				</div>
 
 				<div>
 					<Switch>
 						<Route path='/login'>
-							<Login />
+							<Login user={user} setUser={setUser} />
 						</Route>
 						<Route path='/register'>
-							<Register />
+							<Register user={user} setUser={setUser} />
 						</Route>
 						<Route path='/test'>
 							<PrivateRoute component={<Test />} />
@@ -54,6 +54,11 @@ const Index = () => {
 						</Route>
 						<Route path='/admin'>
 							<AdminRoute component={<AdminLayout />} />
+						</Route>
+						<Route path='/user'>
+							<PrivateRoute
+								component={<UserDashboard user={user} setUser={setUser} />}
+							/>
 						</Route>
 
 						<Route path='/unauthorized'>

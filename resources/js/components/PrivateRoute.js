@@ -26,14 +26,6 @@ const PrivateRoute = props => {
 			});
 	}, []);
 
-	if (loginStatus === 0) {
-		return <Loading />;
-	} else if (loginStatus === 1) {
-		return <div> {props.component} </div>;
-	}
-
-	return <Redirect push to='/login' />;
-
 	switch (loginStatus) {
 		case 0:
 			return <Loading />;
