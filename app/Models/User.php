@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use App\Models\Log;
 
 use App\Models\Book;
 
@@ -51,5 +52,9 @@ class User extends Authenticatable
 
     public function books() {
         return $this->belongsToMany(Book::class)->withPivot('borrow_time', 'return_time');
+    }
+
+    public function logs() {
+        return $this->hasMany(Log::class);
     }
 }

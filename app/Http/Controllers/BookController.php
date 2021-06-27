@@ -25,6 +25,11 @@ class BookController extends Controller
         return $result;
     }
 
+    public function getJustBookTitles() {
+        $books = Book::select('id', 'title')->get();
+        return $books;
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -181,5 +186,26 @@ class BookController extends Controller
         $books->load('category');
         $books->load('publisher');
         return $books;
+    }
+
+    public function addStockToBook(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'book_id' => 'required|integer',
+            'stock' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Input is valid'
+            ], 400);
+        }
+
+        $book = Book::findOrFail($request->book_id);
+        $book->stock = $book->stock + $request->stock;
+        $book->save();
+
+        return response()->json([
+                'message' => 'Successfully added ' . $request->stock . ' of ' . $book->title
+            ]);
     }
 }

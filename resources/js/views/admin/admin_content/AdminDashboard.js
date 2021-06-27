@@ -19,6 +19,10 @@ const AdminDashboard = () => {
 
 	const [msg, setMsg] = useState({ text: '', success: 0 });
 	const [acceptingBookUser, setAcceptingBookUser] = useState();
+	const [restockingBook, setRestockingBook] = useState();
+
+	const [addStockAmount, setAddStockAmount] = useState(0);
+	const [addStockAmountErr, setAddStockAmountErr] = useState(false);
 
 	useEffect(() => {
 		setLoading(true);
@@ -98,6 +102,32 @@ const AdminDashboard = () => {
 			.finally(() => {
 				// setReturning(false);
 				// getUsersFromServer();
+			});
+	};
+
+	const addStockHandler = () => {
+		if (addStockAmountErr) return;
+		axios
+			.post('/api/add-stock-book', {
+				book_id: restockingBook.id,
+				stock: addStockAmount,
+			})
+			.then(res => {
+				setAddStockAmount('');
+				setRestockingBook(null);
+				setMsg({ text: 'Stock added successfully!', success: 1 });
+				axios
+					.get('/api/low-stock-books')
+					.then(res1 => {
+						setLowStockBooks(res1.data);
+					})
+					.catch(err1 => {
+						console.log(err);
+					});
+			})
+			.catch(err => {
+				console.log(err);
+				setMsg({ text: 'There was a problem: ' + err.response, success: 0 });
 			});
 	};
 
@@ -590,6 +620,7 @@ const AdminDashboard = () => {
 									<th scope='col'>ID</th>
 									<th scope='col'>Title</th>
 									<th scope='col'>Stock</th>
+									<th scope='col'>Action</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -600,6 +631,25 @@ const AdminDashboard = () => {
 											<td>{book.title}</td>
 											<td className={book.stock <= 0 ? 'text-danger' : ''}>
 												{book.stock}
+											</td>
+											<td>
+												<button
+													type='button'
+													className='btn btn-primary'
+													data-bs-toggle='modal'
+													data-bs-target='#addStockModal'
+													onClick={() => {
+														setRestockingBook(book);
+														setMsg({
+															text: '',
+															success: 1,
+														});
+														setAddStockAmount('');
+														setAddStockAmountErr(false);
+													}}
+												>
+													Add
+												</button>
 											</td>
 										</tr>
 									))
@@ -714,6 +764,114 @@ const AdminDashboard = () => {
 									</button>
 								</div>
 							)}
+					</div>
+				</div>
+			</div>
+
+			{/* Add stock modal */}
+			<div
+				className='modal fade'
+				id='addStockModal'
+				tabIndex='-1'
+				aria-labelledby='addStockModalLabel'
+				aria-hidden='true'
+			>
+				<div className='modal-dialog'>
+					<div className='modal-content'>
+						<div className='modal-header'>
+							<h5 className='modal-title' id='addStockModalLabel'>
+								Add Stock
+							</h5>
+							<button
+								type='button'
+								className='btn-close'
+								data-bs-dismiss='modal'
+								aria-label='Close'
+							></button>
+						</div>
+						<div className='modal-body'>
+							{msg && msg.text && (
+								<MessageAlert msg={msg.text} success={msg.success} />
+							)}
+							{restockingBook && restockingBook.title && (
+								<div>
+									<p>Add stock for: {restockingBook.title}</p>
+									<div className='d-flex'>
+										<input
+											type='text'
+											className={
+												'form-control mr-2' +
+												(addStockAmountErr ? ' is-invalid' : '')
+											}
+											value={addStockAmount}
+											onChange={e => {
+												if (
+													e.target.value == '' ||
+													e.target.value < 0 ||
+													isNaN(e.target.value)
+												) {
+													setAddStockAmountErr(true);
+												} else {
+													setAddStockAmountErr(false);
+												}
+												setAddStockAmount(e.target.value);
+											}}
+										/>
+										<div
+											className='btn-group me-2'
+											role='group'
+											aria-label='First group'
+										>
+											<button
+												type='button'
+												className={
+													'btn btn-outline-secondary' +
+													(addStockAmountErr ? ' disabled' : '')
+												}
+												onClick={() => {
+													if (!addStockAmountErr && addStockAmount != 0)
+														setAddStockAmount(+addStockAmount - 1);
+												}}
+											>
+												-
+											</button>
+											<button
+												type='button'
+												className={
+													'btn btn-outline-secondary' +
+													(addStockAmountErr ? ' disabled' : '')
+												}
+												onClick={() => {
+													if (!addStockAmountErr)
+														setAddStockAmount(+addStockAmount + 1);
+												}}
+											>
+												+
+											</button>
+										</div>
+									</div>
+								</div>
+							)}
+						</div>
+						<div className='modal-footer'>
+							<button
+								type='button'
+								className='btn btn-secondary'
+								data-bs-dismiss='modal'
+							>
+								Close
+							</button>
+							<button
+								type='button'
+								className={
+									'btn btn-primary' +
+									(addStockAmountErr || addStockAmount == '' ? ' disabled' : '')
+								}
+								onClick={addStockHandler}
+							>
+								Add
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
