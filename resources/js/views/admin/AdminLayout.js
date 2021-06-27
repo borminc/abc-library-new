@@ -13,9 +13,9 @@ import {
 } from 'react-router-dom';
 
 import { setCookie, getCookie, deleteCookie } from '../../functions/cookies';
-import './imports/sb-admin-2.min.css';
-import './imports/sb-admin-2.js';
-import './imports/sb-admin-2.min.js';
+import './../imports/sb-admin-2.min.css';
+import './../imports/sb-admin-2.js';
+import './../imports/sb-admin-2.min.js';
 
 import AdminDashboard from './admin_content/AdminDashboard';
 import Categories from './admin_content/Categories';

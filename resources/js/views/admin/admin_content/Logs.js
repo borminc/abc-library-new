@@ -149,103 +149,104 @@ const Logs = () => {
 					}}
 				/> */}
 			</div>
+			<div className='overflow-auto'>
+				<table className='table'>
+					<thead>
+						<tr>
+							<th scope='col'>ID</th>
+							<th scope='col'>Title</th>
+							<th scope='col'>User</th>
+							<th scope='col'>Book</th>
+							<th scope='col'>Date/time</th>
+							<th scope='col'>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{logs &&
+							logs.map((log, i) => (
+								<tr key={i}>
+									<th scope='row'>{log.id}</th>
+									<td>{log.title}</td>
+									<td>{log.user.name}</td>
+									<td>{log.book ? log.book.title : 'n/a'}</td>
+									<td>{log.date_time}</td>
+									<td>
+										<button
+											type='button'
+											className='btn btn-outline-primary'
+											data-bs-toggle='modal'
+											data-bs-target={'#logInfoModal-' + log.id}
+										>
+											More info
+										</button>
 
-			<table className='table'>
-				<thead>
-					<tr>
-						<th scope='col'>ID</th>
-						<th scope='col'>Title</th>
-						<th scope='col'>User</th>
-						<th scope='col'>Book</th>
-						<th scope='col'>Date/time</th>
-						<th scope='col'>Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					{logs &&
-						logs.map((log, i) => (
-							<tr key={i}>
-								<th scope='row'>{log.id}</th>
-								<td>{log.title}</td>
-								<td>{log.user.name}</td>
-								<td>{log.book ? log.book.title : 'n/a'}</td>
-								<td>{log.date_time}</td>
-								<td>
-									<button
-										type='button'
-										className='btn btn-outline-primary'
-										data-bs-toggle='modal'
-										data-bs-target={'#logInfoModal-' + log.id}
-									>
-										More info
-									</button>
-
-									<div
-										className='modal fade'
-										id={'logInfoModal-' + log.id}
-										tabIndex='-1'
-										aria-labelledby={'logInfoModalLabel-' + log.id}
-										aria-hidden='true'
-									>
-										<div className='modal-dialog'>
-											<div className='modal-content'>
-												<div className='modal-header'>
-													<h5
-														className='modal-title'
-														id={'logInfoModalLabel-' + log.id}
-													>
-														{log.id}
-													</h5>
-													<button
-														type='button'
-														className='btn-close'
-														data-bs-dismiss='modal'
-														aria-label='Close'
-													></button>
-												</div>
-												<div className='modal-body'>
-													<table className='table'>
-														<tbody>
-															<tr>
-																<td>Title</td>
-																<td>{log.title}</td>
-															</tr>
-															<tr>
-																<td>User</td>
-																<td>{log.user.name}</td>
-															</tr>
-															<tr>
-																<td>Book</td>
-																<td>{log.book ? log.book.title : 'n/a'}</td>
-															</tr>
-															<tr>
-																<td>Description</td>
-																<td>{log.description}</td>
-															</tr>
-															<tr>
-																<td>Date/time</td>
-																<td>{log.date_time}</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-												<div className='modal-footer'>
-													<button
-														type='button'
-														className='btn btn-secondary'
-														data-bs-dismiss='modal'
-													>
-														Close
-													</button>
+										<div
+											className='modal fade'
+											id={'logInfoModal-' + log.id}
+											tabIndex='-1'
+											aria-labelledby={'logInfoModalLabel-' + log.id}
+											aria-hidden='true'
+										>
+											<div className='modal-dialog'>
+												<div className='modal-content'>
+													<div className='modal-header'>
+														<h5
+															className='modal-title'
+															id={'logInfoModalLabel-' + log.id}
+														>
+															{log.id}
+														</h5>
+														<button
+															type='button'
+															className='btn-close'
+															data-bs-dismiss='modal'
+															aria-label='Close'
+														></button>
+													</div>
+													<div className='modal-body'>
+														<table className='table'>
+															<tbody>
+																<tr>
+																	<td>Title</td>
+																	<td>{log.title}</td>
+																</tr>
+																<tr>
+																	<td>User</td>
+																	<td>{log.user.name}</td>
+																</tr>
+																<tr>
+																	<td>Book</td>
+																	<td>{log.book ? log.book.title : 'n/a'}</td>
+																</tr>
+																<tr>
+																	<td>Description</td>
+																	<td>{log.description}</td>
+																</tr>
+																<tr>
+																	<td>Date/time</td>
+																	<td>{log.date_time}</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+													<div className='modal-footer'>
+														<button
+															type='button'
+															className='btn btn-secondary'
+															data-bs-dismiss='modal'
+														>
+															Close
+														</button>
+													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								</td>
-							</tr>
-						))}
-				</tbody>
-			</table>
+									</td>
+								</tr>
+							))}
+					</tbody>
+				</table>
+			</div>
 
 			{isLoading && <Loading height='1vh' size='2rem' />}
 

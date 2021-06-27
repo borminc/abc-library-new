@@ -15,7 +15,7 @@ import AdminLayout from './views/admin/AdminLayout';
 import NotFound from './views/NotFound';
 import Borrow from './views/Borrow';
 import ABCNav from './components/ABCNav';
-import UserDashboard from './views/user/UserDashboard';
+import UserLayout from './views/user/UserLayout';
 
 const Index = () => {
 	const [user, setUser] = useState('loading');
@@ -50,15 +50,12 @@ const Index = () => {
 							<PrivateRoute component={<Test />} />
 						</Route>
 						<Route path='/user'>
-							<PrivateRoute component={<UserDashboard />} />
+							<PrivateRoute
+								component={<UserLayout user={user} setUser={setUser} />}
+							/>
 						</Route>
 						<Route path='/admin'>
 							<AdminRoute component={<AdminLayout />} />
-						</Route>
-						<Route path='/user'>
-							<PrivateRoute
-								component={<UserDashboard user={user} setUser={setUser} />}
-							/>
 						</Route>
 
 						<Route path='/unauthorized'>
