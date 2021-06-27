@@ -49,6 +49,9 @@ const Index = () => {
 						<Route path='/test'>
 							<PrivateRoute component={<Test />} />
 						</Route>
+						<Route path='/user'>
+							<PrivateRoute component={<UserDashboard />} />
+						</Route>
 						<Route path='/admin'>
 							<AdminRoute component={<AdminLayout />} />
 						</Route>
