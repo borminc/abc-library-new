@@ -25,7 +25,11 @@ const AdminDashboard = () => {
 	const [addStockAmountErr, setAddStockAmountErr] = useState(false);
 
 	useEffect(() => {
-		setLoading(true);
+		getInfoFromServer();
+	}, []);
+
+	const getInfoFromServer = (reload = true) => {
+		if (reload) setLoading(true);
 		axios
 			.all([
 				axios.get('/api/borrowed-books'),
@@ -52,9 +56,9 @@ const AdminDashboard = () => {
 				})
 			)
 			.finally(() => {
-				setLoading(false);
+				if (reload) setLoading(false);
 			});
-	}, []);
+	};
 
 	const returnBookHandler = () => {
 		if (
@@ -63,45 +67,25 @@ const AdminDashboard = () => {
 			!acceptingBookUser.book
 		)
 			return;
-		// setReturning(true);
+
+		let late = acceptingBookUser.mode == 'late';
+		let lost_late = acceptingBookUser.mode == 'lost-late';
+		let lost_due = acceptingBookUser.mode == 'lost-due';
+		let url = lost_late || lost_due ? '/api/books/lost' : '/api/books/return';
+
 		axios
-			.post('/api/books/return', {
+			.post(url, {
 				user_id: acceptingBookUser.user.id,
 				book_id: acceptingBookUser.book.id,
 			})
 			.then(res => {
-				setMsg({ text: 'The return was successful!', success: 1 });
-
-				let late = acceptingBookUser.mode == 'late';
 				setAcceptingBookUser({ user: null, book: null });
-
-				if (late) {
-					axios
-						.get('/api/late-users')
-						.then(res => {
-							setLateUsers(res.data);
-						})
-						.catch(err => {
-							console.log(err);
-						});
-				} else {
-					axios
-						.get('/api/books-due-today')
-						.then(res => {
-							setBooksDueToday(res.data);
-						})
-						.catch(err => {
-							console.log(err);
-						});
-				}
+				setMsg({ text: 'The return was successful!', success: 1 });
+				getInfoFromServer(false);
 			})
 			.catch(err => {
 				console.log(err);
 				setMsg({ text: 'There was a problem: ' + err.response, success: 0 });
-			})
-			.finally(() => {
-				// setReturning(false);
-				// getUsersFromServer();
 			});
 	};
 
@@ -314,7 +298,29 @@ const AdminDashboard = () => {
 																				<td>
 																					<button
 																						type='button'
-																						className='btn btn-success'
+																						className='btn btn-danger mr-2 mb-2'
+																						data-bs-toggle='modal'
+																						data-bs-target='#confirmReturnModal'
+																						onClick={() => {
+																							document
+																								.getElementById(
+																									'dueBooksModalCloseBtn-' +
+																										book.id
+																								)
+																								.click();
+																							setAcceptingBookUser({
+																								book: book,
+																								user: user,
+																								mode: 'lost-due',
+																							});
+																							setMsg({ ...msg, text: '' });
+																						}}
+																					>
+																						Lost
+																					</button>
+																					<button
+																						type='button'
+																						className='btn btn-success mb-2'
 																						data-bs-toggle='modal'
 																						data-bs-target='#confirmReturnModal'
 																						onClick={() => {
@@ -451,7 +457,29 @@ const AdminDashboard = () => {
 																				<td>
 																					<button
 																						type='button'
-																						className='btn btn-success'
+																						className='btn btn-danger mr-2 mb-2'
+																						data-bs-toggle='modal'
+																						data-bs-target='#confirmReturnModal'
+																						onClick={() => {
+																							document
+																								.getElementById(
+																									'lateBooksModalCloseBtn-' +
+																										user.id
+																								)
+																								.click();
+																							setAcceptingBookUser({
+																								book: book,
+																								user: user,
+																								mode: 'lost-late',
+																							});
+																							setMsg({ ...msg, text: '' });
+																						}}
+																					>
+																						Lost
+																					</button>
+																					<button
+																						type='button'
+																						className='btn btn-success mb-2'
 																						data-bs-toggle='modal'
 																						data-bs-target='#confirmReturnModal'
 																						onClick={() => {
@@ -694,8 +722,10 @@ const AdminDashboard = () => {
 								acceptingBookUser.user && (
 									<div>
 										<div>
-											Are you sure you want to accept the return of this book
-											from this user?
+											{acceptingBookUser.mode == 'lost-due' ||
+											acceptingBookUser.mode == 'lost-late'
+												? 'Are you sure you want to accept the loss of this book from this user?'
+												: 'Are you sure you want to accept the return of this book from this user?'}
 										</div>
 										<table className='table'>
 											<thead>
@@ -703,6 +733,10 @@ const AdminDashboard = () => {
 													<th scope='col'>User</th>
 													<th scope='col'>Book</th>
 													{acceptingBookUser.mode == 'late' && <th>Cost</th>}
+													{(acceptingBookUser.mode == 'lost-due' ||
+														acceptingBookUser.mode == 'lost-late') && (
+														<th>Note</th>
+													)}
 												</tr>
 											</thead>
 											<tbody>
@@ -714,15 +748,23 @@ const AdminDashboard = () => {
 															${acceptingBookUser.book.cost}
 														</th>
 													)}
+													{(acceptingBookUser.mode == 'lost-due' ||
+														acceptingBookUser.mode == 'lost-late') && (
+														<th className='text-danger'>
+															Fee dued to be calculated.
+														</th>
+													)}
 												</tr>
 											</tbody>
 										</table>
-										{acceptingBookUser.mode == 'late' &&
-											acceptingBookUser.book.cost > 0 && (
-												<p className='text-danger'>
-													*Make sure all fees are paid before acepting.
-												</p>
-											)}
+										{((acceptingBookUser.mode == 'late' &&
+											acceptingBookUser.book.cost > 0) ||
+											acceptingBookUser.mode == 'lost-due' ||
+											acceptingBookUser.mode == 'lost-late') && (
+											<p className='text-danger'>
+												*Make sure all fees are paid before acepting.
+											</p>
+										)}
 									</div>
 								)}
 						</div>
@@ -736,13 +778,19 @@ const AdminDashboard = () => {
 										className='btn btn-secondary'
 										data-bs-dismiss='modal'
 										onClick={() => {
-											if (acceptingBookUser.mode == 'late') {
+											if (
+												acceptingBookUser.mode == 'late' ||
+												acceptingBookUser.mode == 'lost-late'
+											) {
 												document
 													.getElementById(
 														'modalLateOpenBtn-' + acceptingBookUser.user.id
 													)
 													.click();
-											} else {
+											} else if (
+												acceptingBookUser.mode == 'due' ||
+												acceptingBookUser.mode == 'lost-due'
+											) {
 												document
 													.getElementById(
 														'modalDueOpenBtn-' + acceptingBookUser.book.id
@@ -755,13 +803,25 @@ const AdminDashboard = () => {
 									>
 										Cancel
 									</button>
-									<button
-										type='button'
-										className='btn btn-success'
-										onClick={returnBookHandler}
-									>
-										Accept Now
-									</button>
+
+									{acceptingBookUser.mode == 'lost-due' ||
+									acceptingBookUser.mode == 'lost-late' ? (
+										<button
+											type='button'
+											className='btn btn-danger'
+											onClick={returnBookHandler}
+										>
+											Accept Loss
+										</button>
+									) : (
+										<button
+											type='button'
+											className='btn btn-success'
+											onClick={returnBookHandler}
+										>
+											Accept Now
+										</button>
+									)}
 								</div>
 							)}
 					</div>
