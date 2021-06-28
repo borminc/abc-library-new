@@ -298,7 +298,7 @@ const AdminDashboard = () => {
 																				<td>
 																					<button
 																						type='button'
-																						className='btn btn-danger mr-2 mb-2'
+																						className='btn btn-outline-danger mr-2 mb-2'
 																						data-bs-toggle='modal'
 																						data-bs-target='#confirmReturnModal'
 																						onClick={() => {
@@ -320,7 +320,7 @@ const AdminDashboard = () => {
 																					</button>
 																					<button
 																						type='button'
-																						className='btn btn-success mb-2'
+																						className='btn btn-outline-success mb-2'
 																						data-bs-toggle='modal'
 																						data-bs-target='#confirmReturnModal'
 																						onClick={() => {
@@ -457,7 +457,7 @@ const AdminDashboard = () => {
 																				<td>
 																					<button
 																						type='button'
-																						className='btn btn-danger mr-2 mb-2'
+																						className='btn btn-outline-danger mr-2 mb-2'
 																						data-bs-toggle='modal'
 																						data-bs-target='#confirmReturnModal'
 																						onClick={() => {
@@ -479,7 +479,7 @@ const AdminDashboard = () => {
 																					</button>
 																					<button
 																						type='button'
-																						className='btn btn-success mb-2'
+																						className='btn btn-outline-success mb-2'
 																						data-bs-toggle='modal'
 																						data-bs-target='#confirmReturnModal'
 																						onClick={() => {
