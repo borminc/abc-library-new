@@ -148,15 +148,23 @@ class BookController extends Controller
         $by = $request->query('by');
         $value = $request->query('value');
 
-        if (!($by && $value) || !in_array($by, $params)) {
+        if (!($by && $value) || ($by !='all' && !in_array($by, $params))) {
             // invalid params
             return response()->json([
                 'error' => 'Bad request'
             ], 400); 
         }
 
-        $result = Book::where($by, 'LIKE', '%'.$value.'%')->get();
-        
+        if ($by == 'all') {
+            $query = Book::query();
+            foreach ($params as $param) {
+                $query->orWhere($param, 'LIKE', '%'.$value.'%');
+            }
+            $result = $query->get();
+        } else {
+            $result = Book::where($by, 'LIKE', '%'.$value.'%')->get();
+        }
+
         if ($result) {
             $result->load('category');
             $result->load('publisher');
