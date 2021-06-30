@@ -18,7 +18,7 @@ const Logs = () => {
 	const [isLoading, setLoading] = useState(false);
 	const [msg, setMsg] = useState({ text: '', success: 0 });
 	const [logs, setLogs] = useState();
-	const [searchValue, setSearchValue] = useState();
+	const [searchValue, setSearchValue] = useState('');
 	const [addErrors, setAddErrors] = useState({
 		title: false,
 		user_id: false,
@@ -35,6 +35,8 @@ const Logs = () => {
 
 	const [users, setUsers] = useState();
 	const [books, setBooks] = useState();
+	const NUM_INCREMENTS = 10;
+	const [numShow, setNumShow] = useState(NUM_INCREMENTS);
 
 	useEffect(() => {
 		getLogsFromServer();
@@ -159,6 +161,8 @@ const Logs = () => {
 					aria-describedby='basic-addon2'
 					onChange={e => {
 						setSearchValue(e.target.value);
+						if (e.target.value === '') setNumShow(NUM_INCREMENTS);
+						else if (logs && logs.length > 0) setNumShow(logs.length);
 					}}
 				/>
 			</div>
@@ -178,8 +182,9 @@ const Logs = () => {
 						{logs &&
 							logs.map((log, i) => {
 								if (
-									searchValue &&
-									(searchValue == '' || !searchMatches(log, searchValue))
+									(searchValue &&
+										(searchValue == '' || !searchMatches(log, searchValue))) ||
+									i + 1 > numShow
 								)
 									return null;
 								else {
@@ -270,6 +275,45 @@ const Logs = () => {
 							})}
 					</tbody>
 				</table>
+			</div>
+
+			{logs && searchValue === '' && (
+				<small className='d-flex justify-content-center text-muted mt-3 mb-3'>
+					{'Showing ' +
+						(numShow < logs.length ? numShow : logs.length) +
+						' of ' +
+						logs.length}
+				</small>
+			)}
+
+			<div className='d-inline d-flex justify-content-center'>
+				{logs &&
+					logs.length >= numShow &&
+					numShow > NUM_INCREMENTS &&
+					searchValue === '' && (
+						<button
+							className='btn btn-link'
+							onClick={() => {
+								if (numShow < NUM_INCREMENTS * 2) setNumShow(NUM_INCREMENTS);
+								else setNumShow(numShow - NUM_INCREMENTS);
+							}}
+						>
+							Show less
+						</button>
+					)}
+
+				{logs && logs.length > numShow && searchValue === '' && (
+					<button
+						className='btn btn-link'
+						onClick={() => {
+							if (numShow + NUM_INCREMENTS > logs.length)
+								setNumShow(logs.length);
+							else setNumShow(numShow + NUM_INCREMENTS);
+						}}
+					>
+						Show more
+					</button>
+				)}
 			</div>
 
 			{isLoading && <Loading height='1vh' size='2rem' />}

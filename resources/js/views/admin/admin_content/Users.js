@@ -27,6 +27,8 @@ const Users = () => {
 	const [msg, setMsg] = useState({ text: '', success: 0 });
 
 	const [searchValue, setSearchValue] = useState('');
+	const NUM_INCREMENTS = 10;
+	const [numShow, setNumShow] = useState(NUM_INCREMENTS);
 
 	useEffect(() => {
 		getUsersFromServer();
@@ -95,6 +97,8 @@ const Users = () => {
 					aria-describedby='basic-addon2'
 					onChange={e => {
 						setSearchValue(e.target.value);
+						if (e.target.value === '') setNumShow(NUM_INCREMENTS);
+						else if (users && users.length > 0) setNumShow(users.length);
 					}}
 				/>
 			</div>
@@ -114,8 +118,9 @@ const Users = () => {
 						{users &&
 							users.map((user, i) => {
 								if (
-									searchValue &&
-									(searchValue == '' || !searchMatches(user, searchValue))
+									(searchValue &&
+										(searchValue == '' || !searchMatches(user, searchValue))) ||
+									i + 1 > numShow
 								)
 									return null;
 								else {
@@ -411,6 +416,45 @@ const Users = () => {
 						</div>
 					</div>
 				</div>
+			</div>
+
+			{users && searchValue === '' && (
+				<small className='d-flex justify-content-center text-muted mt-3 mb-3'>
+					{'Showing ' +
+						(numShow < users.length ? numShow : users.length) +
+						' of ' +
+						users.length}
+				</small>
+			)}
+
+			<div className='d-inline d-flex justify-content-center'>
+				{users &&
+					users.length >= numShow &&
+					numShow > NUM_INCREMENTS &&
+					searchValue === '' && (
+						<button
+							className='btn btn-link'
+							onClick={() => {
+								if (numShow < NUM_INCREMENTS * 2) setNumShow(NUM_INCREMENTS);
+								else setNumShow(numShow - NUM_INCREMENTS);
+							}}
+						>
+							Show less
+						</button>
+					)}
+
+				{users && users.length > numShow && searchValue === '' && (
+					<button
+						className='btn btn-link'
+						onClick={() => {
+							if (numShow + NUM_INCREMENTS > users.length)
+								setNumShow(users.length);
+							else setNumShow(numShow + NUM_INCREMENTS);
+						}}
+					>
+						Show more
+					</button>
+				)}
 			</div>
 
 			{isLoading && <Loading height='1vh' size='2rem' />}

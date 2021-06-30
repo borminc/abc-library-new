@@ -121,14 +121,14 @@ const AdminLayout = () => {
 					</li>
 
 					<li className='nav-item'>
-						<Link to={`${url}/rules`} className='nav-link'>
-							Rules
+						<Link to={`${url}/logs`} className='nav-link'>
+							Logs
 						</Link>
 					</li>
 
 					<li className='nav-item'>
-						<Link to={`${url}/logs`} className='nav-link'>
-							Logs
+						<Link to={`${url}/rules`} className='nav-link'>
+							Rules
 						</Link>
 					</li>
 				</ul>
@@ -182,7 +182,7 @@ const AdminLayout = () => {
 					{/* End of Main Content */}
 
 					{/* Footer */}
-					<footer className='sticky-footer bg-white'>
+					<footer className='sticky-footer bg-none mt-3'>
 						<div className='container my-auto'>
 							<div className='copyright text-center my-auto'>
 								<span>Copyright &copy; ABC Library 2021</span>
