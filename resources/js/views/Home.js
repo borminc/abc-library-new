@@ -173,8 +173,8 @@ const Home = props => {
 			return (
 				<div className='text-center p-5' style={{ marginBottom: '20vh' }}>
 					<img
-						src={'img/not-found.jpg'}
-						style={{ width: '25rem' }}
+						src={'/img/not-found.jpg'}
+						style={{ width: '25rem', maxWidth: '100%' }}
 						alt='not-found'
 					/>
 					<div className='display-6'>No Result Found</div>
