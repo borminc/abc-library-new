@@ -30,6 +30,7 @@ const AdminLayout = () => {
 	let { path, url } = useRouteMatch();
 	const history = useHistory();
 
+	const [showsSideBar, setShowsSideBar] = useState(false);
 	const [adminInfo, setAdminInfo] = useState();
 
 	useEffect(() => {
@@ -58,7 +59,10 @@ const AdminLayout = () => {
 			<div id='wrapper'>
 				{/* Sidebar */}
 				<ul
-					className='navbar-nav bg-gradient-primary sidebar sidebar-dark accordion'
+					className={
+						'navbar-nav bg-gradient-primary sidebar sidebar-dark accordion ' +
+						(showsSideBar ? '' : ' toggled')
+					}
 					id='accordionSidebar'
 				>
 					{/* Sidebar - Brand */}
@@ -140,6 +144,17 @@ const AdminLayout = () => {
 					<div id='content'>
 						{/* Begin Page Content */}
 						<div className='container-fluid'>
+							<button
+								id='sidebarToggleTop'
+								className='btn btn-link d-md-none rounded-circle mr-3'
+								onClick={() => setShowsSideBar(!showsSideBar)}
+							>
+								<img
+									style={{ maxHeight: '5vw', opacity: '50%' }}
+									src='/img/icons8-menu.svg'
+								/>
+							</button>
+
 							{/* ----------------------------- ROUTER ----------------------------- */}
 							{/* <Router> */}
 							<Switch>
