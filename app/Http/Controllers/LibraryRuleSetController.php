@@ -67,6 +67,11 @@ class LibraryRuleSetController extends Controller
         //
     }
 
+    public function showDefault() {
+        $rule = LibraryRuleSet::where('name', 'default')->first();
+        return $rule;
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

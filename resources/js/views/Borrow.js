@@ -9,10 +9,23 @@ const Borrow = props => {
 	let { bookId } = useParams();
 	const [book, setBook] = useState();
 	const [isProcessing, setProcessing] = useState();
+	const [rules, setRules] = useState();
 
 	useEffect(() => {
 		getBookFromServer();
 	}, [bookId]);
+
+	useEffect(() => {
+		axios
+			.get('/api/library-default-rule')
+			.then(res => {
+				console.log(res.data);
+				setRules(res.data);
+			})
+			.catch(err => {
+				console.log(err.response);
+			});
+	}, []);
 
 	const getBookFromServer = () => {
 		axios.get('/api/books/' + bookId).then(res => {
@@ -145,17 +158,28 @@ const Borrow = props => {
 						<div className='card-group shadow-lg p-3 mb-5 bg-body rounded'>
 							<div className='card'>
 								<div className='card-header'>
-									<h5>Rule and Policy</h5>
+									<h5>Rules and Policies</h5>
 								</div>
 								<div className='card-body'>
 									<ul>
+										<li>
+											{'Each user can borrow ' +
+												(rules
+													? rules.num_of_books_per_user
+													: 'a limited number of ') +
+												' books at once.'}
+										</li>
 										<li>Give the book back in a timely manner.</li>
 										<li>Do not fold down the corners</li>
-										<li>Don't lend it to others</li>
 										<li>Don't write in, underline, or highlight ANYTHING.</li>
-										<li>Don't take the book in the bath or to the pool.</li>
-										<li>Don't lose the dust jacket.</li>
-										<li>If you lose or maim it, buy a replacement</li>
+										<li>
+											If you lose or maim it, appropriate fines/actions will be
+											taken.
+										</li>
+										<li>
+											All rules and policies are subject to change without prior
+											notice to borrowers.
+										</li>
 									</ul>
 								</div>
 							</div>
@@ -166,19 +190,26 @@ const Borrow = props => {
 								<div className='card-body'>
 									<ul>
 										<li>
-											When any borrowed item becomes overdue, borrowing
-											privileges are automatically suspended
+											{'Borrowers have ' +
+												(rules
+													? rules.duration_per_borrow + ' day(s) '
+													: 'duration') +
+												'to borrow each book.'}
 										</li>
 										<li>
-											For items more than the due date, a bill for its
-											replacement will be issued:
-											<ul>
-												<li>$1.00 for 1 day</li>
-											</ul>
+											When any borrowed item becomes overdue, appropriate fees
+											must be paid.
 										</li>
 										<li>
-											Borrowing privileges will be restored after return of all
-											late materials and/or payment of all fees
+											For items returned past the due date, a bill for its
+											replacement will be issued.
+											{rules && rules.cost_per_day_late_return && (
+												<ul>
+													<li className='text-danger'>
+														${rules.cost_per_day_late_return} for 1 day overdue
+													</li>
+												</ul>
+											)}
 										</li>
 									</ul>
 								</div>
@@ -187,7 +218,10 @@ const Borrow = props => {
 					</div>
 
 					<div className='p-5'>
-						<p>Click button below to confirm your borrow</p>
+						<p>
+							By clicking Borrow, you agree to all the rules and policies of ABC
+							Library.
+						</p>
 						<button
 							type='submit'
 							className='btn btn-primary'

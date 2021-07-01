@@ -32,7 +32,9 @@ const Books = () => {
 	const [fileName, setFileName] = useState();
 	const [isProcessing, setProcessing] = useState(false);
 
-	const [searchValue, setSearchValue] = useState();
+	const [searchValue, setSearchValue] = useState('');
+	const NUM_INCREMENTS = 10;
+	const [numShow, setNumShow] = useState(NUM_INCREMENTS);
 
 	const [newBook, setNewBook] = useState({
 		title: '',
@@ -317,6 +319,8 @@ const Books = () => {
 					aria-describedby='basic-addon2'
 					onChange={e => {
 						setSearchValue(e.target.value);
+						if (e.target.value === '') setNumShow(NUM_INCREMENTS);
+						else if (books && books.length > 0) setNumShow(books.length);
 					}}
 				/>
 			</div>
@@ -338,8 +342,9 @@ const Books = () => {
 						{books &&
 							books.map((item, i) => {
 								if (
-									searchValue &&
-									(searchValue == '' || !searchMatches(item, searchValue))
+									(searchValue &&
+										(searchValue == '' || !searchMatches(item, searchValue))) ||
+									i + 1 > numShow
 								)
 									return null;
 								else {
@@ -1000,6 +1005,45 @@ const Books = () => {
 						</div>
 					</div>
 				</div>
+			</div>
+
+			{books && searchValue === '' && (
+				<small className='d-flex justify-content-center text-muted mt-3 mb-3'>
+					{'Showing ' +
+						(numShow < books.length ? numShow : books.length) +
+						' of ' +
+						books.length}
+				</small>
+			)}
+
+			<div className='d-inline d-flex justify-content-center'>
+				{books &&
+					books.length >= numShow &&
+					numShow > NUM_INCREMENTS &&
+					searchValue === '' && (
+						<button
+							className='btn btn-link'
+							onClick={() => {
+								if (numShow < NUM_INCREMENTS * 2) setNumShow(NUM_INCREMENTS);
+								else setNumShow(numShow - NUM_INCREMENTS);
+							}}
+						>
+							Show less
+						</button>
+					)}
+
+				{books && books.length > numShow && searchValue === '' && (
+					<button
+						className='btn btn-link'
+						onClick={() => {
+							if (numShow + NUM_INCREMENTS > books.length)
+								setNumShow(books.length);
+							else setNumShow(numShow + NUM_INCREMENTS);
+						}}
+					>
+						Show more
+					</button>
+				)}
 			</div>
 
 			{isLoading && <Loading height='1vh' size='2rem' />}
