@@ -54,11 +54,10 @@ function ABCNav(props) {
 				className='justify-content-end'
 			>
 				<Nav className='mr-auto'>
-					<NavDropdown
-						title='Category'
-						id='collasible-nav-dropdown'
-						className='p-2'
-					>
+					<Nav.Link onClick={() => history.push('/all-books')}>
+						All books
+					</Nav.Link>
+					<NavDropdown title='Category' id='collasible-nav-dropdown'>
 						{categories.map((cate, i) => (
 							<div key={i}>
 								<NavDropdown.Item
@@ -83,7 +82,7 @@ function ABCNav(props) {
 							<NavDropdown
 								title={user.name}
 								id='collasible-nav-dropdown'
-								className='p-2'
+								className='pr-2'
 								alignRight
 							>
 								<NavDropdown.Item>

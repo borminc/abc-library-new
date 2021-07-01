@@ -3,8 +3,12 @@ import React from 'react';
 export const Loading = props => {
 	return (
 		<div
-			className='d-flex justify-content-center align-items-center m-5'
-			style={{ height: props.height || '100vh' }}
+			className={
+				'd-flex ' +
+				(props.text ? 'flex-column' : '') +
+				' justify-content-center align-items-center m-5'
+			}
+			style={{ height: props.height || '70vh' }}
 		>
 			<div
 				className='spinner-border'
@@ -13,6 +17,7 @@ export const Loading = props => {
 			>
 				<span className='sr-only'></span>
 			</div>
+			{props.text && <h6 className='mt-4'>{props.text}</h6>}
 		</div>
 	);
 };

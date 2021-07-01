@@ -185,7 +185,7 @@ const Home = props => {
 			<div className='container p-5'>
 				<div className='row'>
 					{search.map((value, i) => (
-						<div className='col-3 p-2' key={i}>
+						<div className='col-6 col-sm-4 col-md-3 p-2' key={i}>
 							<div className='card border border-1 p-2'>
 								<img
 									src={value.image || 'img/book-null-img.png'}
@@ -253,7 +253,7 @@ const Home = props => {
 
 						<div className='row'>
 							{latestBooks.map((value, i) => (
-								<div className='col-3 p-3' key={i}>
+								<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
 									<img
 										src={value.image || 'img/book-null-img.png'}
 										className='img-fluid rounded'

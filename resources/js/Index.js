@@ -17,6 +17,7 @@ import Borrow from './views/Borrow';
 import ABCNav from './components/ABCNav';
 import UserLayout from './views/user/UserLayout';
 import Categories from './views/Categories';
+import AllBooks from './views/AllBooks';
 
 const Index = () => {
 	const [user, setUser] = useState('loading');
@@ -72,6 +73,10 @@ const Index = () => {
 
 						<Route path='/borrow'>
 							<Borrow />
+						</Route>
+
+						<Route path='/all-books'>
+							<AllBooks />
 						</Route>
 
 						<Route exact path='/'>
