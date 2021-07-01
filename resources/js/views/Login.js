@@ -101,7 +101,7 @@ const Login = props => {
 	};
 
 	return (
-		<div style={{ padding: '10rem 10rem' }}>
+		<div style={{ padding: '5% 5%' }}>
 			<div className='row justify-content-center'>
 				<div className='col-md-12 col-lg-10'>
 					<div className='wrap d-md-flex'>
