@@ -183,7 +183,7 @@ const Categories = () => {
 											<td>{item.name}</td>
 											<td>
 												<button
-													className='btn btn-outline-primary'
+													className='btn btn-outline-primary mr-2 mb-1'
 													data-bs-toggle='modal'
 													data-bs-target='#editCategoryModal'
 													onClick={e => {
@@ -193,7 +193,7 @@ const Categories = () => {
 													Edit
 												</button>
 												<button
-													className='btn btn-outline-danger ml-2'
+													className='btn btn-outline-danger mb-1'
 													data-bs-toggle='modal'
 													data-bs-target='#deleteCategoryModal'
 													onClick={e => {
