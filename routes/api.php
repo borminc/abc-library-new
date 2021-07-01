@@ -100,8 +100,10 @@ Route::get('books/popular', [BookController::class, 'getMostPopularBooks'])->nam
 Route::resource('categories', CategoryController::class)->only([
     'index', 'show'
 ]);
+
 Route::resource('books', BookController::class)->only([
     'index', 'show'
 ]);
 
+Route::get('library-default-rule', [LibraryRuleSetController::class, 'showDefault']);
 
