@@ -26,6 +26,10 @@ const Rules = () => {
 		getRulesFromServer();
 	}, []);
 
+	const refresh = () => {
+		getRulesFromServer();
+	};
+
 	const getRulesFromServer = () => {
 		setLoading(true);
 		axios
@@ -94,7 +98,13 @@ const Rules = () => {
 	return (
 		<div>
 			<div className='d-flex justify-content-between mt-2 mb-2'>
-				<h4 className='col-lg-4 pl-0'>Library Rules</h4>
+				<h4
+					className='col-lg-4 pl-0'
+					style={{ cursor: 'pointer' }}
+					onClick={refresh}
+				>
+					Library Rules
+				</h4>
 				<div>
 					{isSaving ? (
 						<LoadingButton />
@@ -134,6 +144,7 @@ const Rules = () => {
 			{msg && msg.text && <MessageAlert msg={msg.text} success={msg.success} />}
 
 			<div className='overflow-auto'>
+				{isLoading && <Loading height='1vh' size='2rem' />}
 				<table className='table'>
 					<thead>
 						<tr>
@@ -243,8 +254,6 @@ const Rules = () => {
 					</tbody>
 				</table>
 			</div>
-
-			{isLoading && <Loading height='1vh' size='2rem' />}
 		</div>
 	);
 };

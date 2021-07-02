@@ -44,6 +44,12 @@ const Logs = () => {
 		getBooksFromServer();
 	}, []);
 
+	const refresh = () => {
+		getLogsFromServer();
+		getUsersFromServer();
+		getBooksFromServer();
+	};
+
 	const getUsersFromServer = () => {
 		axios
 			.get('/api/users-names')
@@ -127,7 +133,11 @@ const Logs = () => {
 	return (
 		<div>
 			<div className='row mt-2 mb-2'>
-				<h4 className='col-lg-4'>
+				<h4
+					className='col-lg-4'
+					style={{ cursor: 'pointer' }}
+					onClick={refresh}
+				>
 					All logs
 					<button
 						className='btn btn-link'
@@ -167,6 +177,7 @@ const Logs = () => {
 				/>
 			</div>
 			<div className='overflow-auto'>
+				{isLoading && <Loading height='1vh' size='2rem' />}
 				<table className='table'>
 					<thead>
 						<tr>
@@ -315,8 +326,6 @@ const Logs = () => {
 					</button>
 				)}
 			</div>
-
-			{isLoading && <Loading height='1vh' size='2rem' />}
 
 			<div
 				className='modal fade'

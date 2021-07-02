@@ -33,6 +33,10 @@ const Categories = () => {
 		getCategoriesFromServer();
 	}, []);
 
+	const refresh = () => {
+		getCategoriesFromServer();
+	};
+
 	const getCategoriesFromServer = () => {
 		setLoading(true);
 		axios
@@ -134,7 +138,11 @@ const Categories = () => {
 	return (
 		<div>
 			<div className='row mt-2 mb-2'>
-				<h4 className='col-lg-4'>
+				<h4
+					className='col-lg-4'
+					style={{ cursor: 'pointer' }}
+					onClick={refresh}
+				>
 					All categories
 					<button
 						className='btn btn-link'
@@ -159,6 +167,7 @@ const Categories = () => {
 				/>
 			</div>
 			<div className='overflow-auto'>
+				{isLoading && <Loading height='1vh' size='2rem' />}
 				<table className='table'>
 					<thead>
 						<tr>
@@ -436,8 +445,6 @@ const Categories = () => {
 					</button>
 				)}
 			</div>
-
-			{isLoading && <Loading height='1vh' size='2rem' />}
 		</div>
 	);
 };
