@@ -27,7 +27,6 @@ class BookUserController extends Controller
             $cost_per_day = LibraryRuleSet::where('name', 'default')->first()->cost_per_day_late_return;
             
             foreach ($user->books as $book) {
-                // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
                 $days_late = floor(($time_now - $book->pivot->return_time) / (24*3600));
                 if ($days_late > 0) {
                     $book->expired = true;
@@ -51,7 +50,6 @@ class BookUserController extends Controller
             $cost_per_day = LibraryRuleSet::where('name', 'default')->first()->cost_per_day_late_return;
             
             foreach ($user->books as $book) {
-                // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
                 $days_late = floor(($time_now - $book->pivot->return_time) / (24*3600));
                 if ($days_late > 0) {
                     $book->expired = true;
@@ -76,7 +74,6 @@ class BookUserController extends Controller
         $cost_per_day = LibraryRuleSet::where('name', 'default')->first()->cost_per_day_late_return;
         
         foreach ($books as $book) {
-            // $book->pivot->return_time = time() - 2*24*3600; // for testing expired
             $days_late = floor(($time_now - $book->pivot->return_time) / (24*3600));
             if ($days_late > 0) {
                 $book->expired = true;
@@ -117,6 +114,15 @@ class BookUserController extends Controller
                 ], 406);
         }
 
+        foreach($user->books as $b) {
+            // check if user is late to return any books
+            if ($b->pivot->return_time < $borrow_time) {
+                return response()->json([
+                    'error' => 'User must pay for late books before borrowing new books.'
+                ], 406);
+            }
+        }
+
         $borrow_limit = LibraryRuleSet::where('name', 'default')->first()->num_of_books_per_user;
         if ($user->books()->get()->count() >= $borrow_limit) {
             // exceed borrowed books at a time
@@ -131,6 +137,7 @@ class BookUserController extends Controller
                 ], 400);
         }
 
+        // can borrow
         $user->books()->attach($request->book_id, [
             'borrow_time' => $borrow_time,
             'return_time' => $return_time
