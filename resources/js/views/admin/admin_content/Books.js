@@ -73,6 +73,12 @@ const Books = () => {
 		getBooksFromServer();
 	}, []);
 
+	const refresh = () => {
+		getCategoriesFromServer();
+		getPublishersFromServer();
+		getBooksFromServer();
+	};
+
 	const clearNewBook = () => {
 		setNewBook({
 			title: '',
@@ -297,7 +303,11 @@ const Books = () => {
 	return (
 		<div>
 			<div className='row mt-2 mb-2'>
-				<h4 className='col-lg-4'>
+				<h4
+					className='col-lg-4'
+					style={{ cursor: 'pointer' }}
+					onClick={refresh}
+				>
 					All books
 					<button
 						className='btn btn-link'
@@ -325,6 +335,7 @@ const Books = () => {
 				/>
 			</div>
 			<div className='overflow-auto'>
+				{isLoading && <Loading height='1vh' size='2rem' />}
 				<table className='table'>
 					<thead>
 						<tr>
@@ -338,6 +349,7 @@ const Books = () => {
 							<th scope='col'>Actions</th>
 						</tr>
 					</thead>
+
 					<tbody>
 						{books &&
 							books.map((item, i) => {
@@ -1045,8 +1057,6 @@ const Books = () => {
 					</button>
 				)}
 			</div>
-
-			{isLoading && <Loading height='1vh' size='2rem' />}
 		</div>
 	);
 };

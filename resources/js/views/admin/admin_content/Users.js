@@ -34,6 +34,10 @@ const Users = () => {
 		getUsersFromServer();
 	}, []);
 
+	const refresh = () => {
+		getUsersFromServer();
+	};
+
 	const getUsersFromServer = () => {
 		setLoading(true);
 		axios
@@ -88,7 +92,13 @@ const Users = () => {
 	return (
 		<div>
 			<div className='row mt-2 mb-2'>
-				<h4 className='col-lg-4'>All users</h4>
+				<h4
+					className='col-lg-4'
+					style={{ cursor: 'pointer' }}
+					onClick={refresh}
+				>
+					All users
+				</h4>
 				<input
 					type='text'
 					className='col-lg-8 form-control border-0 small'
@@ -103,6 +113,7 @@ const Users = () => {
 				/>
 			</div>
 			<div className='overflow-auto'>
+				{isLoading && <Loading height='1vh' size='2rem' />}
 				<table className='table'>
 					<thead>
 						<tr>
@@ -401,7 +412,7 @@ const Users = () => {
 								>
 									Accept now
 								</button>
-							) : (
+							) : returnInfo.mode == 'lost' ? (
 								<button
 									type='button'
 									className={
@@ -412,7 +423,7 @@ const Users = () => {
 								>
 									Accept Loss
 								</button>
-							)}
+							) : null}
 						</div>
 					</div>
 				</div>
@@ -456,8 +467,6 @@ const Users = () => {
 					</button>
 				)}
 			</div>
-
-			{isLoading && <Loading height='1vh' size='2rem' />}
 		</div>
 	);
 };

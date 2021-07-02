@@ -28,6 +28,10 @@ const AdminDashboard = () => {
 		getInfoFromServer();
 	}, []);
 
+	const refresh = () => {
+		getInfoFromServer();
+	};
+
 	const getInfoFromServer = (reload = true) => {
 		if (reload) setLoading(true);
 		axios
@@ -126,7 +130,13 @@ const AdminDashboard = () => {
 
 	return (
 		<div id='page-top'>
-			<h4 className='col-lg-4 mb-4'>Admin Dashboard</h4>
+			<h4
+				className='col-lg-4 mb-4'
+				style={{ cursor: 'pointer' }}
+				onClick={refresh}
+			>
+				Admin Dashboard
+			</h4>
 
 			<div className='row mt-5 mb-5'>
 				<div

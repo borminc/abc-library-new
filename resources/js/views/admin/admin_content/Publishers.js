@@ -33,6 +33,10 @@ const Publishers = () => {
 		getPublishersFromServer();
 	}, []);
 
+	const refresh = () => {
+		getPublishersFromServer();
+	};
+
 	const getPublishersFromServer = () => {
 		setLoading(true);
 		axios
@@ -134,7 +138,11 @@ const Publishers = () => {
 	return (
 		<div>
 			<div className='row mt-2 mb-2'>
-				<h4 className='col-lg-4'>
+				<h4
+					className='col-lg-4'
+					style={{ cursor: 'pointer' }}
+					onClick={refresh}
+				>
 					All publishers
 					<button
 						className='btn btn-link'
@@ -159,6 +167,7 @@ const Publishers = () => {
 				/>
 			</div>
 			<div className='overflow-auto'>
+				{isLoading && <Loading height='1vh' size='2rem' />}
 				<table className='table'>
 					<thead>
 						<tr>
@@ -436,8 +445,6 @@ const Publishers = () => {
 					</button>
 				)}
 			</div>
-
-			{isLoading && <Loading height='1vh' size='2rem' />}
 		</div>
 	);
 };
