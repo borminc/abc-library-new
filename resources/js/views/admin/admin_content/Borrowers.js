@@ -401,7 +401,7 @@ const Users = () => {
 								>
 									Accept now
 								</button>
-							) : (
+							) : returnInfo.mode == 'lost' ? (
 								<button
 									type='button'
 									className={
@@ -412,7 +412,7 @@ const Users = () => {
 								>
 									Accept Loss
 								</button>
-							)}
+							) : null}
 						</div>
 					</div>
 				</div>
