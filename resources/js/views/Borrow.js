@@ -64,8 +64,12 @@ const Borrow = props => {
 					<div className='modal-content'>
 						<div className='modal-body'>
 							<p>
-								Are you sure want to borrow{' '}
-								<span className='text-success'> {book.title} </span>?
+								Are you sure you want to borrow{' '}
+								<span className='text-primary'>
+									{' '}
+									<b>{book.title}</b>
+								</span>
+								?
 							</p>
 						</div>
 						<div className='modal-footer'>
@@ -75,7 +79,7 @@ const Borrow = props => {
 								data-bs-dismiss='modal'
 								id='closeModalBtn'
 							>
-								Close
+								Cancel
 							</button>
 							{isProcessing ? (
 								<LoadingButton />
@@ -193,12 +197,12 @@ const Borrow = props => {
 											{'Borrowers have ' +
 												(rules
 													? rules.duration_per_borrow + ' day(s) '
-													: 'duration') +
+													: 'limited duration') +
 												'to borrow each book.'}
 										</li>
 										<li>
 											When any borrowed item becomes overdue, appropriate fees
-											must be paid.
+											must be paid, and user cannot borrow additional books.
 										</li>
 										<li>
 											For items returned past the due date, a bill for its
@@ -221,6 +225,13 @@ const Borrow = props => {
 						<p>
 							By clicking Borrow, you agree to all the rules and policies of ABC
 							Library.
+						</p>
+						<p>
+							<b className='text-danger'>
+								You will PICK UP the book at the library in a timely manner.
+								OVERDUE FEES will still apply after the return date even if you
+								never pick up the book.
+							</b>
 						</p>
 						<button
 							type='submit'

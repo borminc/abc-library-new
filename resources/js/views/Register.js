@@ -136,7 +136,6 @@ const Register = props => {
 						<div className='p-4 p-md-5 w-100'>
 							<div className='d-flex'>
 								<div className='w-100'>
-									<h6 className=''>ABC Library</h6>
 									<h2 className='mb-4'>Register</h2>
 								</div>
 							</div>

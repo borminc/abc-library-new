@@ -139,7 +139,7 @@ const Home = props => {
 							{value.stock == 0 ? (
 								<div>
 									<small className='text-danger me-2'>
-										* You can't borrow this books
+										* You can't borrow this book
 									</small>
 									<button
 										disabled
@@ -238,16 +238,14 @@ const Home = props => {
 	const renderNewBooks = () => {
 		return (
 			<div>
-				<div className='jumbotron jumbotron-fluid pb-5'>
+				<div className='container-fluid mt-5 pb-5'>
 					<div className='container'>
 						<h6 className='display-6 fw-bold text-center'>
-							New <span className='text-primary'>Books</span>
+							<span className='text-primary'>Latest Books</span>
 						</h6>
 						<div className='row justify-content-center mb-3 text-center'>
 							<p className='text-wrap col-lg-6 text-secondary'>
-								There are many variations of passages of Lorem Ipsum available,
-								but the majority have suffered lebmid alteration in some ledmid
-								form
+								Explore the newest and most recently added books at ABC Library!
 							</p>
 						</div>
 
@@ -293,8 +291,7 @@ const Home = props => {
 									ABC Library
 								</h1>
 								<p className='mb-5'>
-									Part of ABC Library project. More than 1,000 + article books
-									to borrow.
+									Part of ABC Library project. More than 1,000 books to borrow.
 								</p>
 								<form className='d-flex' onSubmit={handleSubmit}>
 									<div className='input-group-lg'>
@@ -341,6 +338,19 @@ const Home = props => {
 			) : (
 				renderNewBooks()
 			)}
+
+			{/* Footer */}
+			<footer className='sticky-footer bg-none'>
+				<div className='container mb-3'>
+					<div className='copyright text-center my-auto'>
+						<span>Copyright &copy; ABC Library 2021</span>
+					</div>
+				</div>
+				<small className='text-center'>
+					<div>No. 5Eo, St. 2009, 12406, Phnom Penh, Cambodia</div>
+					<div>Contact us: 011 222 333</div>
+				</small>
+			</footer>
 		</div>
 	);
 };

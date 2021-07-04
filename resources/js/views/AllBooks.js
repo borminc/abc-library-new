@@ -142,43 +142,6 @@ const AllBooks = props => {
 		);
 	};
 
-	const renderNewBooks = () => {
-		return (
-			<div>
-				<div className='jumbotron jumbotron-fluid pb-5'>
-					<div className='container'>
-						<h6 className='display-6 fw-bold text-center'>
-							New <span className='text-primary'>Books</span>
-						</h6>
-						<div className='row justify-content-center mb-3 text-center'>
-							<p className='text-wrap col-lg-6 text-secondary'>
-								There are many variations of passages of Lorem Ipsum available,
-								but the majority have suffered lebmid alteration in some ledmid
-								form
-							</p>
-						</div>
-
-						<div className='row'>
-							{latestBooks.map((value, i) => (
-								<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
-									<img
-										src={value.image || 'img/book-null-img.png'}
-										className='img-fluid rounded'
-										alt='...'
-										data-bs-toggle='modal'
-										data-bs-target={'#modal-book' + value.id}
-										style={{ cursor: 'pointer' }}
-									/>
-									{Modal(value, i)}
-								</div>
-							))}
-						</div>
-					</div>
-				</div>
-			</div>
-		);
-	};
-
 	if (isLoading) {
 		return (
 			<div>
@@ -196,7 +159,7 @@ const AllBooks = props => {
 						if (i + 1 > numShow) return null;
 						else {
 							return (
-								<div className='col-3 p-3' key={i}>
+								<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
 									<div className='card border border-1 p-2'>
 										<img
 											src={value.image || '/img/book-null-img.png'}
