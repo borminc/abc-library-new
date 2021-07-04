@@ -116,7 +116,8 @@ class BookUserController extends Controller
 
         foreach($user->books as $b) {
             // check if user is late to return any books
-            if ($b->pivot->return_time < $borrow_time) {
+            $days_late = floor(($borrow_time - $b->pivot->return_time) / (24*3600));
+            if ($days_late > 0) {
                 return response()->json([
                     'error' => 'User must pay for late books before borrowing new books.'
                 ], 406);
