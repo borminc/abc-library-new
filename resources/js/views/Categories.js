@@ -106,7 +106,7 @@ const Categories = () => {
 							{value.stock == 0 ? (
 								<div>
 									<small className='text-danger me-2'>
-										* You can't borrow this books
+										* You can't borrow this book
 									</small>
 									<button
 										disabled

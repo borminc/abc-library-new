@@ -49,7 +49,8 @@ const Login = props => {
 		}
 	};
 
-	const LogInHandler = () => {
+	const LogInHandler = e => {
+		e.preventDefault();
 		setProcessing(true);
 		setMsg({ text: '', success: 0 });
 
@@ -175,14 +176,14 @@ const Login = props => {
 										<LoadingButton />
 									) : (
 										<button
-											type='button'
+											type='submit'
 											className={
 												'form-control btn btn-primary rounded submit px-3' +
 												(errors.email || errors.password ? ' disabled' : '')
 											}
 											onClick={LogInHandler}
 										>
-											Sign In
+											Log In
 										</button>
 									)}
 								</div>

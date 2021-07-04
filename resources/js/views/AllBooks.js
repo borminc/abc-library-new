@@ -113,7 +113,7 @@ const AllBooks = props => {
 							{value.stock == 0 ? (
 								<div>
 									<small className='text-danger me-2'>
-										* You can't borrow this books
+										* You can't borrow this book
 									</small>
 									<button
 										disabled
@@ -165,6 +165,7 @@ const AllBooks = props => {
 											src={value.image || '/img/book-null-img.png'}
 											className='img-fluid rounded'
 											alt='...'
+											style={{ cursor: 'pointer' }}
 											data-bs-toggle='modal'
 											data-bs-target={'#modal-book' + value.id}
 										/>
