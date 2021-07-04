@@ -11,6 +11,7 @@ const Home = props => {
 	const [value, setValue] = useState('');
 	const [search, setSearch] = useState();
 	const [latestBooks, setLatestBook] = useState([]);
+	const [popularBooks, setPopularBook] = useState([]);
 	const [isProcessing, setProcessing] = useState(false);
 
 	useEffect(() => {
@@ -19,11 +20,17 @@ const Home = props => {
 		});
 	}, []);
 
+	useEffect(() => {
+		axios.get('/api/books/popular').then(res => {
+			setPopularBook(res.data);
+		});
+	}, []);
+
 	const options = [
+		// { name:'All', value:'all'},
 		{ name: 'Title', value: 'title' },
 		{ name: 'Author', value: 'author' },
 		{ name: 'Description', value: 'description' },
-		{ name: 'Publisher', value: 'publisher' },
 		{ name: 'Year', value: 'year' },
 	];
 
@@ -82,7 +89,7 @@ const Home = props => {
 								<div className='row'>
 									<div className='col-lg-3'>
 										<img
-											src={value.image || 'img/book-null-img.png'}
+											src={value.image || '/img/book-null-img.png'}
 											className='img-fluid rounded'
 											alt='...'
 										/>
@@ -112,7 +119,7 @@ const Home = props => {
 												</tr>
 												<tr>
 													<td className='fw-bold'>Category</td>
-													{/* <td>{value.category.name}</td> */}
+													<td>{value.category.name}</td>
 												</tr>
 												<tr>
 													<td className='fw-bold'>Stock</td>
@@ -183,10 +190,11 @@ const Home = props => {
 		}
 		return (
 			<div className='container p-5'>
+				<div>Search for <span class="text-info bold">{value}</span></div>
 				<div className='row'>
 					{search.map((value, i) => (
 						<div className='col-3 p-2' key={i}>
-							<div className='card border border-1 p-2'>
+							<div className='card p-2 h-100'>
 								<img
 									src={value.image || 'img/book-null-img.png'}
 									className='img-fluid rounded'
@@ -194,17 +202,19 @@ const Home = props => {
 									data-bs-toggle='modal'
 									data-bs-target={'#modal-book' + value.id}
 								/>
-								<ul className='small list-unstyled'>
-									<li>{value.title}</li>
-									<li className='fst-italic text-primary'>{value.author}</li>
-									<li className='fw-lighter'>{value.year}</li>
-									{value.stock == 0 ? (
-										<li className='text-danger'>Out of Stock</li>
-									) : (
-										''
-									)}
-								</ul>
-								<div className='text-end'>
+								<div className="card-body">
+									<ul className='small list-unstyled'>
+										<li>{value.title}</li>
+										<li className='fst-italic text-primary'>{value.author}</li>
+										<li className='fw-lighter'>{value.year}</li>
+										{value.stock == 0 ? (
+											<li className='text-danger'>Out of Stock</li>
+										) : (
+											''
+										)}
+									</ul>
+								</div>
+								<div className='card-footer'>
 									{value.stock == 0 ? (
 										<button
 											disabled
@@ -235,37 +245,63 @@ const Home = props => {
 		);
 	};
 
-	const renderNewBooks = () => {
+	const renderBooks = () => {
 		return (
-			<div>
-				<div className='jumbotron jumbotron-fluid pb-5'>
-					<div className='container'>
-						<h6 className='display-6 fw-bold text-center'>
-							New <span className='text-primary'>Books</span>
-						</h6>
-						<div className='row justify-content-center mb-3 text-center'>
-							<p className='text-wrap col-lg-6 text-secondary'>
-								There are many variations of passages of Lorem Ipsum available,
-								but the majority have suffered lebmid alteration in some ledmid
-								form
-							</p>
-						</div>
+			<div className="mt-5">
+				<div className='container'>
+					<h6 className='display-6 fw-bold text-center'>
+						Most Popular <span className='text-primary'>Books</span>
+					</h6>
+					<div className='row justify-content-center mb-3 text-center'>
+						<p className='text-wrap col-lg-6 text-secondary'>
+							There are many variations of passages of Lorem Ipsum available,
+							but the majority have suffered lebmid alteration in some ledmid
+							form
+						</p>
+					</div>
 
-						<div className='row'>
-							{latestBooks.map((value, i) => (
-								<div className='col-3 p-3' key={i}>
-									<img
-										src={value.image || 'img/book-null-img.png'}
-										className='img-fluid rounded'
-										alt='...'
-										data-bs-toggle='modal'
-										data-bs-target={'#modal-book' + value.id}
-										style={{ cursor: 'pointer' }}
-									/>
-									{Modal(value, i)}
-								</div>
-							))}
-						</div>
+					<div className='row'>
+						{popularBooks.map((value, i) => (
+							<div className='col-3 p-3' key={i}>
+								<img
+									src={value.image || 'img/book-null-img.png'}
+									className='img-fluid rounded'
+									alt='...'
+									data-bs-toggle='modal'
+									data-bs-target={'#modal-book' + value.id}
+									style={{ cursor: 'pointer' }}
+								/>
+								{Modal(value, i)}
+							</div>
+						))}
+					</div>
+				</div>
+
+				<div className='container mt-5'>
+					<h6 className='display-6 fw-bold text-center'>
+						New <span className='text-primary'>Books</span>
+					</h6>
+					<div className='row justify-content-center mb-3 text-center'>
+						<p className='text-wrap col-lg-6 text-secondary'>
+							There are many variations of passages of Lorem Ipsum available,
+							but the majority have suffered lebmid alteration in some ledmid
+							form
+						</p>
+					</div>
+					<div className='row'>
+						{latestBooks.map((value, i) => (
+							<div className='col-3 p-3' key={i}>
+								<img
+									src={value.image || 'img/book-null-img.png'}
+									className='img-fluid rounded'
+									alt='...'
+									data-bs-toggle='modal'
+									data-bs-target={'#modal-book' + value.id}
+									style={{ cursor: 'pointer' }}
+								/>
+								{Modal(value, i)}
+							</div>
+						))}
 					</div>
 				</div>
 			</div>
@@ -339,7 +375,7 @@ const Home = props => {
 			) : search ? (
 				renderSearchResult()
 			) : (
-				renderNewBooks()
+				renderBooks()
 			)}
 		</div>
 	);

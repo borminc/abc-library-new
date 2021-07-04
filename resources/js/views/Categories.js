@@ -1,22 +1,112 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import axios from './../functions/axios';
+import ReactPaginate from 'react-paginate';
 
 const Categories = () => {
 	let { categoryId } = useParams();
 	const history = useHistory();
-	const [category, setCategory] = useState();
-	const [books, setBooks] = useState([]);
+	// const [category, setCategory] = useState();
+	// const [books, setBooks] = useState([]);
+	const [postsPerPage] = useState(4);
+	const [offset, setOffset] = useState(1);
+	const [posts, setAllPosts] = useState([]);
+	const [pageCount, setPageCount] = useState(0);
+
+	// useEffect(() => {
+	// 	axios
+	// 		.get('/api/books/search?by=category_id&value=' + categoryId)
+	// 		.then(res => {
+	// 			console.log(res.data);
+	// 			setBooks(res.data);
+	// 		});
+	// }, [categoryId]);
+
+
+	const getAllPosts = () => {
+		axios
+		.get('/api/books/search?by=category_id&value=' + categoryId)
+		.then(res => {
+			const data = res.data;
+			const upperLimit = offset * postsPerPage;
+			const slice = data.slice(upperLimit - postsPerPage, upperLimit);
+			const postData = getPostData(slice);
+			setAllPosts(postData);
+			setPageCount(Math.ceil(data.length / postsPerPage));
+		})
+	}
+
+	const handlePageClick = (event) => {
+		const selectedPage = event.selected;
+		setOffset(selectedPage + 1);
+	};
 
 	useEffect(() => {
-		axios
-			.get('/api/books/search?by=category_id&value=' + categoryId)
-			.then(res => {
-				console.log(res.data);
-				setBooks(res.data);
-			});
-	}, [categoryId]);
+		getAllPosts();
+		// setOffset(1);
+	}, [categoryId,offset]);
 
+	useEffect(() => {
+		setOffset(1);
+	},[categoryId]);
+
+	const getPostData = (data) => {
+		return (
+			<div className='container mt-4'>
+				<h1>{data && data.length > 0 ? data[0].category.name : <p>No data</p>}</h1>
+				<div className='row'>
+					{data.map((value, i) => (
+						<div className='col-lg-3  col-sm-3 col-md-3 p-3' key={i}>
+							<div className='card p-2 h-100'>
+								<img
+									src={value.image || '/img/book-null-img.png'}
+									className='img-fluid rounded'
+									alt='...'
+									data-bs-toggle='modal'
+									data-bs-target={'#modal-book' + value.id}
+								/>
+								<div className="card-body">
+									<ul className='small list-unstyled'>
+										<li>{value.title}</li>
+										<li className='fst-italic text-primary'>{value.author}</li>
+										<li className='fw-lighter'>{value.year}</li>
+										{value.stock == 0 ? (
+											<li className='text-danger'>Out of Stock</li>
+										) : (
+											''
+										)}
+									</ul>
+								</div>
+								<div className='card-footer'>
+									{value.stock == 0 ? (
+										<button
+											disabled
+											className='btn btn-outline-primary btn-sm'
+											onClick={e => history.push('/borrow/' + value.id)}
+											data-bs-dismiss='modal'
+											aria-label='Close'
+										>
+											Borrow
+										</button>
+									) : (
+										<button
+											className='btn btn-outline-primary btn-sm'
+											onClick={e => history.push('/borrow/' + value.id)}
+											data-bs-dismiss='modal'
+											aria-label='Close'
+										>
+											Borrow
+										</button>
+									)}
+								</div>
+							</div>
+							{Modal(value, i)}
+						</div>
+					))}
+				</div>
+			</div>
+		);
+	}
 	// useEffect(() => {
 	// 	axios.get('/api/categories/' + categoryId).then(res => {
 	// 		setCategory(res.data);
@@ -79,7 +169,7 @@ const Categories = () => {
 												</tr>
 												<tr>
 													<td className='fw-bold'>Category</td>
-													{/* <td>{value.category.name}</td> */}
+													<td>{value.category.name}</td>
 												</tr>
 												<tr>
 													<td className='fw-bold'>Stock</td>
@@ -137,12 +227,12 @@ const Categories = () => {
 
 	return (
 		<>
-			<div className='container mt-4'>
+			{/* <div className='container mt-4'>
 				<h1>{books && books.length > 0 ? books[0].category.name : ''}</h1>
 				<div className='row'>
 					{books.map((value, i) => (
-						<div className='col-3 p-3' key={i}>
-							<div className='card border border-1 p-2'>
+						<div className='col-lg-3  col-sm-3 col-md-3 p-3' key={i}>
+							<div className='card p-2 h-100'>
 								<img
 									src={value.image || '/img/book-null-img.png'}
 									className='img-fluid rounded'
@@ -150,17 +240,19 @@ const Categories = () => {
 									data-bs-toggle='modal'
 									data-bs-target={'#modal-book' + value.id}
 								/>
-								<ul className='small list-unstyled'>
-									<li>{value.title}</li>
-									<li className='fst-italic text-primary'>{value.author}</li>
-									<li className='fw-lighter'>{value.year}</li>
-									{value.stock == 0 ? (
-										<li className='text-danger'>Out of Stock</li>
-									) : (
-										''
-									)}
-								</ul>
-								<div className='text-end'>
+								<div className="card-body">
+									<ul className='small list-unstyled'>
+										<li>{value.title}</li>
+										<li className='fst-italic text-primary'>{value.author}</li>
+										<li className='fw-lighter'>{value.year}</li>
+										{value.stock == 0 ? (
+											<li className='text-danger'>Out of Stock</li>
+										) : (
+											''
+										)}
+									</ul>
+								</div>
+								<div className='card-footer'>
 									{value.stock == 0 ? (
 										<button
 											disabled
@@ -187,6 +279,21 @@ const Categories = () => {
 						</div>
 					))}
 				</div>
+			</div> */}
+			{posts}
+
+			<div className="container pagination-container d-flex justify-content-center p-3">
+				<ReactPaginate
+					previousLabel={"Previous"}
+					nextLabel={"Next"}
+					breakLabel={"..."}
+					breakClassName={"break-me"}
+					pageCount={pageCount}
+					onPageChange={handlePageClick}
+					containerClassName={"pagination"}
+					subContainerClassName={"pages pagination"}
+					activeClassName={"active"}
+				/>
 			</div>
 		</>
 	);

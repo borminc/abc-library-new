@@ -9,6 +9,8 @@ const Borrow = props => {
 	let { bookId } = useParams();
 	const [book, setBook] = useState();
 	const [isProcessing, setProcessing] = useState();
+	const [msg, setMsg] = useState({ text: '', success: 0 });
+	const [disable, setDisable] = useState(false);
 
 	useEffect(() => {
 		getBookFromServer();
@@ -31,7 +33,12 @@ const Borrow = props => {
 				history.push('/user/borrowed-books');
 			})
 			.catch(err => {
-				console.log(err);
+				console.log(err.response.data.error);
+				setMsg({
+					text: err.response.data.error,
+					success: 0,
+				});
+				setDisable(true);
 			})
 			.finally(() => {
 				setProcessing(false);
@@ -54,6 +61,9 @@ const Borrow = props => {
 								Are you sure want to borrow{' '}
 								<span className='text-success'> {book.title} </span>?
 							</p>
+							{msg && msg.text && (
+								<MessageAlert msg={msg.text} success={msg.success} />
+							)}
 						</div>
 						<div className='modal-footer'>
 							<button
@@ -70,6 +80,7 @@ const Borrow = props => {
 								<button
 									onClick={handleSubmit}
 									className='btn btn-primary btn-sm'
+									disabled={disable}
 								>
 									Borrow
 								</button>
@@ -83,6 +94,7 @@ const Borrow = props => {
 
 	return (
 		<>
+
 			{book && (
 				<div className='container pt-5 mt-5'>
 					<div className='row'>
@@ -188,14 +200,34 @@ const Borrow = props => {
 
 					<div className='p-5'>
 						<p>Click button below to confirm your borrow</p>
-						<button
-							type='submit'
-							className='btn btn-primary'
-							data-bs-toggle='modal'
-							data-bs-target={'#myModal' + book.id}
-						>
-							Borrow
-						</button>
+						{(book.stock == 0) ? (
+							<>
+								<button
+								disabled
+								type='submit'
+								className='btn btn-primary'
+								data-bs-toggle='modal'
+								data-bs-target={'#myModal' + book.id}
+								>
+									Borrow
+								</button>
+								<small className='text-danger me-2'>
+										* You can't borrow this books
+								</small>
+							</>
+						) :
+						(
+							<>
+								<button
+								type='submit'
+								className='btn btn-primary'
+								data-bs-toggle='modal'
+								data-bs-target={'#myModal' + book.id}
+								>
+									Borrow
+								</button>
+							</>
+						)}
 						{Modal(book)}
 					</div>
 				</div>
