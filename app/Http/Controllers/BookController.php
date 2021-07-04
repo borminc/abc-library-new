@@ -155,14 +155,18 @@ class BookController extends Controller
             ], 400); 
         }
 
+        $searchValue = strtoupper($value);
+
         if ($by == 'all') {
             $query = Book::query();
             foreach ($params as $param) {
-                $query->orWhere($param, 'LIKE', '%'.$value.'%');
+                // $query->orWhere($param, 'LIKE', '%'.$value.'%');
+                $query->orWhereRaw("UPPER(`{$param}`) LIKE ?", ['%' . $searchValue . '%'])->get();
             }
             $result = $query->get();
         } else {
-            $result = Book::where($by, 'LIKE', '%'.$value.'%')->get();
+            // $result = Book::where($by, 'LIKE', '%'.$value.'%')->get();
+            $result = Book::whereRaw("UPPER(`{$by}`) LIKE ?", ['%' . $searchValue . '%'])->get();
         }
 
         if ($result) {
