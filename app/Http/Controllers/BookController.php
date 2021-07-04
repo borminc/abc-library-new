@@ -161,10 +161,8 @@ class BookController extends Controller
             $query = Book::query();
             foreach ($params as $param) {
                 // $query->orWhere($param, 'LIKE', '%'.$value.'%');
-                if ($param === 'publisher_id' || $param === 'category_id') {
+                if ($param === 'publisher_id' || $param === 'category_id' || $param === 'year') {
                     continue;
-                } else if ($param === 'year') {
-                    $query->orWhere('year', $value)->orderBy('title');
                 } else {
                     $query->orWhereRaw("UPPER(" . $param . ") LIKE ?", ['%' . $searchValue . '%'])->orderBy('title');
                 }
