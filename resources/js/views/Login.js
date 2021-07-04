@@ -49,7 +49,8 @@ const Login = props => {
 		}
 	};
 
-	const LogInHandler = () => {
+	const LogInHandler = e => {
+		e.preventDefault();
 		setProcessing(true);
 		setMsg({ text: '', success: 0 });
 
@@ -117,7 +118,6 @@ const Login = props => {
 						<div className='p-4 p-md-5 w-100'>
 							<div className='d-flex'>
 								<div className='w-100'>
-									<h6 className=''>ABC Library</h6>
 									<h2 className='mb-4'>Log In</h2>
 								</div>
 							</div>
@@ -176,14 +176,14 @@ const Login = props => {
 										<LoadingButton />
 									) : (
 										<button
-											type='button'
+											type='submit'
 											className={
 												'form-control btn btn-primary rounded submit px-3' +
 												(errors.email || errors.password ? ' disabled' : '')
 											}
 											onClick={LogInHandler}
 										>
-											Sign In
+											Log In
 										</button>
 									)}
 								</div>

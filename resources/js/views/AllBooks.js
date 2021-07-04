@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { setCookie, getCookie, deleteCookie } from '../functions/cookies';
 import { Link } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
+
 import { Loading } from './../components/Loading';
 
 const AllBooks = props => {
@@ -10,15 +12,28 @@ const AllBooks = props => {
 	const [books, setBooks] = useState([]);
 	const [isLoading, setLoading] = useState(false);
 
-	const NUM_INCREMENTS = 24;
-	const [numShow, setNumShow] = useState(NUM_INCREMENTS);
+	const [postsPerPage] = useState(24);
+	const [offset, setOffset] = useState(1);
+	const [allBooks, setAllBooks] = useState([]);
+	const [pageCount, setPageCount] = useState(0);
+
+	// const NUM_INCREMENTS = 24;
+	// const [numShow, setNumShow] = useState(NUM_INCREMENTS);
 
 	useEffect(() => {
+		getAllBooks();
+	}, []);
+
+	useEffect(() => {
+		pageChangeHandler();
+	}, [offset, allBooks]);
+
+	const getAllBooks = () => {
 		setLoading(true);
 		axios
 			.get('/api/books')
 			.then(res => {
-				setBooks(res.data);
+				setAllBooks(res.data);
 			})
 			.catch(err => {
 				console.log(err.response);
@@ -26,7 +41,128 @@ const AllBooks = props => {
 			.finally(() => {
 				setLoading(false);
 			});
-	}, []);
+	};
+
+	const handlePageClick = event => {
+		const selectedPage = event.selected;
+		setOffset(selectedPage + 1);
+	};
+
+	const pageChangeHandler = () => {
+		const upperLimit = offset * postsPerPage;
+		const slice = allBooks.slice(upperLimit - postsPerPage, upperLimit);
+		const bookData = getPostData(slice);
+		setBooks(bookData);
+		setPageCount(Math.ceil(allBooks.length / postsPerPage));
+	};
+
+	const getPostData = books => {
+		if (books && books.length <= 0) {
+			return (
+				<div className='container mt-4'>
+					<h1>All Books</h1>
+				</div>
+			);
+		}
+		return (
+			<div className='container mt-4'>
+				<h1>All Books</h1>
+				<div className='row'>
+					{books.map((value, i) => {
+						// if (i + 1 > numShow) return null;
+						// else {
+						return (
+							<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
+								<div className='card p-2 h-100'>
+									<img
+										src={value.image || '/img/book-null-img.png'}
+										className='img-fluid rounded'
+										alt='...'
+										style={{ cursor: 'pointer' }}
+										data-bs-toggle='modal'
+										data-bs-target={'#modal-book' + value.id}
+									/>
+									<div className='card-body'>
+										<ul className='small list-unstyled'>
+											<li>{value.title}</li>
+											<li className='fst-italic text-primary'>
+												{value.author}
+											</li>
+											<li className='fw-lighter'>{value.year}</li>
+											{value.stock == 0 ? (
+												<li className='text-danger'>Out of Stock</li>
+											) : (
+												''
+											)}
+										</ul>
+									</div>
+									<div className='card-footer'>
+										{value.stock == 0 ? (
+											<button
+												disabled
+												className='btn btn-outline-primary btn-sm'
+												onClick={e => history.push('/borrow/' + value.id)}
+												data-bs-dismiss='modal'
+												aria-label='Close'
+											>
+												Borrow
+											</button>
+										) : (
+											<button
+												className='btn btn-outline-primary btn-sm'
+												onClick={e => history.push('/borrow/' + value.id)}
+												data-bs-dismiss='modal'
+												aria-label='Close'
+											>
+												Borrow
+											</button>
+										)}
+									</div>
+								</div>
+								{Modal(value, i)}
+							</div>
+						);
+					})}
+				</div>
+				{/* {books && (
+					<small className='d-flex justify-content-center text-muted mt-3 mb-3'>
+						{'Showing ' +
+							(numShow < books.length ? numShow : books.length) +
+							' of ' +
+							books.length}
+					</small>
+				)}
+
+				<div className='d-inline d-flex justify-content-center'>
+					{books && books.length >= numShow && numShow > NUM_INCREMENTS && (
+						<button
+							className='btn btn-link'
+							onClick={() => {
+								if (numShow < NUM_INCREMENTS * 2) setNumShow(NUM_INCREMENTS);
+								else setNumShow(numShow - NUM_INCREMENTS);
+							}}
+						>
+							Show less
+						</button>
+					)}
+
+					{books && books.length > numShow && (
+						<button
+							className='btn btn-link'
+							onClick={() => {
+								if (numShow + NUM_INCREMENTS > books.length)
+									setNumShow(books.length);
+								else setNumShow(numShow + NUM_INCREMENTS);
+							}}
+						>
+							Show more
+						</button>
+					)}
+				</div> */}
+				{/* <div className='mb-5'></div> */}
+			</div>
+		);
+	};
 
 	const Modal = (value, i) => {
 		return (
@@ -113,7 +249,7 @@ const AllBooks = props => {
 							{value.stock == 0 ? (
 								<div>
 									<small className='text-danger me-2'>
-										* You can't borrow this books
+										* You can't borrow this book
 									</small>
 									<button
 										disabled
@@ -142,43 +278,6 @@ const AllBooks = props => {
 		);
 	};
 
-	const renderNewBooks = () => {
-		return (
-			<div>
-				<div className='jumbotron jumbotron-fluid pb-5'>
-					<div className='container'>
-						<h6 className='display-6 fw-bold text-center'>
-							New <span className='text-primary'>Books</span>
-						</h6>
-						<div className='row justify-content-center mb-3 text-center'>
-							<p className='text-wrap col-lg-6 text-secondary'>
-								There are many variations of passages of Lorem Ipsum available,
-								but the majority have suffered lebmid alteration in some ledmid
-								form
-							</p>
-						</div>
-
-						<div className='row'>
-							{latestBooks.map((value, i) => (
-								<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
-									<img
-										src={value.image || 'img/book-null-img.png'}
-										className='img-fluid rounded'
-										alt='...'
-										data-bs-toggle='modal'
-										data-bs-target={'#modal-book' + value.id}
-										style={{ cursor: 'pointer' }}
-									/>
-									{Modal(value, i)}
-								</div>
-							))}
-						</div>
-					</div>
-				</div>
-			</div>
-		);
-	};
-
 	if (isLoading) {
 		return (
 			<div>
@@ -189,100 +288,22 @@ const AllBooks = props => {
 
 	return (
 		<>
-			<div className='container mt-4'>
-				<h1>All Books</h1>
-				<div className='row'>
-					{books.map((value, i) => {
-						if (i + 1 > numShow) return null;
-						else {
-							return (
-								<div className='col-3 p-3' key={i}>
-									<div className='card border border-1 p-2'>
-										<img
-											src={value.image || '/img/book-null-img.png'}
-											className='img-fluid rounded'
-											alt='...'
-											data-bs-toggle='modal'
-											data-bs-target={'#modal-book' + value.id}
-										/>
-										<ul className='small list-unstyled'>
-											<li>{value.title}</li>
-											<li className='fst-italic text-primary'>
-												{value.author}
-											</li>
-											<li className='fw-lighter'>{value.year}</li>
-											{value.stock == 0 ? (
-												<li className='text-danger'>Out of Stock</li>
-											) : (
-												''
-											)}
-										</ul>
-										<div className='text-end'>
-											{value.stock == 0 ? (
-												<button
-													disabled
-													className='btn btn-outline-primary btn-sm'
-													onClick={e => history.push('/borrow/' + value.id)}
-													data-bs-dismiss='modal'
-													aria-label='Close'
-												>
-													Borrow
-												</button>
-											) : (
-												<button
-													className='btn btn-outline-primary btn-sm'
-													onClick={e => history.push('/borrow/' + value.id)}
-													data-bs-dismiss='modal'
-													aria-label='Close'
-												>
-													Borrow
-												</button>
-											)}
-										</div>
-									</div>
-									{Modal(value, i)}
-								</div>
-							);
-						}
-					})}
+			{books}
+			{allBooks && allBooks.length > 0 && (
+				<div className='container d-flex justify-content-center p-3'>
+					<ReactPaginate
+						previousLabel={'Previous'}
+						nextLabel={'Next'}
+						breakLabel={'...'}
+						breakClassName={'break-me'}
+						pageCount={pageCount}
+						onPageChange={handlePageClick}
+						containerClassName={'pagination'}
+						subContainerClassName={'pages pagination'}
+						activeClassName={'active'}
+					/>
 				</div>
-				{books && (
-					<small className='d-flex justify-content-center text-muted mt-3 mb-3'>
-						{'Showing ' +
-							(numShow < books.length ? numShow : books.length) +
-							' of ' +
-							books.length}
-					</small>
-				)}
-
-				<div className='d-inline d-flex justify-content-center'>
-					{books && books.length >= numShow && numShow > NUM_INCREMENTS && (
-						<button
-							className='btn btn-link'
-							onClick={() => {
-								if (numShow < NUM_INCREMENTS * 2) setNumShow(NUM_INCREMENTS);
-								else setNumShow(numShow - NUM_INCREMENTS);
-							}}
-						>
-							Show less
-						</button>
-					)}
-
-					{books && books.length > numShow && (
-						<button
-							className='btn btn-link'
-							onClick={() => {
-								if (numShow + NUM_INCREMENTS > books.length)
-									setNumShow(books.length);
-								else setNumShow(numShow + NUM_INCREMENTS);
-							}}
-						>
-							Show more
-						</button>
-					)}
-				</div>
-				<div className='mb-5'></div>
-			</div>
+			)}
 		</>
 	);
 };

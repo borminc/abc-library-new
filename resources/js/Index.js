@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import Unauthorized from './views/Unauthorized';
+import { setCookie, getCookie } from './functions/cookies';
 
 import Login from './views/Login';
 import Register from './views/Register';
@@ -23,14 +24,18 @@ const Index = () => {
 	const [user, setUser] = useState('loading');
 
 	useEffect(() => {
-		axios
-			.get('/api/auth/user')
-			.then(res => {
-				setUser(res.data);
-			})
-			.catch(err => {
-				setUser(null);
-			});
+		if (getCookie('token')) {
+			axios
+				.get('/api/auth/user')
+				.then(res => {
+					setUser(res.data);
+				})
+				.catch(err => {
+					setUser(null);
+				});
+		} else {
+			setUser(null);
+		}
 	}, []);
 
 	return (

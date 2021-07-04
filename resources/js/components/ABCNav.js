@@ -49,15 +49,16 @@ function ABCNav(props) {
 				ABC Library
 			</Navbar.Brand>
 			<Navbar.Toggle aria-controls='responsive-navbar-nav' />
+
 			<Navbar.Collapse
 				id='responsive-navbar-nav'
 				className='justify-content-end'
 			>
-				<Nav className='mr-auto'>
+				<Nav className='mr-auto ms-3'>
 					<Nav.Link onClick={() => history.push('/all-books')}>
 						All books
 					</Nav.Link>
-					<NavDropdown title='Category' id='collasible-nav-dropdown'>
+					<NavDropdown title='Categories' id='collasible-nav-dropdown'>
 						{categories.map((cate, i) => (
 							<div key={i}>
 								<NavDropdown.Item
@@ -69,7 +70,7 @@ function ABCNav(props) {
 						))}
 					</NavDropdown>
 				</Nav>
-				<Nav>
+				<Nav className='ms-3'>
 					<Router>
 						{user == 'loading' ? (
 							<div

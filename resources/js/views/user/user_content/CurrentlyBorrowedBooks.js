@@ -3,17 +3,36 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 import { Loading, LoadingButton } from '../../../components/Loading';
+import MessageAlert from '../../../components/MessageAlert';
 
 const CurrentlyBorrowedBooks = () => {
 	const [isLoading, setLoading] = useState(false);
 	const [bookUser, setBookUser] = useState();
+	const [msg, setMsg] = useState({ text: '', success: 0 });
 
 	useEffect(() => {
 		setLoading(true);
 		axios
 			.get(`/api/user/books`)
 			.then(res => {
-				setBookUser(res.data);
+				const books = res.data;
+				setBookUser(books);
+
+				let count = 0;
+				for (const i in books) {
+					if (books[i] && books[i].expired) {
+						count += 1;
+					}
+				}
+				if (count > 0) {
+					setMsg({
+						text:
+							'You have ' +
+							count +
+							' overdue book(s). Return them now to avoid further charges.',
+						success: 0,
+					});
+				}
 			})
 			.catch(error => {
 				if (error.response) {
@@ -120,6 +139,7 @@ const CurrentlyBorrowedBooks = () => {
 			<div className='row mt-4 mb-2'>
 				<h4>Currently Borrowed Books: {bookUser ? bookUser.length : 0}</h4>
 			</div>
+			{msg && msg.text && <MessageAlert msg={msg.text} success={msg.success} />}
 			<div className='overflow-auto'>
 				<table className='table'>
 					<thead>
@@ -129,7 +149,7 @@ const CurrentlyBorrowedBooks = () => {
 							</th>
 							<th scope='col'>ID</th>
 							<th scope='col'>Title</th>
-							<th scope='col'>Borrw Date</th>
+							<th scope='col'>Borrow Date</th>
 							<th scope='col'>Return Date</th>
 							<th scope='col'>Note</th>
 						</tr>
