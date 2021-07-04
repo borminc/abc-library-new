@@ -161,12 +161,22 @@ class BookController extends Controller
             $query = Book::query();
             foreach ($params as $param) {
                 // $query->orWhere($param, 'LIKE', '%'.$value.'%');
-                $query->orWhereRaw("UPPER(" . $param . ") LIKE ?", ['%' . $searchValue . '%'])->get();
+                if ($param === 'publisher_id' || $param === 'category_id') {
+                    continue;
+                } else if ($param === 'year') {
+                    $query->orWhere('year', $value)->orderBy('title');
+                } else {
+                    $query->orWhereRaw("UPPER(" . $param . ") LIKE ?", ['%' . $searchValue . '%'])->orderBy('title');
+                }
             }
             $result = $query->get();
         } else {
             // $result = Book::where($by, 'LIKE', '%'.$value.'%')->get();
-            $result = Book::whereRaw("UPPER(" . $by . ") LIKE ?", ['%' . $searchValue . '%'])->get();
+            if ($by === 'publisher_id' || $by === 'category_id' || $by === 'year') {
+                $result = Book::where($by, $value)->orderBy('title')->get();
+            } else {
+                $result = Book::whereRaw("UPPER(" . $by . ") LIKE ?", ['%' . $searchValue . '%'])->orderBy('title')->get();
+            }
         }
 
         if ($result) {
