@@ -357,7 +357,12 @@ const Home = props => {
 									<div className='input-group input-group-lg'>
 										<input
 											onChange={handleChange}
-											className='form-control AutoFocus'
+											className={
+												'form-control AutoFocus' +
+												(by && by === 'year' && isNaN(value)
+													? ' is-invalid'
+													: '')
+											}
 											type='text'
 											placeholder='Search...'
 											value={value}
@@ -365,6 +370,7 @@ const Home = props => {
 										<button
 											type='submit'
 											className='btn btn-primary search-btn h-100'
+											disabled={by && by === 'year' && isNaN(value)}
 											onClick={() => {
 												document
 													.getElementById('search-area')
