@@ -7,23 +7,34 @@ import { Loading } from './../components/Loading';
 
 const Home = props => {
 	const history = useHistory();
-	const [by, setBy] = useState('title');
+	const [by, setBy] = useState('all');
 	const [value, setValue] = useState('');
 	const [search, setSearch] = useState();
 	const [latestBooks, setLatestBook] = useState([]);
+	const [popularBooks, setPopularBook] = useState([]);
 	const [isProcessing, setProcessing] = useState(false);
+	const [isLoading, setLoading] = useState(false);
 
 	useEffect(() => {
-		axios.get('/api/books/latest').then(res => {
-			setLatestBook(res.data);
-		});
+		setLoading(true);
+		axios
+			.all([axios.get('/api/books/latest'), axios.get('/api/books/popular')])
+			.then(
+				axios.spread((res1, res2) => {
+					setLatestBook(res1.data);
+					setPopularBook(res2.data);
+				})
+			)
+			.finally(() => {
+				setLoading(false);
+			});
 	}, []);
 
 	const options = [
+		{ name: 'All', value: 'all' },
 		{ name: 'Title', value: 'title' },
 		{ name: 'Author', value: 'author' },
 		{ name: 'Description', value: 'description' },
-		{ name: 'Publisher', value: 'publisher' },
 		{ name: 'Year', value: 'year' },
 	];
 
@@ -43,7 +54,6 @@ const Home = props => {
 		axios
 			.get('/api/books/search?by=' + by + '&value=' + value)
 			.then(res => {
-				console.log(res.data);
 				setSearch(res.data);
 			})
 			.catch(err => {
@@ -112,7 +122,7 @@ const Home = props => {
 												</tr>
 												<tr>
 													<td className='fw-bold'>Category</td>
-													{/* <td>{value.category.name}</td> */}
+													<td>{value.category.name}</td>
 												</tr>
 												<tr>
 													<td className='fw-bold'>Stock</td>
@@ -186,7 +196,7 @@ const Home = props => {
 				<div className='row'>
 					{search.map((value, i) => (
 						<div className='col-6 col-sm-4 col-md-3 p-2' key={i}>
-							<div className='card border border-1 p-2'>
+							<div className='card p-2 h-100'>
 								<img
 									src={value.image || 'img/book-null-img.png'}
 									className='img-fluid rounded'
@@ -194,17 +204,19 @@ const Home = props => {
 									data-bs-toggle='modal'
 									data-bs-target={'#modal-book' + value.id}
 								/>
-								<ul className='small list-unstyled'>
-									<li>{value.title}</li>
-									<li className='fst-italic text-primary'>{value.author}</li>
-									<li className='fw-lighter'>{value.year}</li>
-									{value.stock == 0 ? (
-										<li className='text-danger'>Out of Stock</li>
-									) : (
-										''
-									)}
-								</ul>
-								<div className='text-end'>
+								<div className='card-body'>
+									<ul className='small list-unstyled'>
+										<li>{value.title}</li>
+										<li className='fst-italic text-primary'>{value.author}</li>
+										<li className='fw-lighter'>{value.year}</li>
+										{value.stock == 0 ? (
+											<li className='text-danger'>Out of Stock</li>
+										) : (
+											''
+										)}
+									</ul>
+								</div>
+								<div className='card-footer'>
 									{value.stock == 0 ? (
 										<button
 											disabled
@@ -235,7 +247,13 @@ const Home = props => {
 		);
 	};
 
-	const renderNewBooks = () => {
+	const renderBooks = () => {
+		if (isLoading)
+			return (
+				<div style={{ height: '25%' }}>
+					<Loading height='25vh' />
+				</div>
+			);
 		return (
 			<div>
 				<div className='container-fluid mt-5 pb-5'>
@@ -251,6 +269,35 @@ const Home = props => {
 
 						<div className='row'>
 							{latestBooks.map((value, i) => (
+								<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
+									<img
+										src={value.image || 'img/book-null-img.png'}
+										className='img-fluid rounded'
+										alt='...'
+										data-bs-toggle='modal'
+										data-bs-target={'#modal-book' + value.id}
+										style={{ cursor: 'pointer' }}
+									/>
+									{Modal(value, i)}
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+
+				<div className='container-fluid mt-5 pb-5'>
+					<div className='container'>
+						<h6 className='display-6 fw-bold text-center'>
+							<span className='text-primary'>Popular Books</span>
+						</h6>
+						<div className='row justify-content-center mb-3 text-center'>
+							<p className='text-wrap col-lg-6 text-secondary'>
+								All time favorites of all readers at ABC Library!
+							</p>
+						</div>
+
+						<div className='row'>
+							{popularBooks.map((value, i) => (
 								<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
 									<img
 										src={value.image || 'img/book-null-img.png'}
@@ -290,7 +337,7 @@ const Home = props => {
 								>
 									ABC Library
 								</h1>
-								<p className='mb-5'>
+								<p className='mb-5' id='search-area'>
 									Part of ABC Library project. More than 1,000 books to borrow.
 								</p>
 								<form className='d-flex' onSubmit={handleSubmit}>
@@ -318,6 +365,16 @@ const Home = props => {
 										<button
 											type='submit'
 											className='btn btn-primary search-btn h-100'
+											onClick={() => {
+												document
+													.getElementById('search-area')
+													.scrollIntoView(true);
+												document.getElementById('search-area').scrollIntoView({
+													behavior: 'smooth',
+													block: 'start',
+													inline: 'center',
+												});
+											}}
 										>
 											Search
 										</button>
@@ -329,15 +386,17 @@ const Home = props => {
 				</div>
 			</header>
 
-			{isProcessing ? (
-				<div style={{ height: '25%' }}>
-					<Loading height='25vh' />
-				</div>
-			) : search ? (
-				renderSearchResult()
-			) : (
-				renderNewBooks()
-			)}
+			<div>
+				{isProcessing ? (
+					<div style={{ height: '25%' }}>
+						<Loading height='25vh' />
+					</div>
+				) : search ? (
+					renderSearchResult()
+				) : (
+					renderBooks()
+				)}
+			</div>
 
 			{/* Footer */}
 			<footer className='sticky-footer bg-none'>

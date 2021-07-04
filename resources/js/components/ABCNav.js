@@ -58,7 +58,7 @@ function ABCNav(props) {
 					<Nav.Link onClick={() => history.push('/all-books')}>
 						All books
 					</Nav.Link>
-					<NavDropdown title='Category' id='collasible-nav-dropdown'>
+					<NavDropdown title='Categories' id='collasible-nav-dropdown'>
 						{categories.map((cate, i) => (
 							<div key={i}>
 								<NavDropdown.Item

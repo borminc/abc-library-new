@@ -8,8 +8,10 @@ const Borrow = props => {
 	const history = useHistory();
 	let { bookId } = useParams();
 	const [book, setBook] = useState();
-	const [isProcessing, setProcessing] = useState();
+	const [isProcessing, setProcessing] = useState(false);
 	const [rules, setRules] = useState();
+	const [msg, setMsg] = useState({ text: '', success: 0 });
+	const [disable, setDisable] = useState(false);
 
 	useEffect(() => {
 		getBookFromServer();
@@ -19,7 +21,6 @@ const Borrow = props => {
 		axios
 			.get('/api/library-default-rule')
 			.then(res => {
-				console.log(res.data);
 				setRules(res.data);
 			})
 			.catch(err => {
@@ -44,7 +45,12 @@ const Borrow = props => {
 				history.push('/user/borrowed-books');
 			})
 			.catch(err => {
-				console.log(err);
+				console.log(err.response.data.error);
+				setMsg({
+					text: err.response.data.error,
+					success: 0,
+				});
+				setDisable(true);
 			})
 			.finally(() => {
 				setProcessing(false);
@@ -62,35 +68,55 @@ const Borrow = props => {
 			>
 				<div className='modal-dialog'>
 					<div className='modal-content'>
+						<div className='modal-header'>
+							<h5 className='modal-title' id='staticBackdropLabel'>
+								Confirmation
+							</h5>
+							<button
+								type='button'
+								className='btn-close'
+								data-bs-dismiss='modal'
+								aria-label='Close'
+							></button>
+						</div>{' '}
 						<div className='modal-body'>
-							<p>
-								Are you sure you want to borrow{' '}
-								<span className='text-primary'>
-									{' '}
-									<b>{book.title}</b>
-								</span>
-								?
-							</p>
+							{msg && msg.text == '' && (
+								<p>
+									Are you sure you want to borrow{' '}
+									<span className='text-primary'>
+										{' '}
+										<b>{book.title}</b>
+									</span>
+									?
+								</p>
+							)}
+
+							{msg && msg.text && (
+								<MessageAlert msg={msg.text} success={msg.success} />
+							)}
 						</div>
 						<div className='modal-footer'>
 							<button
 								type='button'
-								className='btn btn-secondary btn-sm'
+								className='btn btn-secondary'
 								data-bs-dismiss='modal'
 								id='closeModalBtn'
 							>
 								Cancel
 							</button>
-							{isProcessing ? (
-								<LoadingButton />
-							) : (
-								<button
-									onClick={handleSubmit}
-									className='btn btn-primary btn-sm'
-								>
-									Borrow
-								</button>
-							)}
+							<div>
+								{isProcessing ? (
+									<LoadingButton />
+								) : (
+									<button
+										onClick={handleSubmit}
+										className='btn btn-primary'
+										disabled={disable}
+									>
+										Borrow
+									</button>
+								)}
+							</div>
 						</div>
 					</div>
 				</div>
