@@ -12,7 +12,7 @@ const AllBooks = props => {
 	const [books, setBooks] = useState([]);
 	const [isLoading, setLoading] = useState(false);
 
-	const [postsPerPage] = useState(24);
+	const [postsPerPage] = useState(20);
 	const [offset, setOffset] = useState(1);
 	const [allBooks, setAllBooks] = useState([]);
 	const [pageCount, setPageCount] = useState(0);
@@ -46,6 +46,7 @@ const AllBooks = props => {
 	const handlePageClick = event => {
 		const selectedPage = event.selected;
 		setOffset(selectedPage + 1);
+		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
 	const pageChangeHandler = () => {

@@ -9,7 +9,7 @@ const Categories = () => {
 	const history = useHistory();
 	const [category, setCategory] = useState('');
 
-	const [postsPerPage] = useState(24);
+	const [postsPerPage] = useState(20);
 	const [offset, setOffset] = useState();
 	const [allPosts, setAllPosts] = useState([]);
 	const [posts, setPosts] = useState([]);
@@ -59,6 +59,7 @@ const Categories = () => {
 	const handlePageClick = event => {
 		const selectedPage = event.selected;
 		setOffset(selectedPage + 1);
+		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
 	const pageChangeHandler = () => {
