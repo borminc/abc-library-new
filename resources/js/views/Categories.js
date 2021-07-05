@@ -19,28 +19,42 @@ const Categories = () => {
 	useEffect(() => {
 		setLoading(true);
 		axios
-			.get('/api/categories/' + categoryId)
-			.then(res => {
-				setCategory(res.data);
-			})
+			.all([
+				axios.get('/api/categories/' + categoryId),
+				axios.get('/api/books/search?by=category_id&value=' + categoryId),
+			])
+			.then(
+				axios.spread((res1, res2) => {
+					setCategory(res1.data);
+					setAllPosts(res2.data);
+					setOffset(1);
+				})
+			)
 			.finally(() => {
 				setLoading(false);
 			});
-		getAllPosts();
+		// axios.get('/api/categories/' + categoryId).then(res => {
+		// 	setCategory(res.data);
+		// });
+		// getAllPosts();
 	}, [categoryId]);
 
 	useEffect(() => {
 		pageChangeHandler();
-	}, [categoryId, offset, allPosts]);
+	}, [categoryId, offset, allPosts, category]);
 
-	const getAllPosts = () => {
-		axios
-			.get('/api/books/search?by=category_id&value=' + categoryId)
-			.then(res => {
-				setAllPosts(res.data);
-				setOffset(1);
-			});
-	};
+	// const getAllPosts = () => {
+	// 	setLoading(true);
+	// 	axios
+	// 		.get('/api/books/search?by=category_id&value=' + categoryId)
+	// 		.then(res => {
+	// 			setAllPosts(res.data);
+	// 			setOffset(1);
+	// 		})
+	// 		.finally(() => {
+	// 			setLoading(false);
+	// 		});
+	// };
 
 	const handlePageClick = event => {
 		const selectedPage = event.selected;
