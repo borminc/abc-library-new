@@ -29,12 +29,41 @@ const Categories = () => {
 	const NUM_INCREMENTS = 10;
 	const [numShow, setNumShow] = useState(NUM_INCREMENTS);
 
+	const [sortType, setSortType] = useState('');
+
+	useEffect(() => {
+		if (categories && sortType) sortArray(sortType);
+	}, [sortType]);
+
+	const sortArray = type => {
+		const types = {
+			id: 'id',
+			name: 'name',
+		};
+		const sortProperty = types[type];
+		const sorted = [...categories].sort((a, b) => {
+			const _a = isNaN(a[sortProperty])
+				? a[sortProperty].toLowerCase()
+				: a[sortProperty];
+			const _b = isNaN(b[sortProperty])
+				? b[sortProperty].toLowerCase()
+				: b[sortProperty];
+			if (_a < _b) return -1;
+
+			if (_a > _b) return 1;
+
+			return 0;
+		});
+		setCategories(sorted);
+	};
+
 	useEffect(() => {
 		getCategoriesFromServer();
 	}, []);
 
 	const refresh = () => {
 		getCategoriesFromServer();
+		setSortType('');
 	};
 
 	const getCategoriesFromServer = () => {
@@ -171,8 +200,27 @@ const Categories = () => {
 				<table className='table'>
 					<thead>
 						<tr>
-							<th scope='col'>ID</th>
-							<th scope='col'>Categories</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' + (sortType === 'id' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('id')}
+							>
+								ID
+							</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' +
+									(sortType === 'name' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('name')}
+							>
+								Categories
+							</th>
 							<th scope='col'>Actions</th>
 						</tr>
 					</thead>

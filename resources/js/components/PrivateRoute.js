@@ -11,7 +11,7 @@ const PrivateRoute = props => {
 	const [loginStatus, setLoginStatus] = useState(0); // -1=not logged in; 0=loading; 1=logged in
 
 	if (!getCookie('token')) {
-		<Redirect push to='/login' />;
+		return <Redirect push to='/login' />;
 	}
 
 	useEffect(() => {

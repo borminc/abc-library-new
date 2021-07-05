@@ -4,21 +4,42 @@ import { useHistory } from 'react-router-dom';
 import { setCookie, getCookie, deleteCookie } from '../functions/cookies';
 import { Link } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
-
 import { Loading } from './../components/Loading';
 
 const AllBooks = props => {
 	const history = useHistory();
 	const [books, setBooks] = useState([]);
 	const [isLoading, setLoading] = useState(false);
-
-	const [postsPerPage] = useState(20);
+	const [postsPerPage] = useState(4);
 	const [offset, setOffset] = useState(1);
 	const [allBooks, setAllBooks] = useState([]);
 	const [pageCount, setPageCount] = useState(0);
 
-	// const NUM_INCREMENTS = 24;
-	// const [numShow, setNumShow] = useState(NUM_INCREMENTS);
+	const [sortType, setSortType] = useState('title');
+
+	useEffect(() => {
+		sortArray(sortType);
+		setOffset(1);
+	}, [sortType]);
+
+	const sortArray = type => {
+		const types = {
+			title: 'title',
+			author: 'author',
+			year: 'year',
+		};
+		const sortProperty = types[type];
+		const sorted = [...allBooks].sort((a, b) => {
+			if (a[sortProperty] < b[sortProperty]) {
+				return -1;
+			}
+			if (a[sortProperty] > b[sortProperty]) {
+				return 1;
+			}
+			return 0;
+		});
+		setAllBooks(sorted);
+	};
 
 	useEffect(() => {
 		getAllBooks();
@@ -67,7 +88,20 @@ const AllBooks = props => {
 		}
 		return (
 			<div className='container mt-4'>
-				<h1>All Books</h1>
+				<div className='d-flex justify-content-between shadow-none mt-2 mb-5 bg-light rounded'>
+					<h1>All Books</h1>
+					<div className='w-25'>
+						<small className='mb-0'>Sort by</small>
+						<select
+							onChange={e => setSortType(e.target.value)}
+							className='form-select'
+						>
+							<option value='title'>Title</option>
+							<option value='author'>Author</option>
+							<option value='year'>Year</option>
+						</select>
+					</div>
+				</div>
 				<div className='row'>
 					{books.map((value, i) => {
 						// if (i + 1 > numShow) return null;
@@ -109,14 +143,16 @@ const AllBooks = props => {
 												Borrow
 											</button>
 										) : (
-											<button
-												className='btn btn-outline-primary btn-sm'
-												onClick={e => history.push('/borrow/' + value.id)}
-												data-bs-dismiss='modal'
-												aria-label='Close'
-											>
-												Borrow
-											</button>
+											<>
+												<button
+													className='btn btn-outline-primary btn-sm'
+													onClick={e => history.push('/borrow/' + value.id)}
+													data-bs-dismiss='modal'
+													aria-label='Close'
+												>
+													Borrow
+												</button>
+											</>
 										)}
 									</div>
 								</div>
@@ -125,42 +161,6 @@ const AllBooks = props => {
 						);
 					})}
 				</div>
-				{/* {books && (
-					<small className='d-flex justify-content-center text-muted mt-3 mb-3'>
-						{'Showing ' +
-							(numShow < books.length ? numShow : books.length) +
-							' of ' +
-							books.length}
-					</small>
-				)}
-
-				<div className='d-inline d-flex justify-content-center'>
-					{books && books.length >= numShow && numShow > NUM_INCREMENTS && (
-						<button
-							className='btn btn-link'
-							onClick={() => {
-								if (numShow < NUM_INCREMENTS * 2) setNumShow(NUM_INCREMENTS);
-								else setNumShow(numShow - NUM_INCREMENTS);
-							}}
-						>
-							Show less
-						</button>
-					)}
-
-					{books && books.length > numShow && (
-						<button
-							className='btn btn-link'
-							onClick={() => {
-								if (numShow + NUM_INCREMENTS > books.length)
-									setNumShow(books.length);
-								else setNumShow(numShow + NUM_INCREMENTS);
-							}}
-						>
-							Show more
-						</button>
-					)}
-				</div> */}
-				{/* <div className='mb-5'></div> */}
 			</div>
 		);
 	};
@@ -291,7 +291,10 @@ const AllBooks = props => {
 		<>
 			{books}
 			{allBooks && allBooks.length > 0 && (
-				<div className='container d-flex justify-content-center p-3'>
+				<div
+					className='container d-flex justify-content-center p-3'
+					key={sortType}
+				>
 					<ReactPaginate
 						previousLabel={'Previous'}
 						nextLabel={'Next'}

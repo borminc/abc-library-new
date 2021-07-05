@@ -13,7 +13,7 @@ const AdminRoute = props => {
 	// -2=unauthorized; -1=not logged in; 0=loading; 1=logged in
 
 	if (!getCookie('token')) {
-		<Redirect push to='/login' />;
+		return <Redirect push to='/login' />;
 	}
 
 	useEffect(() => {

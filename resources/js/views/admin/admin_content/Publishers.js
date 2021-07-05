@@ -29,12 +29,41 @@ const Publishers = () => {
 	const NUM_INCREMENTS = 10;
 	const [numShow, setNumShow] = useState(NUM_INCREMENTS);
 
+	const [sortType, setSortType] = useState('');
+
+	useEffect(() => {
+		if (publishers && sortType) sortArray(sortType);
+	}, [sortType]);
+
+	const sortArray = type => {
+		const types = {
+			id: 'id',
+			name: 'name',
+		};
+		const sortProperty = types[type];
+		const sorted = [...publishers].sort((a, b) => {
+			const _a = isNaN(a[sortProperty])
+				? a[sortProperty].toLowerCase()
+				: a[sortProperty];
+			const _b = isNaN(b[sortProperty])
+				? b[sortProperty].toLowerCase()
+				: b[sortProperty];
+			if (_a < _b) return -1;
+
+			if (_a > _b) return 1;
+
+			return 0;
+		});
+		setPublishers(sorted);
+	};
+
 	useEffect(() => {
 		getPublishersFromServer();
 	}, []);
 
 	const refresh = () => {
 		getPublishersFromServer();
+		setSortType('');
 	};
 
 	const getPublishersFromServer = () => {
@@ -171,8 +200,27 @@ const Publishers = () => {
 				<table className='table'>
 					<thead>
 						<tr>
-							<th scope='col'>ID</th>
-							<th scope='col'>Publishers</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' + (sortType === 'id' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('id')}
+							>
+								ID
+							</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' +
+									(sortType === 'name' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('name')}
+							>
+								Publishers
+							</th>
 							<th scope='col'>Actions</th>
 						</tr>
 					</thead>

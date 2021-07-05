@@ -30,12 +30,42 @@ const Users = () => {
 	const NUM_INCREMENTS = 10;
 	const [numShow, setNumShow] = useState(NUM_INCREMENTS);
 
+	const [sortType, setSortType] = useState('');
+
+	useEffect(() => {
+		if (users && sortType) sortArray(sortType);
+	}, [sortType]);
+
+	const sortArray = type => {
+		const types = {
+			id: 'id',
+			name: 'name',
+			email: 'email',
+		};
+		const sortProperty = types[type];
+		const sorted = [...users].sort((a, b) => {
+			const _a = isNaN(a[sortProperty])
+				? a[sortProperty].toLowerCase()
+				: a[sortProperty];
+			const _b = isNaN(b[sortProperty])
+				? b[sortProperty].toLowerCase()
+				: b[sortProperty];
+			if (_a < _b) return -1;
+
+			if (_a > _b) return 1;
+
+			return 0;
+		});
+		setUsers(sorted);
+	};
+
 	useEffect(() => {
 		getUsersFromServer();
 	}, []);
 
 	const refresh = () => {
 		getUsersFromServer();
+		setSortType('');
 	};
 
 	const getUsersFromServer = () => {
@@ -117,9 +147,38 @@ const Users = () => {
 				<table className='table'>
 					<thead>
 						<tr>
-							<th scope='col'>ID</th>
-							<th scope='col'>Name</th>
-							<th scope='col'>Email</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' + (sortType === 'id' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('id')}
+							>
+								ID
+							</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' +
+									(sortType === 'name' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('name')}
+							>
+								Name
+							</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' +
+									(sortType === 'email' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('email')}
+							>
+								Email
+							</th>
 							<th scope='col'>Phone</th>
 							<th scope='col'>Books borrowed</th>
 							<th scope='col'>Action</th>

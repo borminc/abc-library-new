@@ -9,12 +9,38 @@ const Categories = () => {
 	const history = useHistory();
 	const [category, setCategory] = useState('');
 
-	const [postsPerPage] = useState(20);
+	const [postsPerPage] = useState(4);
 	const [offset, setOffset] = useState();
 	const [allPosts, setAllPosts] = useState([]);
 	const [posts, setPosts] = useState([]);
 	const [pageCount, setPageCount] = useState(0);
 	const [isLoading, setLoading] = useState(false);
+
+	const [sortType, setSortType] = useState('title');
+
+	useEffect(() => {
+		sortArray(sortType);
+		setOffset(1);
+	}, [sortType]);
+
+	const sortArray = type => {
+		const types = {
+			title: 'title',
+			author: 'author',
+			year: 'year',
+		};
+		const sortProperty = types[type];
+		const sorted = [...allPosts].sort((a, b) => {
+			if (a[sortProperty] < b[sortProperty]) {
+				return -1;
+			}
+			if (a[sortProperty] > b[sortProperty]) {
+				return 1;
+			}
+			return 0;
+		});
+		setAllPosts(sorted);
+	};
 
 	useEffect(() => {
 		setLoading(true);
@@ -33,28 +59,11 @@ const Categories = () => {
 			.finally(() => {
 				setLoading(false);
 			});
-		// axios.get('/api/categories/' + categoryId).then(res => {
-		// 	setCategory(res.data);
-		// });
-		// getAllPosts();
 	}, [categoryId]);
 
 	useEffect(() => {
 		pageChangeHandler();
 	}, [categoryId, offset, allPosts, category]);
-
-	// const getAllPosts = () => {
-	// 	setLoading(true);
-	// 	axios
-	// 		.get('/api/books/search?by=category_id&value=' + categoryId)
-	// 		.then(res => {
-	// 			setAllPosts(res.data);
-	// 			setOffset(1);
-	// 		})
-	// 		.finally(() => {
-	// 			setLoading(false);
-	// 		});
-	// };
 
 	const handlePageClick = event => {
 		const selectedPage = event.selected;
@@ -85,7 +94,20 @@ const Categories = () => {
 		}
 		return (
 			<div className='container mt-4'>
-				<h1>{category && category.name}</h1>
+				<div className='d-flex justify-content-between shadow-none mt-2 mb-5 bg-light rounded'>
+					<h1>{category && category.name}</h1>
+					<div className='w-25'>
+						<small className='mb-0'>Sort by</small>
+						<select
+							onChange={e => setSortType(e.target.value)}
+							className='form-select'
+						>
+							<option value='title'>Title</option>
+							<option value='author'>Author</option>
+							<option value='year'>Year</option>
+						</select>
+					</div>
+				</div>
 				<div className='row'>
 					{data.map((value, i) => (
 						<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
@@ -178,7 +200,9 @@ const Categories = () => {
 										<table className='table small'>
 											<thead>
 												<tr>
-													<th className='display-6'>{value.title}</th>
+													<th>
+														<h4>{value.title}</h4>
+													</th>
 													<th></th>
 												</tr>
 											</thead>
@@ -268,7 +292,7 @@ const Categories = () => {
 			{allPosts && allPosts.length > 0 && (
 				<div
 					className='container d-flex justify-content-center p-3'
-					key={categoryId}
+					key={categoryId + sortType}
 				>
 					<ReactPaginate
 						previousLabel={'Previous'}

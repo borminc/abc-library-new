@@ -67,6 +67,37 @@ const Books = () => {
 		stock: false,
 	});
 
+	const [sortType, setSortType] = useState('');
+
+	useEffect(() => {
+		if (books && sortType) sortArray(sortType);
+	}, [sortType]);
+
+	const sortArray = type => {
+		const types = {
+			id: 'id',
+			title: 'title',
+			author: 'author',
+			year: 'year',
+			stock: 'stock',
+		};
+		const sortProperty = types[type];
+		const sorted = [...books].sort((a, b) => {
+			const _a = isNaN(a[sortProperty])
+				? a[sortProperty].toLowerCase()
+				: a[sortProperty];
+			const _b = isNaN(b[sortProperty])
+				? b[sortProperty].toLowerCase()
+				: b[sortProperty];
+			if (_a < _b) return -1;
+
+			if (_a > _b) return 1;
+
+			return 0;
+		});
+		setBooks(sorted);
+	};
+
 	useEffect(() => {
 		getCategoriesFromServer();
 		getPublishersFromServer();
@@ -77,6 +108,7 @@ const Books = () => {
 		getCategoriesFromServer();
 		getPublishersFromServer();
 		getBooksFromServer();
+		setSortType('');
 	};
 
 	const clearNewBook = () => {
@@ -339,13 +371,62 @@ const Books = () => {
 				<table className='table'>
 					<thead>
 						<tr>
-							<th scope='col'>ID</th>
-							<th scope='col'>Title</th>
-							<th scope='col'>Author</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' + (sortType === 'id' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('id')}
+							>
+								ID
+							</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' +
+									(sortType === 'title' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('title')}
+							>
+								Title
+							</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' +
+									(sortType === 'author' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('author')}
+							>
+								Author
+							</th>
 							<th scope='col'>Publisher</th>
-							<th scope='col'>Year</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' +
+									(sortType === 'year' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('year')}
+							>
+								Year
+							</th>
 							<th scope='col'>Category</th>
-							<th scope='col'>Stock</th>
+							<th
+								scope='col'
+								style={{ cursor: 'pointer' }}
+								className={
+									'dropdown-toggle ' +
+									(sortType === 'stock' ? 'text-primary' : '')
+								}
+								onClick={() => setSortType('stock')}
+							>
+								Stock
+							</th>
 							<th scope='col'>Actions</th>
 						</tr>
 					</thead>
