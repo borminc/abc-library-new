@@ -10,7 +10,7 @@ const AllBooks = props => {
 	const history = useHistory();
 	const [books, setBooks] = useState([]);
 	const [isLoading, setLoading] = useState(false);
-	const [postsPerPage] = useState(4);
+	const [postsPerPage] = useState(20);
 	const [offset, setOffset] = useState(1);
 	const [allBooks, setAllBooks] = useState([]);
 	const [pageCount, setPageCount] = useState(0);

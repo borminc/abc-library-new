@@ -9,7 +9,7 @@ const Categories = () => {
 	const history = useHistory();
 	const [category, setCategory] = useState('');
 
-	const [postsPerPage] = useState(4);
+	const [postsPerPage] = useState(20);
 	const [offset, setOffset] = useState();
 	const [allPosts, setAllPosts] = useState([]);
 	const [posts, setPosts] = useState([]);
