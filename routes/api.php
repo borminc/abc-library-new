@@ -107,3 +107,4 @@ Route::resource('books', BookController::class)->only([
 
 Route::get('library-default-rule', [LibraryRuleSetController::class, 'showDefault']);
 
+Route::get('hello', function() { return 'Hello from ABC Library!'; });
