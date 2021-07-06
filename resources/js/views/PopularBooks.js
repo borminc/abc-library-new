@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import { Loading } from './../components/Loading';
 
-const AllBooks = props => {
+const PopularBooks = props => {
 	const history = useHistory();
 	const [books, setBooks] = useState([]);
 	const [isLoading, setLoading] = useState(false);
@@ -58,7 +58,7 @@ const AllBooks = props => {
 	const getAllBooks = () => {
 		setLoading(true);
 		axios
-			.get('/api/books')
+			.get('/api/books/popular?number=50')
 			.then(res => {
 				setAllBooks(res.data);
 			})
@@ -88,14 +88,18 @@ const AllBooks = props => {
 		if (books && books.length <= 0) {
 			return (
 				<div className='container mt-4'>
-					<h1>All Books</h1>
+					<h1>Popular Books</h1>
 				</div>
 			);
 		}
 		return (
 			<div className='container mt-4'>
 				<div className='d-flex justify-content-between mt-2 mb-5'>
-					<h1>All Books</h1>
+					<div>
+						<h1>Popular Books</h1>
+						<p>The top 50 most popular books at ABC!</p>
+					</div>
+
 					<div className='row'>
 						<div className='col'>
 							<small className='mb-0'>Sort by</small>
@@ -334,4 +338,4 @@ const AllBooks = props => {
 	);
 };
 
-export default AllBooks;
+export default PopularBooks;

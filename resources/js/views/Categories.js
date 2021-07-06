@@ -9,7 +9,8 @@ const Categories = () => {
 	const history = useHistory();
 	const [category, setCategory] = useState('');
 
-	const [postsPerPage] = useState(20);
+	const [postsPerPage, setPostsPerPage] = useState(24);
+	const postsPerPageOptions = [8, 16, 24, 32, 40, 48];
 	const [offset, setOffset] = useState();
 	const [allPosts, setAllPosts] = useState([]);
 	const [posts, setPosts] = useState([]);
@@ -65,6 +66,11 @@ const Categories = () => {
 		pageChangeHandler();
 	}, [categoryId, offset, allPosts, category]);
 
+	useEffect(() => {
+		pageChangeHandler();
+		setOffset(1);
+	}, [postsPerPage]);
+
 	const handlePageClick = event => {
 		const selectedPage = event.selected;
 		setOffset(selectedPage + 1);
@@ -94,18 +100,34 @@ const Categories = () => {
 		}
 		return (
 			<div className='container mt-4'>
-				<div className='d-flex justify-content-between shadow-none mt-2 mb-5 bg-light rounded'>
+				<div className='d-flex justify-content-between mt-2 mb-5'>
 					<h1>{category && category.name}</h1>
-					<div className='w-25'>
-						<small className='mb-0'>Sort by</small>
-						<select
-							onChange={e => setSortType(e.target.value)}
-							className='form-select'
-						>
-							<option value='title'>Title</option>
-							<option value='author'>Author</option>
-							<option value='year'>Year</option>
-						</select>
+					<div className='row'>
+						<div className='col'>
+							<small className='mb-0'>Sort by</small>
+							<select
+								onChange={e => setSortType(e.target.value)}
+								className='form-select'
+							>
+								<option value='title'>Title</option>
+								<option value='author'>Author</option>
+								<option value='year'>Year</option>
+							</select>
+						</div>
+						<div className='col'>
+							<small className='mb-0'>Show per page</small>
+							<select
+								onChange={e => setPostsPerPage(e.target.value)}
+								className='form-select'
+								value={postsPerPage}
+							>
+								{postsPerPageOptions.map(value => (
+									<option key={value} value={value}>
+										{value}
+									</option>
+								))}
+							</select>
+						</div>
 					</div>
 				</div>
 				<div className='row'>

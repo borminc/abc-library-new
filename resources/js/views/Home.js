@@ -282,6 +282,9 @@ const Home = props => {
 								</div>
 							))}
 						</div>
+						<div className='d-flex justify-content-center mt-4'>
+							<Link to='latest-books'>See more</Link>
+						</div>
 					</div>
 				</div>
 
@@ -310,6 +313,9 @@ const Home = props => {
 									{Modal(value, i)}
 								</div>
 							))}
+						</div>
+						<div className='d-flex justify-content-center mt-4'>
+							<Link to='popular-books'>See more</Link>
 						</div>
 					</div>
 				</div>

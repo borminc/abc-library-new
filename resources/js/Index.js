@@ -19,6 +19,8 @@ import ABCNav from './components/ABCNav';
 import UserLayout from './views/user/UserLayout';
 import Categories from './views/Categories';
 import AllBooks from './views/AllBooks';
+import LatestBooks from './views/LatestBooks';
+import PopularBooks from './views/PopularBooks';
 
 const Index = () => {
 	const [user, setUser] = useState('loading');
@@ -82,6 +84,14 @@ const Index = () => {
 
 						<Route path='/all-books'>
 							<AllBooks />
+						</Route>
+
+						<Route path='/latest-books'>
+							<LatestBooks />
+						</Route>
+
+						<Route path='/popular-books'>
+							<PopularBooks />
 						</Route>
 
 						<Route exact path='/'>

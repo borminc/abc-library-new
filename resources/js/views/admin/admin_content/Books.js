@@ -127,13 +127,29 @@ const Books = () => {
 
 	const getCategoriesFromServer = () => {
 		axios.get('/api/categories').then(res => {
-			setCategories(res.data);
+			const data = res.data;
+			const sorted = [...data].sort((a, b) => {
+				const _a = a.name.toLowerCase();
+				const _b = b.name.toLowerCase();
+				if (_a > _b) return 1;
+				else if (_a < _b) return -1;
+				return 0;
+			});
+			setCategories(sorted);
 		});
 	};
 
 	const getPublishersFromServer = () => {
 		axios.get('/api/publishers').then(res => {
-			setPublishers(res.data);
+			const data = res.data;
+			const sorted = [...data].sort((a, b) => {
+				const _a = a.name.toLowerCase();
+				const _b = b.name.toLowerCase();
+				if (_a > _b) return 1;
+				else if (_a < _b) return -1;
+				return 0;
+			});
+			setPublishers(sorted);
 		});
 	};
 
