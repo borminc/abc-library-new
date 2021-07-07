@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserMail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -157,6 +159,19 @@ class BookUserController extends Controller
         $log->book_id = $book->id;
         $log->save();
 
+        if (!str_contains($user->email, '@abc.com')) {
+            // send email
+            $details = [
+                'subject' => 'Book Borrowed',
+                'title' => 'You have successfully borrowed a book!',
+                'body' => 'Please pick it up on time. If the return date is past, whether you have picked it up or not, overdue charges will apply. Enjoy reading!',
+                'book' => $book,
+                'return_date' => date('d.m.y', $return_time),
+                'ref' => $log->id
+            ];
+            Mail::to($user->email)->send(new UserMail($details));
+        }
+
         return response()->json([
             'message' => 'Successfully borrowed ' . $book->title . '!'
             ]); 
@@ -180,8 +195,10 @@ class BookUserController extends Controller
         $found = false; // find if user has actually borrowed  this book
 
         foreach($user->books as $user_book) {
-            if ($user_book->id == $book->id)
+            if ($user_book->id == $book->id) {
                 $found = true;
+                $u_book = $user_book;
+            }
         }
 
         if (!$found) {
@@ -190,6 +207,14 @@ class BookUserController extends Controller
             ], 400);
         }
 
+        // calculate cost if any
+        $time_now = time();
+        $cost_per_day = LibraryRuleSet::where('name', 'default')->first()->cost_per_day_late_return;
+        $days_late = floor(($time_now - $u_book->pivot->return_time) / (24*3600));
+        if ($days_late > 0) $cost = $days_late * $cost_per_day;
+        else $cost = null;
+        $cost_description = ($cost == null ? '' : 'Late fee paid: $' . $cost . '. ');
+
         $user->books()->detach($book);
         $book->stock = $book->stock + 1;
         $book->save();
@@ -197,11 +222,23 @@ class BookUserController extends Controller
         // create log
         $log = new Log();
         $log->title = 'Return';
-        $log->description = $user->name . ' returned ' . $book->title . '.';
+        $log->description = $user->name . ' returned ' . $book->title . '. ' . $cost_description;
         $log->date_time = date('d.m.y h:m A', time());
         $log->user_id = $user->id;
         $log->book_id = $book->id;
         $log->save();
+
+        if (!str_contains($user->email, '@abc.com')) {
+            // send email
+            $details = [
+                'subject' => 'Book Returned',
+                'title' => 'You have returned a book!',
+                'body' => $cost_description . 'Hope you enjoyed reading!',
+                'book' => $book,
+                'ref' => $log->id
+            ];
+            Mail::to($user->email)->send(new UserMail($details));
+        }
         
         return response()->json([
             'message' => 'Successfully returned ' . $book->title . '!'
@@ -246,6 +283,19 @@ class BookUserController extends Controller
         $log->user_id = $user->id;
         $log->book_id = $book->id;
         $log->save();
+
+        
+        if (!str_contains($user->email, '@abc.com')) {
+            // send email
+            $details = [
+                'subject' => 'Book Reported Lost',
+                'title' => 'You have lost a book!',
+                'body' => 'You received this email to confirm that you have paid the necessary fee!',
+                'book' => $book,
+                'ref' => $log->id
+            ];
+            Mail::to($user->email)->send(new UserMail($details));
+        }
         
         return response()->json([
             'message' => 'Successfully marked ' . $book->title . ' as lost!'

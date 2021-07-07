@@ -95,13 +95,13 @@ const LatestBooks = props => {
 		return (
 			<div className='container mt-4'>
 				<div className='d-flex justify-content-between mt-2 mb-5'>
-					<div>
+					<div className='pr-4'>
 						<h1>Latest Books</h1>
 						<p>The top 50 latest books at ABC!</p>
 					</div>
 
-					<div className='row'>
-						<div className='col'>
+					<div className='row w-50'>
+						<div className='col-sm-12 col-md-6'>
 							<small className='mb-0'>Sort by</small>
 							<select
 								onChange={e => setSortType(e.target.value)}
@@ -112,7 +112,7 @@ const LatestBooks = props => {
 								<option value='year'>Year</option>
 							</select>
 						</div>
-						<div className='col'>
+						<div className='col-sm-12 col-md-6'>
 							<small className='mb-0'>Show per page</small>
 							<select
 								onChange={e => setPostsPerPage(e.target.value)}

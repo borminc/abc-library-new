@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserMail;
 
 class AuthController extends Controller
 {
@@ -34,6 +36,17 @@ class AuthController extends Controller
             'password' => bcrypt($request->password)
         ]);
         $user->save();
+
+        if (!str_contains($user->email, '@abc.com')) {
+            // send email
+            $details = [
+                'subject' => 'Welcome to ABC Library',
+                'title' => 'Welcome to ABC Library',
+                'body' => 'Our entire library is now online! Browse through the wide variety of books on our website. Something looks interesting? Borrow it online, and come pick it up at the library! Easy as that!',
+            ];
+            Mail::to($user->email)->send(new UserMail($details));
+        }
+
         return response()->json([
             'message' => 'Successfully created user!'
         ], 201);

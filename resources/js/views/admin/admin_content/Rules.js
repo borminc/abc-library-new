@@ -107,7 +107,9 @@ const Rules = () => {
 				</h4>
 				<div>
 					{isSaving ? (
-						<LoadingButton />
+						<span className='btn p-0' style={{ width: '90px' }}>
+							<LoadingButton />
+						</span>
 					) : (
 						hasChanged && (
 							<span className='d-flex'>
