@@ -51,8 +51,7 @@ const UserLayout = props => {
 
 					<li className='nav-item'>
 						<Link to={`${url}`} className='nav-link'>
-							<i className='fas fa-fw fa-tachometer-alt'></i>
-							<span>My Profile</span>
+							My Profile
 						</Link>
 					</li>
 
@@ -61,15 +60,13 @@ const UserLayout = props => {
 					{/* Nav Item - Dashboard */}
 					<li className='nav-item'>
 						<Link to={`${url}/borrowed-books`} className='nav-link'>
-							<i className='fas fa-fw fa-tachometer-alt'></i>
-							<span>Currently Borrowed books</span>
+							Currently Borrowed books
 						</Link>
 					</li>
 
 					<li className='nav-item'>
 						<Link to={`${url}/logs`} className='nav-link'>
-							<i className='fas fa-fw fa-tachometer-alt'></i>
-							<span>Logs</span>
+							Logs
 						</Link>
 					</li>
 
