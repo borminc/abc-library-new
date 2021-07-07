@@ -459,7 +459,9 @@ const Users = () => {
 							</button>
 
 							{isReturning ? (
-								<LoadingButton />
+								<span className='btn p-0' style={{ width: '90px' }}>
+									<LoadingButton />
+								</span>
 							) : returnInfo.mode == 'return' ? (
 								<button
 									type='button'

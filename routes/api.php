@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\LogController;
 
 use App\Models\User;
 use App\Models\Book;
+use App\Mail\UserMail;
 
 
 /*
@@ -108,3 +110,14 @@ Route::resource('books', BookController::class)->only([
 Route::get('library-default-rule', [LibraryRuleSetController::class, 'showDefault']);
 
 Route::get('hello', function() { return 'Hello from ABC Library!'; });
+
+Route::get('send-email', function() {
+    $details = [
+        'title' => 'Title',
+        'body' => 'This is a test for sending emails.',
+        
+    ];
+
+    Mail::to('abclibrary.info@gmail.com')->send(new UserMail($details));
+    return 'Email sent';
+});

@@ -106,7 +106,9 @@ const Borrow = props => {
 							</button>
 							<div>
 								{isProcessing ? (
-									<LoadingButton />
+									<span className='btn p-0' style={{ width: '90px' }}>
+										<LoadingButton />
+									</span>
 								) : (
 									<button
 										onClick={handleSubmit}

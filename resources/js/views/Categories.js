@@ -101,9 +101,9 @@ const Categories = () => {
 		return (
 			<div className='container mt-4'>
 				<div className='d-flex justify-content-between mt-2 mb-5'>
-					<h1>{category && category.name}</h1>
-					<div className='row'>
-						<div className='col'>
+					<h1 className='pr-4'>{category && category.name}</h1>
+					<div className='row w-50'>
+						<div className='col-sm-12 col-md-6'>
 							<small className='mb-0'>Sort by</small>
 							<select
 								onChange={e => setSortType(e.target.value)}
@@ -114,7 +114,7 @@ const Categories = () => {
 								<option value='year'>Year</option>
 							</select>
 						</div>
-						<div className='col'>
+						<div className='col-sm-12 col-md-6'>
 							<small className='mb-0'>Show per page</small>
 							<select
 								onChange={e => setPostsPerPage(e.target.value)}
