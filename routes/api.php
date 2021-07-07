@@ -16,6 +16,8 @@ use App\Models\User;
 use App\Models\Book;
 use App\Mail\UserMail;
 
+use App\Jobs\SendEmail;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -111,13 +113,14 @@ Route::get('library-default-rule', [LibraryRuleSetController::class, 'showDefaul
 
 Route::get('hello', function() { return 'Hello from ABC Library!'; });
 
-Route::get('send-email', function() {
-    $details = [
-        'title' => 'Title',
-        'body' => 'This is a test for sending emails.',
-        
-    ];
+// Route::get('send-email', function() {
 
-    Mail::to('abclibrary.info@gmail.com')->send(new UserMail($details));
-    return 'Email sent';
-});
+//     $details = [
+//         'email' => 'abclibrary.info@gmail.com',
+//         'title' => 'Title',
+//         'body' => 'This is a test for sending emails.'
+//     ];
+//     SendEmail::dispatch($details);
+//     // Mail::to('abclibrary.info@gmail.com')->send(new UserMail($details));
+//     return 'Email queued';
+// });
