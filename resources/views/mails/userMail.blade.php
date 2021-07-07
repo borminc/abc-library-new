@@ -15,6 +15,7 @@
     @endif
     
     @if(isset($details['book']))
+        <img src='{{ $details['book']->image }}' style='max-height:200px; margin-top: 25px' />
         <table class='table small'>
             <h3>{{$details['book']->title}}</h3>
             <thead>
