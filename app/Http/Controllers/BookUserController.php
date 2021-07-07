@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UserMail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
+use App\Jobs\SendEmail;
 
 use App\Models\Log;
 use App\Models\User;
@@ -162,6 +163,7 @@ class BookUserController extends Controller
         if (!str_contains($user->email, '@abc.com')) {
             // send email
             $details = [
+                'email' => $user->email,
                 'subject' => 'Book Borrowed',
                 'title' => 'You have successfully borrowed a book!',
                 'body' => 'Please pick it up on time. If the return date is past, whether you have picked it up or not, overdue charges will apply. Enjoy reading!',
@@ -169,7 +171,8 @@ class BookUserController extends Controller
                 'return_date' => date('d.m.y', $return_time),
                 'ref' => $log->id
             ];
-            Mail::to($user->email)->send(new UserMail($details));
+            // Mail::to($user->email)->send(new UserMail($details));
+            SendEmail::dispatch($details);
         }
 
         return response()->json([
@@ -231,13 +234,15 @@ class BookUserController extends Controller
         if (!str_contains($user->email, '@abc.com')) {
             // send email
             $details = [
+                'email' => $user->email,
                 'subject' => 'Book Returned',
                 'title' => 'You have returned a book!',
                 'body' => $cost_description . 'Hope you enjoyed reading!',
                 'book' => $book,
                 'ref' => $log->id
             ];
-            Mail::to($user->email)->send(new UserMail($details));
+            SendEmail::dispatch($details);
+            // Mail::to($user->email)->send(new UserMail($details));
         }
         
         return response()->json([
@@ -288,13 +293,16 @@ class BookUserController extends Controller
         if (!str_contains($user->email, '@abc.com')) {
             // send email
             $details = [
+                'email' => $user->email,
                 'subject' => 'Book Reported Lost',
                 'title' => 'You have lost a book!',
                 'body' => 'You received this email to confirm that you have paid the necessary fee!',
                 'book' => $book,
                 'ref' => $log->id
             ];
-            Mail::to($user->email)->send(new UserMail($details));
+            SendEmail::dispatch($details);
+            // Mail::to($user->email)->send(new UserMail($details));
+            
         }
         
         return response()->json([
