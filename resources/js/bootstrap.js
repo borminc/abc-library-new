@@ -1,7 +1,5 @@
-import { setCookie, getCookie } from './functions/cookies';
-
 window._ = require('lodash');
-import "bootstrap";
+// import 'bootstrap';
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -9,10 +7,10 @@ import "bootstrap";
  */
 
 try {
-    window.Popper = require('popper.js').default;
-    window.$ = window.jQuery = require('jquery');
+	window.Popper = require('popper.js').default;
+	window.$ = window.jQuery = require('jquery');
 
-    require('bootstrap');
+	// require('bootstrap');
 } catch (e) {}
 
 /**
@@ -24,10 +22,6 @@ try {
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-// let token = 'Bearer ' + getCookie('token');
-// if (token) {
-// 	window.axios.defaults.headers.common['Authorization'] = token;
-// }
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

@@ -5,13 +5,11 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import Unauthorized from './views/Unauthorized';
-import { setCookie, getCookie } from './functions/cookies';
+import { getCookie } from './functions/cookies';
 
 import Login from './views/Login';
 import Register from './views/Register';
 import Home from './Views/Home';
-import Test from './views/Test';
-import Admin from './views/Admin';
 import AdminLayout from './views/admin/AdminLayout';
 import NotFound from './views/NotFound';
 import Borrow from './views/Borrow';
@@ -21,6 +19,10 @@ import Categories from './views/Categories';
 import AllBooks from './views/AllBooks';
 import LatestBooks from './views/LatestBooks';
 import PopularBooks from './views/PopularBooks';
+
+import './views/imports/sb-admin-2.min.css';
+import './views/imports/sb-admin-2.js';
+import './views/imports/sb-admin-2.min.js';
 
 const Index = () => {
 	const [user, setUser] = useState('loading');
@@ -54,9 +56,6 @@ const Index = () => {
 						</Route>
 						<Route path='/register'>
 							<Register user={user} setUser={setUser} />
-						</Route>
-						<Route path='/test'>
-							<PrivateRoute component={<Test />} />
 						</Route>
 						<Route path='/user'>
 							<PrivateRoute
