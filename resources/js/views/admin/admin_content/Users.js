@@ -220,7 +220,25 @@ const Users = () => {
 									return (
 										<tr key={i}>
 											<td>{user.id}</td>
-											<td>{user.name}</td>
+											<td>
+												<span className='d-flex align-items-center'>
+													{user.name}
+													{user.is_verified && (
+														<img
+															className='ml-2'
+															src='/img/tick.svg'
+															style={{ height: '12px', opacity: '50%' }}
+														/>
+													)}
+													{user.is_admin && (
+														<img
+															className='ml-2'
+															src='/img/user.svg'
+															style={{ height: '12.5px', opacity: '50%' }}
+														/>
+													)}
+												</span>
+											</td>
 											<td>{user.email}</td>
 											<td>{user.phone}</td>
 											<td>{user.books.length}</td>

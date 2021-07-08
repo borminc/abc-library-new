@@ -27,6 +27,7 @@ class BookUserController extends Controller
         $users = User::all();
         $time_now = time();
         foreach ($users as $user) {
+            $user->is_verified = isset($user->email_verified_at);
             $cost_per_day = LibraryRuleSet::where('name', 'default')->first()->cost_per_day_late_return;
             
             foreach ($user->books as $book) {

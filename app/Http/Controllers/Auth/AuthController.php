@@ -157,6 +157,12 @@ class AuthController extends Controller
 
         $user = User::findOrFail($request->user_id);
 
+        if ($user->is_admin) {
+            return response()->json([
+                'error' => 'Cannot delete an admin account. Demote the account to a regular user first.'
+            ], 406);
+        }
+
         if (count($user->books) > 0) {
             return response()->json([
                 'error' => 'Return all books before deleting account.'
