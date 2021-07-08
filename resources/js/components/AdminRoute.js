@@ -12,10 +12,6 @@ const AdminRoute = props => {
 	const [loginStatus, setLoginStatus] = useState(0);
 	// -2=unauthorized; -1=not logged in; 0=loading; 1=logged in
 
-	if (!getCookie('token')) {
-		return <Redirect push to='/login' />;
-	}
-
 	useEffect(() => {
 		axios
 			.get('/api/auth/user')
@@ -27,10 +23,21 @@ const AdminRoute = props => {
 				}
 			})
 			.catch(err => {
-				deleteCookie('token');
-				setLoginStatus(-1);
+				if (
+					err.response.status == 403 ||
+					err.response.data.message === 'Your email address is not verified.'
+				) {
+					setLoginStatus(-3);
+				} else {
+					deleteCookie('token');
+					setLoginStatus(-1);
+				}
 			});
 	}, []);
+
+	if (!getCookie('token')) {
+		return <Redirect push to='/login' />;
+	}
 
 	switch (loginStatus) {
 		case 0:
@@ -41,6 +48,8 @@ const AdminRoute = props => {
 			return <Redirect push to='/login' />;
 		case -2:
 			return <Redirect push to='/unauthorized' />;
+		case -3:
+			return <Redirect push to='/verify-email' />;
 	}
 };
 

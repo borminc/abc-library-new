@@ -8,11 +8,7 @@ import { setCookie, getCookie, deleteCookie } from './../functions/cookies';
 import { Loading } from './Loading';
 
 const PrivateRoute = props => {
-	const [loginStatus, setLoginStatus] = useState(0); // -1=not logged in; 0=loading; 1=logged in
-
-	if (!getCookie('token')) {
-		return <Redirect push to='/login' />;
-	}
+	const [loginStatus, setLoginStatus] = useState(0); // -2=verify email; -1=not logged in; 0=loading; 1=logged in
 
 	useEffect(() => {
 		axios
@@ -21,10 +17,21 @@ const PrivateRoute = props => {
 				setLoginStatus(1);
 			})
 			.catch(err => {
-				deleteCookie('token');
-				setLoginStatus(-1);
+				if (
+					err.response.status == 403 ||
+					err.response.data.message === 'Your email address is not verified.'
+				) {
+					setLoginStatus(-2);
+				} else {
+					deleteCookie('token');
+					setLoginStatus(-1);
+				}
 			});
 	}, []);
+
+	if (!getCookie('token')) {
+		return <Redirect push to='/login' />;
+	}
 
 	switch (loginStatus) {
 		case 0:
@@ -33,6 +40,8 @@ const PrivateRoute = props => {
 			return <div> {props.component} </div>;
 		case -1:
 			return <Redirect push to='/login' />;
+		case -2:
+			return <Redirect push to='/verify-email' />;
 	}
 };
 

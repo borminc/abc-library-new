@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserMail;
+use App\Jobs\SendVerificationEmail;
+use App\Jobs\SendEmail;
 
 class AuthController extends Controller
 {
@@ -23,6 +26,12 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        if (User::where('email', $request->email)->first()) {
+            return response()->json([
+                'error' => 'This email is already associated with an account. Log in instead.'
+            ], 406);
+        }
+
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|email|unique:users',
@@ -36,16 +45,19 @@ class AuthController extends Controller
             'password' => bcrypt($request->password)
         ]);
         $user->save();
+        
+        SendVerificationEmail::dispatch(['user' => $user]);
 
-        if (!str_contains($user->email, '@abc.com')) {
-            // send email
-            $details = [
-                'subject' => 'Welcome to ABC Library',
-                'title' => 'Welcome to ABC Library',
-                'body' => 'Our entire library is now online! Browse through the wide variety of books on our website. Something looks interesting? Borrow it online, and come pick it up at the library! Easy as that!',
-            ];
-            Mail::to($user->email)->send(new UserMail($details));
-        }
+        // $user->sendEmailVerificationNotification();
+        // if (!str_contains($user->email, '@abc.com')) {
+        //     // send email
+        //     $details = [
+        //         'subject' => 'Welcome to ABC Library',
+        //         'title' => 'Welcome to ABC Library',
+        //         'body' => 'Our entire library is now online! Browse through the wide variety of books on our website. Something looks interesting? Borrow it online, and come pick it up at the library! Easy as that!',
+        //     ];
+        //     Mail::to($user->email)->send(new UserMail($details));
+        // }
 
         return response()->json([
             'message' => 'Successfully created user!'
@@ -87,7 +99,8 @@ class AuthController extends Controller
             'expires_at' => Carbon::parse(
                 $tokenResult->token->expires_at
             )->toDateTimeString(),
-            'user' => auth()->user()
+            'user' => auth()->user(),
+            'verified' => !(auth()->user()->email_verified_at == null)
         ];
         
         if (auth()->user()->is_admin == 1) {
@@ -118,6 +131,55 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         return response()->json($request->user());
+    }
+
+    public function username(Request $request)
+    {
+        return response()->json($request->user()->name);
+    }
+
+    public function deleteUser(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Input is valid'
+            ], 400);
+        }
+
+        if (auth()->user()->id == $request->user_id) {
+            return response()->json([
+                'error' => 'Cannot delete your own account.'
+            ], 406);
+        }
+
+        $user = User::findOrFail($request->user_id);
+
+        if (count($user->books) > 0) {
+            return response()->json([
+                'error' => 'Return all books before deleting account.'
+            ], 406);
+        }
+
+        $details = [
+            'email' => $user->email,
+            'subject' => 'Account Deleted',
+            'title' => "Your account has been deleted.",
+            'body' => "It's sad to see you go. Keep reading!",
+        ];
+
+        $user->delete();
+
+        if (!str_contains($details['email'], '@abc.com')) {
+            // send email
+            SendEmail::dispatch($details);
+        }
+
+        return response()->json([
+            'message' => 'Successfully deleted account: ' . $user->name . '.'
+            ]);
     }
 
     public function search(Request $request) {

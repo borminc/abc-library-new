@@ -16,6 +16,10 @@ function ABCNav(props) {
 
 	const [categories, setCategory] = useState([]);
 	const [user, setUser] = [props.user, props.setUser];
+	const [needsToVerifyAcc, setNeedsToVerifyAcc] = [
+		props.needsToVerifyAcc,
+		props.setNeedsToVerifyAcc,
+	];
 
 	useEffect(() => {
 		axios.get('/api/categories').then(res => {
@@ -28,9 +32,7 @@ function ABCNav(props) {
 			.get('/api/auth/logout')
 			.then(res => {
 				deleteCookie('token');
-				// history.push('/');
 				location.href = '/';
-				setUser(null);
 			})
 			.catch(err => {
 				console.log(err);
@@ -85,6 +87,13 @@ function ABCNav(props) {
 							>
 								<span className='visually-hidden'>Loading...</span>
 							</div>
+						) : needsToVerifyAcc && needsToVerifyAcc.status ? (
+							<>
+								<Nav.Link onClick={() => history.push('/verify-email')}>
+									{needsToVerifyAcc.username + ' - Verifiy Account Now'}
+								</Nav.Link>
+								<Nav.Link onClick={logoutHandler}>Logout</Nav.Link>
+							</>
 						) : user ? (
 							<NavDropdown
 								title={user.name}
@@ -116,17 +125,14 @@ function ABCNav(props) {
 								</NavDropdown.Item>
 							</NavDropdown>
 						) : (
-							<div>
-								<button className='btn' onClick={() => history.push('/login')}>
+							<>
+								<Nav.Link onClick={() => history.push('/login')}>
 									Login
-								</button>
-								<button
-									className='btn'
-									onClick={() => history.push('/register')}
-								>
+								</Nav.Link>
+								<Nav.Link onClick={() => history.push('/register')}>
 									Register
-								</button>
-							</div>
+								</Nav.Link>
+							</>
 						)}
 					</Router>
 				</Nav>

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import axios from './functions/axios';
 
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import Unauthorized from './views/Unauthorized';
-import { getCookie } from './functions/cookies';
+import { deleteCookie, getCookie } from './functions/cookies';
 
 import Login from './views/Login';
 import Register from './views/Register';
@@ -19,14 +20,20 @@ import Categories from './views/Categories';
 import AllBooks from './views/AllBooks';
 import LatestBooks from './views/LatestBooks';
 import PopularBooks from './views/PopularBooks';
+import VerifyEmail from './views/VerifyEmail';
 
 import './views/imports/sb-admin-2.min.css';
 import './views/imports/sb-admin-2.js';
 import './views/imports/sb-admin-2.min.js';
 import ScrollArrow from './components/ScrollArrow';
+import VerifyEmailSuccessful from './views/VerifyEmailSuccessful';
 
 const Index = () => {
 	const [user, setUser] = useState('loading');
+	const [needsToVerifyAcc, setNeedsToVerifyAcc] = useState({
+		username: '',
+		status: false,
+	});
 
 	useEffect(() => {
 		if (getCookie('token')) {
@@ -35,8 +42,19 @@ const Index = () => {
 				.then(res => {
 					setUser(res.data);
 				})
-				.catch(err => {
-					setUser(null);
+				.catch(async err => {
+					if (
+						err.response.status == 403 ||
+						err.response.data.message === 'Your email address is not verified.'
+					) {
+						const res = await axios.get('/api/auth/username');
+						const username = res.data;
+						setNeedsToVerifyAcc({ username: username, status: true });
+						setUser(null);
+					} else {
+						deleteCookie('token');
+						setUser(null);
+					}
 				});
 		} else {
 			setUser(null);
@@ -47,16 +65,31 @@ const Index = () => {
 		<div>
 			<Router>
 				<div style={{ position: 'sticky', top: 0, zIndex: 3 }}>
-					<ABCNav user={user} setUser={setUser} />
+					<ABCNav
+						user={user}
+						setUser={setUser}
+						needsToVerifyAcc={needsToVerifyAcc}
+						setNeedsToVerifyAcc={setNeedsToVerifyAcc}
+					/>
 				</div>
 
 				<div>
 					<Switch>
 						<Route path='/login'>
-							<Login user={user} setUser={setUser} />
+							<Login
+								user={user}
+								setUser={setUser}
+								needsToVerifyAcc={needsToVerifyAcc}
+								setNeedsToVerifyAcc={setNeedsToVerifyAcc}
+							/>
 						</Route>
 						<Route path='/register'>
-							<Register user={user} setUser={setUser} />
+							<Register
+								user={user}
+								setUser={setUser}
+								needsToVerifyAcc={needsToVerifyAcc}
+								setNeedsToVerifyAcc={setNeedsToVerifyAcc}
+							/>
 						</Route>
 						<Route path='/user'>
 							<PrivateRoute
@@ -69,6 +102,14 @@ const Index = () => {
 
 						<Route path='/unauthorized'>
 							<Unauthorized />
+						</Route>
+
+						<Route path='/verify-email'>
+							<VerifyEmail user={user} setUser={setUser} />
+						</Route>
+
+						<Route path='/verify-email-success'>
+							<VerifyEmailSuccessful />
 						</Route>
 
 						<Route path='/categories/:categoryId' children={<Categories />} />
