@@ -10,10 +10,20 @@ const Unauthorized = () => {
 	const history = useHistory();
 	return (
 		<div>
-			<h1 className='text-center p-5'>Unauthorized</h1>
-			<button className='btn btn-primary' onClick={() => history.push('/')}>
-				Go back home
-			</button>
+			<div
+				className='d-flex flex-column justify-content-center align-items-center'
+				style={{ marginBottom: '10vh' }}
+			>
+				<div className='text-center p-5 mt-5'>
+					<div className='display-6'>Unauthorized!</div>
+				</div>
+				<button
+					className='btn btn-primary w-25'
+					onClick={() => history.push('/')}
+				>
+					Go back home
+				</button>
+			</div>
 		</div>
 	);
 };
