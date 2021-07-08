@@ -148,3 +148,37 @@ header.masthead .post-heading .meta a {
 	color: #4e73df;
 	background-color: #fff;
 }
+
+.scrollTopContainer {
+	display: flex;
+	justify-content: flex-end;
+	margin-right: 20px;
+}
+
+.scrollTop {
+	position: fixed;
+	width: 50px;
+	bottom: 20px;
+	align-items: center;
+	height: 20px;
+	justify-content: center;
+	z-index: 1000;
+	cursor: pointer;
+	animation: fadeIn 0.3s;
+	transition: opacity 0.4s;
+	opacity: 0.5;
+	color: #4e73df;
+}
+
+.scrollTop:hover {
+	opacity: 1;
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 0.5;
+	}
+}

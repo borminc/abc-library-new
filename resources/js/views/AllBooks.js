@@ -21,7 +21,7 @@ const AllBooks = props => {
 	useEffect(() => {
 		sortArray(sortType);
 		setOffset(1);
-	}, [sortType]);
+	}, [sortType, isLoading]);
 
 	const sortArray = type => {
 		const types = {

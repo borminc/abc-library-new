@@ -22,7 +22,7 @@ const Categories = () => {
 	useEffect(() => {
 		sortArray(sortType);
 		setOffset(1);
-	}, [sortType]);
+	}, [sortType, isLoading]);
 
 	const sortArray = type => {
 		const types = {
@@ -132,7 +132,7 @@ const Categories = () => {
 				</div>
 				<div className='row'>
 					{data.map((value, i) => (
-						<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
+						<div className='col-6 col-sm-6 col-md-4 col-lg-3 p-3' key={i}>
 							<div className='card p-2 h-100'>
 								<img
 									src={value.image || '/img/book-null-img.png'}

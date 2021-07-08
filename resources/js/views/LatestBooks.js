@@ -16,14 +16,19 @@ const LatestBooks = props => {
 	const [allBooks, setAllBooks] = useState([]);
 	const [pageCount, setPageCount] = useState(0);
 
-	const [sortType, setSortType] = useState('title');
+	const [allBooksInDefaultOrder, setAllBooksInDefaultOrder] = useState([]);
+	const [sortType, setSortType] = useState('latest');
 
 	useEffect(() => {
 		sortArray(sortType);
 		setOffset(1);
-	}, [sortType]);
+	}, [sortType, isLoading]);
 
 	const sortArray = type => {
+		if (type === 'latest') {
+			setAllBooks(allBooksInDefaultOrder);
+			return;
+		}
 		const types = {
 			title: 'title',
 			author: 'author',
@@ -61,6 +66,7 @@ const LatestBooks = props => {
 			.get('/api/books/latest?number=50')
 			.then(res => {
 				setAllBooks(res.data);
+				setAllBooksInDefaultOrder(res.data);
 			})
 			.catch(err => {
 				console.log(err.response);
@@ -106,7 +112,9 @@ const LatestBooks = props => {
 							<select
 								onChange={e => setSortType(e.target.value)}
 								className='form-select'
+								value={sortType}
 							>
+								<option value='latest'>Latest</option>
 								<option value='title'>Title</option>
 								<option value='author'>Author</option>
 								<option value='year'>Year</option>
@@ -130,10 +138,8 @@ const LatestBooks = props => {
 				</div>
 				<div className='row'>
 					{books.map((value, i) => {
-						// if (i + 1 > numShow) return null;
-						// else {
 						return (
-							<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
+							<div className='col-6 col-sm-6 col-md-4 col-lg-3 p-3' key={i}>
 								<div className='card p-2 h-100'>
 									<img
 										src={value.image || '/img/book-null-img.png'}

@@ -18,7 +18,10 @@ const Home = props => {
 	useEffect(() => {
 		setLoading(true);
 		axios
-			.all([axios.get('/api/books/latest'), axios.get('/api/books/popular')])
+			.all([
+				axios.get('/api/books/latest?number=12'),
+				axios.get('/api/books/popular?number=12'),
+			])
 			.then(
 				axios.spread((res1, res2) => {
 					setLatestBook(res1.data);
@@ -195,7 +198,7 @@ const Home = props => {
 			<div className='container p-5'>
 				<div className='row'>
 					{search.map((value, i) => (
-						<div className='col-6 col-sm-4 col-md-3 p-2' key={i}>
+						<div className='col-6 col-sm-6 col-md-4 col-lg-3 p-2' key={i}>
 							<div className='card p-2 h-100'>
 								<img
 									src={value.image || 'img/book-null-img.png'}
@@ -269,7 +272,7 @@ const Home = props => {
 
 						<div className='row'>
 							{latestBooks.map((value, i) => (
-								<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
+								<div className='col-6 col-sm-6 col-md-4 col-lg-3 p-3' key={i}>
 									<img
 										src={value.image || 'img/book-null-img.png'}
 										className='img-fluid rounded'
@@ -301,7 +304,7 @@ const Home = props => {
 
 						<div className='row'>
 							{popularBooks.map((value, i) => (
-								<div className='col-6 col-sm-4 col-md-3 p-3' key={i}>
+								<div className='col-6 col-sm-6 col-md-4 col-lg-3 p-3' key={i}>
 									<img
 										src={value.image || 'img/book-null-img.png'}
 										className='img-fluid rounded'

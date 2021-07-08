@@ -23,6 +23,7 @@ import PopularBooks from './views/PopularBooks';
 import './views/imports/sb-admin-2.min.css';
 import './views/imports/sb-admin-2.js';
 import './views/imports/sb-admin-2.min.js';
+import ScrollArrow from './components/ScrollArrow';
 
 const Index = () => {
 	const [user, setUser] = useState('loading');
@@ -103,6 +104,8 @@ const Index = () => {
 					</Switch>
 				</div>
 			</Router>
+
+			<ScrollArrow />
 		</div>
 	);
 };
