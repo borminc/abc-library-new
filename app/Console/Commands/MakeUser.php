@@ -50,7 +50,7 @@ class MakeUser extends Command
         if(!Auth::attempt($credentials)) {
             $this->error('Invalid credentials!');
         } else if (!Auth::user()->is_admin) {
-             $this->error('This user is already a regular user (not admin)!');
+            $this->error('This user is already a regular user (not admin)!');
         } else {
             $user = Auth::user();
             $user->is_admin = null;

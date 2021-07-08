@@ -12,6 +12,10 @@ import MessageAlert from '../components/MessageAlert';
 const Login = props => {
 	const history = useHistory();
 	const [user, setUser] = [props.user, props.setUser];
+	const [needsToVerifyAcc, setNeedsToVerifyAcc] = [
+		props.needsToVerifyAcc,
+		props.setNeedsToVerifyAcc,
+	];
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -61,6 +65,7 @@ const Login = props => {
 
 		var success = false;
 		var isAdmin = false;
+		var needVerification = false;
 		const loginInfo = {
 			email: email,
 			password: password,
@@ -74,6 +79,10 @@ const Login = props => {
 				success = true;
 				isAdmin = res.data.is_admin || false;
 				setUser(res.data.user);
+				if (!res.data.verified) {
+					setNeedsToVerifyAcc({ username: res.data.user.name, status: true });
+					needVerification = true;
+				}
 			})
 			.catch(err => {
 				console.log(err);
@@ -93,7 +102,8 @@ const Login = props => {
 						history.push('/admin');
 						return;
 					} else {
-						if (history.length) history.goBack();
+						if (needVerification) history.push('/verify-email');
+						else if (history.length) history.goBack();
 						else history.push('/');
 					}
 				}

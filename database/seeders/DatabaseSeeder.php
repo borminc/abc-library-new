@@ -21,8 +21,10 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@abc.com',
             'phone' => '011223344',
             'password' => Hash::make('thecooladminatABC'),
-            'is_admin' => '1'
+            'is_admin' => '1',
         ]);
+
+        User::where('email', 'admin@abc.com')->first()->markEmailAsVerified();
 
         DB::table('library_rule_sets')->insert([
             'name' => 'default',

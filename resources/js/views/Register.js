@@ -13,6 +13,10 @@ import MessageAlert from '../components/MessageAlert';
 const Register = props => {
 	const history = useHistory();
 	const [user, setUser] = [props.user, props.setUser];
+	const [needsToVerifyAcc, setNeedsToVerifyAcc] = [
+		props.needsToVerifyAcc,
+		props.setNeedsToVerifyAcc,
+	];
 
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
@@ -83,8 +87,14 @@ const Register = props => {
 				logInUser(email, password);
 			})
 			.catch(err => {
+				console.log(err);
+				console.log(err.response.data);
+				if (err.response.status == 500)
+					var message =
+						'There was an error creating your account. Try again later!';
+				else var message = err.response.data.error;
 				setMsg({
-					text: 'There was an error creating your account. Try again later!',
+					text: message,
 					success: 0,
 				});
 			})
@@ -104,8 +114,9 @@ const Register = props => {
 			.post('/api/auth/login', loginInfo)
 			.then(res => {
 				setCookie('token', res.data.access_token);
-				history.push('/');
 				setUser(res.data.user);
+				setNeedsToVerifyAcc({ username: res.data.user.name, status: true });
+				history.push('/verify-email');
 			})
 			.catch(err => {
 				setMsg({

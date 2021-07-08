@@ -37,12 +37,13 @@ const Borrow = props => {
 	function handleSubmit(event) {
 		setProcessing(true);
 		event.preventDefault();
+		let success = false;
 		axios
 			.post('/api/borrow', { book_id: bookId })
 			.then(res => {
-				getBookFromServer();
+				// getBookFromServer();
 				document.getElementById('closeModalBtn').click();
-				history.push('/user/borrowed-books');
+				success = true;
 			})
 			.catch(err => {
 				console.log(err.response.data.error);
@@ -54,6 +55,7 @@ const Borrow = props => {
 			})
 			.finally(() => {
 				setProcessing(false);
+				if (success) history.push('/user/borrowed-books');
 			});
 	}
 

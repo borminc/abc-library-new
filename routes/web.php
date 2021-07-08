@@ -17,6 +17,4 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::view('/{path?}/{path1?}/{path2?}/{path3?}/{path4?}', 'index');
-
-
+Route::view('/{path?}/{path1?}/{path2?}/{path3?}/{path4?}/{path5?}/{path6?}', 'index');

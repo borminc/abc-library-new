@@ -11,7 +11,10 @@ const defaultOptions = {
 axios.interceptors.request.use(function (config) {
 	const token = getCookie('token');
 	if (config.headers.Authorization == 'NONE') config.headers = {};
-	else config.headers.Authorization = token ? `Bearer ${token}` : '';
+	else {
+		config.headers.Authorization = token ? `Bearer ${token}` : '';
+		config.headers.Accept = 'application/json';
+	}
 	return config;
 });
 

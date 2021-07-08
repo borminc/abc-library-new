@@ -11,12 +11,13 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookUserController;
 use App\Http\Controllers\LibraryRuleSetController;
 use App\Http\Controllers\LogController;
+use App\Http\Controllers\VerificationController;
 
 use App\Models\User;
 use App\Models\Book;
 use App\Mail\UserMail;
 
-use App\Jobs\SendEmail;
+use App\Jobs\SendVerificationEmail;
 
 
 /*
@@ -43,13 +44,14 @@ Route::group([
         'middleware' => 'auth:api'
     ], function() {
         Route::get('logout', [AuthController::class, 'logout']);
-        Route::get('user', [AuthController::class, 'user']);
+        Route::get('user', [AuthController::class, 'user'])->middleware('verified');
+        Route::get('username', [AuthController::class, 'username']);
     });
 });
 
 // ---------------------------------------------------- Routes that require user account
 Route::group([
-        'middleware' => 'auth:api'
+        'middleware' => ['auth:api', 'verified']
     ], function() {
         Route::post('borrow', [BookUserController::class, 'borrow']);
         Route::get('user/books', [BookUserController::class, 'getUserBooks']);
@@ -76,7 +78,6 @@ Route::group([
         'index', 'show'
     ]);
 
-
     Route::post('books/return', [BookUserController::class, 'returnBook']);
     Route::post('books/lost', [BookUserController::class, 'returnLostBook']);
 
@@ -93,6 +94,7 @@ Route::group([
     Route::put('library-rules', [LibraryRuleSetController::class, 'updateAll']);
 
     Route::resource('logs', LogController::class);
+    Route::post('delete-user', [AuthController::class, 'deleteUser']);
 });
 
 // ---------------------------------------------------- Public routes
@@ -113,14 +115,25 @@ Route::get('library-default-rule', [LibraryRuleSetController::class, 'showDefaul
 
 Route::get('hello', function() { return 'Hello from ABC Library!'; });
 
-// Route::get('send-email', function() {
+Route::get('email/verify/{id}', [VerificationController::class, 'verify'])->name('verification.verify');
+Route::get('email/resend', [VerificationController::class, 'resend'])
+    ->middleware('auth:api')
+    ->name('verification.resend');
 
-//     $details = [
-//         'email' => 'abclibrary.info@gmail.com',
-//         'title' => 'Title',
-//         'body' => 'This is a test for sending emails.'
-//     ];
-//     SendEmail::dispatch($details);
-//     // Mail::to('abclibrary.info@gmail.com')->send(new UserMail($details));
-//     return 'Email queued';
-// });
+Route::get('/verify-notice', function() {
+    return 'verify';
+})->name('verification.notice');
+
+
+Route::get('send-email', function() {
+    // test
+    // $details = [
+    //     'email' => 'abclibrary.info@gmail.com',
+    //     'title' => 'Title',
+    //     'body' => 'This is a test for sending emails.'
+    // ];
+    $user = User::findOrFail(15);
+    SendVerificationEmail::dispatch(['user' => $user]);
+    // Mail::to('abclibrary.info@gmail.com')->send(new UserMail($details));
+    return 'Email queued';
+});

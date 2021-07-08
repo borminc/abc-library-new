@@ -24,6 +24,7 @@ const Users = () => {
 		mode: null,
 	});
 	const [isReturning, setReturning] = useState(false);
+	const [isDeletingUser, setDeleteingUser] = useState(false);
 	const [msg, setMsg] = useState({ text: '', success: 0 });
 
 	const [searchValue, setSearchValue] = useState('');
@@ -106,7 +107,29 @@ const Users = () => {
 			})
 			.finally(() => {
 				setReturning(false);
-				getUsersFromServer();
+				refresh();
+			});
+	};
+
+	const deleteUserHandler = user_id => {
+		setDeleteingUser(true);
+		axios
+			.post('/api/delete-user', { user_id: user_id })
+			.then(res => {
+				setMsg({ text: 'User was deleted successfully!', success: 1 });
+				document
+					.getElementById('delete-user-modal-close-btn' + user_id)
+					.click();
+			})
+			.catch(err => {
+				setMsg({
+					text: 'There was a problem: ' + err.response.data.error,
+					success: 0,
+				});
+			})
+			.finally(() => {
+				setDeleteingUser(false);
+				refresh();
 			});
 	};
 
@@ -204,7 +227,7 @@ const Users = () => {
 											<td>
 												<button
 													type='button'
-													className='btn btn-outline-primary'
+													className='btn btn-outline-primary mr-2 mb-2'
 													id='open-user-info-modal-button'
 													data-bs-toggle='modal'
 													data-bs-target='#user-info-modal'
@@ -214,6 +237,106 @@ const Users = () => {
 												>
 													More info
 												</button>
+												<button
+													type='button'
+													className='btn btn-outline-danger mr-2 mb-2'
+													data-bs-toggle='modal'
+													data-bs-target={'#delete-user-modal' + user.id}
+													onClick={() => setMsg({ text: '', success: '' })}
+													disabled={user.books.length > 0}
+												>
+													Delete
+												</button>
+
+												{/* Delete User Modal */}
+												<div
+													className='modal fade'
+													id={'delete-user-modal' + user.id}
+													tabIndex='-1'
+													aria-labelledby='delete-user-modal-label'
+													aria-hidden='true'
+												>
+													<div className='modal-dialog'>
+														<div className='modal-content'>
+															<div className='modal-header'>
+																<h5
+																	className='modal-title'
+																	id='delete-user-modal-label'
+																>
+																	Confirmation
+																</h5>
+																<button
+																	type='button'
+																	className='btn-close'
+																	data-bs-dismiss='modal'
+																	aria-label='Close'
+																></button>
+															</div>
+															<div className='modal-body'>
+																{msg && msg.text && (
+																	<MessageAlert
+																		msg={msg.text}
+																		success={msg.success}
+																	/>
+																)}
+
+																<p>
+																	Are you sure you want to delete this user's
+																	account?
+																</p>
+																<table className='table'>
+																	<tbody>
+																		<tr>
+																			<th scope='row'>ID</th>
+																			<td>{user.id}</td>
+																		</tr>
+																		<tr>
+																			<th scope='row'>Name</th>
+																			<td>{user.name}</td>
+																		</tr>
+																		<tr>
+																			<th scope='row'>Email</th>
+																			<td>{user.email}</td>
+																		</tr>
+																		<tr>
+																			<th scope='row'>Phone</th>
+																			<td>{user.phone}</td>
+																		</tr>
+																	</tbody>
+																</table>
+																<p className='text-danger'>
+																	This action cannot be undone.
+																</p>
+															</div>
+															<div className='modal-footer'>
+																<button
+																	type='button'
+																	className='btn btn-secondary'
+																	data-bs-dismiss='modal'
+																	id={'delete-user-modal-close-btn' + user.id}
+																>
+																	Close
+																</button>
+																{isDeletingUser ? (
+																	<span
+																		className='btn p-0'
+																		style={{ width: '90px' }}
+																	>
+																		<LoadingButton color='danger' />
+																	</span>
+																) : (
+																	<button
+																		type='button'
+																		className='btn btn-danger'
+																		onClick={() => deleteUserHandler(user.id)}
+																	>
+																		Delete
+																	</button>
+																)}
+															</div>
+														</div>
+													</div>
+												</div>
 											</td>
 										</tr>
 									);
