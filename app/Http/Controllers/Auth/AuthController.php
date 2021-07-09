@@ -131,7 +131,7 @@ class AuthController extends Controller
     }
 
     public function deleteUser(Request $request) {
-        // for admin deletes user
+        // for admin to delete user
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|integer',
         ]);
@@ -165,7 +165,7 @@ class AuthController extends Controller
         $details = [
             'email' => $user->email,
             'subject' => 'Account Deleted',
-            'title' => "Your account has been deleted.",
+            'title' => "Your account has been deleted by the admin at ABC.",
             'body' => "It's sad to see you go. Keep reading!",
         ];
 
