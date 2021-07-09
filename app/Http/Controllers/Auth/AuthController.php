@@ -169,6 +169,7 @@ class AuthController extends Controller
             'body' => "It's sad to see you go. Keep reading!",
         ];
 
+        foreach($user->tokens as $token) $token->revoke();
         $user->delete();
 
         if (!str_contains($details['email'], '@abc.com')) {
@@ -209,6 +210,12 @@ class AuthController extends Controller
             return response()->json([
                 'error' => 'Incorrect credentials.'
             ], 401);
+        }
+
+        if ($user->is_admin && User::where('is_admin', 1)->count() <= 1) {
+            return response()->json([
+                'error' => 'Cannot delete the only admin account.'
+            ], 406);
         }
 
         if (count($user->books) > 0) {

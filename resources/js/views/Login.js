@@ -187,10 +187,8 @@ const Login = props => {
 									) : (
 										<button
 											type='submit'
-											className={
-												'form-control btn btn-primary rounded submit px-3' +
-												(errors.email || errors.password ? ' disabled' : '')
-											}
+											className='form-control btn btn-primary rounded submit px-3'
+											disabled={errors.email || errors.password}
 											onClick={LogInHandler}
 										>
 											Log In

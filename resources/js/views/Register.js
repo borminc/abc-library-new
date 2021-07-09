@@ -36,7 +36,7 @@ const Register = props => {
 	});
 
 	useEffect(() => {
-		// if token exist -> login immediately
+		// if token exists -> login immediately
 		if (getCookie('token')) {
 			axios
 				.get('/api/auth/user')
@@ -64,7 +64,8 @@ const Register = props => {
 		);
 	};
 
-	const RegisterHandler = () => {
+	const RegisterHandler = e => {
+		e.preventDefault();
 		setProcessing(true);
 		setMsg({ text: '', success: 0 });
 
@@ -281,11 +282,9 @@ const Register = props => {
 										<LoadingButton />
 									) : (
 										<button
-											type='button'
-											className={
-												'form-control btn btn-primary rounded submit px-3' +
-												(hasInputErrors() ? ' disabled' : '')
-											}
+											type='submit'
+											className='form-control btn btn-primary rounded submit px-3'
+											disabled={hasInputErrors()}
 											onClick={RegisterHandler}
 										>
 											Create account

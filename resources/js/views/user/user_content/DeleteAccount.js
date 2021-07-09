@@ -23,7 +23,8 @@ const DeleteAccount = props => {
 	const [password, setPassword] = useState('');
 	const [passwordErr, setPasswordErr] = useState(false);
 
-	const deleteAccountHandler = () => {
+	const deleteAccountHandler = e => {
+		e.preventDefault();
 		if (password === '') {
 			setMsg({ text: 'Password cannot be empty.', success: 0 });
 			return;
@@ -68,34 +69,36 @@ const DeleteAccount = props => {
 				{msg && msg.text && (
 					<MessageAlert msg={msg.text} success={msg.success} />
 				)}
+				<form>
+					<input
+						type='password'
+						className={'form-control mb-3' + (passwordErr ? ' is-invalid' : '')}
+						id='password'
+						value={password}
+						placeholder='Password...'
+						onChange={e => {
+							if (e.target.value === '') setPasswordErr(true);
+							else setPasswordErr(false);
 
-				<input
-					type='password'
-					className={'form-control mb-3' + (passwordErr ? ' is-invalid' : '')}
-					id='password'
-					value={password}
-					placeholder='Password...'
-					onChange={e => {
-						if (e.target.value === '') setPasswordErr(true);
-						else setPasswordErr(false);
+							setPassword(e.target.value);
+						}}
+					/>
 
-						setPassword(e.target.value);
-					}}
-				/>
-
-				{isProcessing ? (
-					<span className='btn p-0' style={{ width: '90px' }}>
-						<LoadingButton color='danger' />
-					</span>
-				) : (
-					<button
-						className='btn btn-danger'
-						onClick={deleteAccountHandler}
-						disabled={passwordErr || password === ''}
-					>
-						Delete Account Now
-					</button>
-				)}
+					{isProcessing ? (
+						<span className='btn p-0' style={{ width: '90px' }}>
+							<LoadingButton color='danger' />
+						</span>
+					) : (
+						<button
+							type='submit'
+							className='btn btn-danger'
+							onClick={deleteAccountHandler}
+							disabled={passwordErr || password === ''}
+						>
+							Delete Account Now
+						</button>
+					)}
+				</form>
 			</div>
 		</div>
 	);
