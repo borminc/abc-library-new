@@ -18,9 +18,11 @@ import '../imports/sb-admin-2.js';
 import '../imports/sb-admin-2.min.js';
 
 import CurrentlyBorrowedBooks from './user_content/CurrentlyBorrowedBooks';
+import DeleteAccount from './user_content/DeleteAccount';
 
 const UserLayout = props => {
 	let { path, url } = useRouteMatch();
+	const [user, setUser] = [props.user, props.setUser];
 	const history = useHistory();
 
 	const [showsSideBar, setShowsSideBar] = useState(false);
@@ -58,6 +60,7 @@ const UserLayout = props => {
 					<hr className='sidebar-divider' />
 
 					{/* Nav Item - Dashboard */}
+					<div className='sidebar-heading'>Activity</div>
 					<li className='nav-item'>
 						<Link to={`${url}/borrowed-books`} className='nav-link'>
 							Currently Borrowed books
@@ -67,6 +70,15 @@ const UserLayout = props => {
 					<li className='nav-item'>
 						<Link to={`${url}/logs`} className='nav-link'>
 							Logs
+						</Link>
+					</li>
+
+					<hr className='sidebar-divider' />
+					<div className='sidebar-heading'>Account</div>
+
+					<li className='nav-item'>
+						<Link to={`${url}/delete-account`} className='nav-link'>
+							Delete Account
 						</Link>
 					</li>
 
@@ -102,6 +114,10 @@ const UserLayout = props => {
 								</Route>
 								<Route path={`${path}/borrowed-books`}>
 									<CurrentlyBorrowedBooks />
+								</Route>
+
+								<Route path={`${path}/delete-account`}>
+									<DeleteAccount user={user} setUser={setUser} />
 								</Route>
 
 								<Route exact path={path}>

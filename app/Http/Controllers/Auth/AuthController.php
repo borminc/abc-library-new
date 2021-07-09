@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -46,18 +47,9 @@ class AuthController extends Controller
         ]);
         $user->save();
         
-        SendVerificationEmail::dispatch(['user' => $user]);
-
-        // $user->sendEmailVerificationNotification();
-        // if (!str_contains($user->email, '@abc.com')) {
-        //     // send email
-        //     $details = [
-        //         'subject' => 'Welcome to ABC Library',
-        //         'title' => 'Welcome to ABC Library',
-        //         'body' => 'Our entire library is now online! Browse through the wide variety of books on our website. Something looks interesting? Borrow it online, and come pick it up at the library! Easy as that!',
-        //     ];
-        //     Mail::to($user->email)->send(new UserMail($details));
-        // }
+        if (!str_contains($user->email, '@abc.com')) {
+            SendVerificationEmail::dispatch(['user' => $user]);
+        }
 
         return response()->json([
             'message' => 'Successfully created user!'
@@ -139,6 +131,7 @@ class AuthController extends Controller
     }
 
     public function deleteUser(Request $request) {
+        // for admin deletes user
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|integer',
         ]);
@@ -179,12 +172,124 @@ class AuthController extends Controller
         $user->delete();
 
         if (!str_contains($details['email'], '@abc.com')) {
-            // send email
             SendEmail::dispatch($details);
         }
 
         return response()->json([
             'message' => 'Successfully deleted account: ' . $user->name . '.'
+            ]);
+    }
+
+    public function deleteAccount(Request $request) {
+        // for user to delete their own account
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Input is valid'
+            ], 400);
+        }
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            $details = [
+                'email' => $user->email,
+                'subject' => 'Account deletion attempted',
+                'title' => "Did you attempt to delete your account?",
+                'body' => "This is a security notice. You (or someone) may have attempted to delete your account, but the credentials were incorrect. If you did this, you don't have to do anything. If you didn't, your account is at risk. We advice changing your password immediately. Contact ABC Library for further help.",
+            ];
+
+            if (!str_contains($details['email'], '@abc.com')) {
+                SendEmail::dispatch($details);
+            }
+
+            return response()->json([
+                'error' => 'Incorrect credentials.'
+            ], 401);
+        }
+
+        if (count($user->books) > 0) {
+            return response()->json([
+                'error' => 'Return all books before deleting account.'
+            ], 406);
+        }
+
+        foreach($user->tokens as $token) $token->revoke();
+        
+        $details = [
+            'email' => $user->email,
+            'subject' => 'Account Deleted',
+            'title' => "Your account has been deleted.",
+            'body' => "It's sad to see you go. Keep reading!",
+        ];
+
+        $user->delete();
+
+        if (!str_contains($details['email'], '@abc.com')) {
+            SendEmail::dispatch($details);
+        }
+
+        return response()->json([
+            'message' => 'Successfully deleted account: ' . $user->name . '.'
+            ]);
+    }
+
+    public function changePassword(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required',
+            'new_password' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Input is valid'
+            ], 400);
+        }
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->old_password, $user->password)) {
+            $details = [
+                'email' => $user->email,
+                'subject' => 'Password change attempted',
+                'title' => "Did you attempt to change your password?",
+                'body' => "This is a security notice. You (or someone) may have attempted to change the password of your account, but the credentials were incorrect. If you did this, you don't have to do anything. If you didn't, your account is at risk. We advice changing your password immediately. Contact ABC Library for further help.",
+            ];
+
+            if (!str_contains($details['email'], '@abc.com')) {
+                SendEmail::dispatch($details);
+            }
+
+            return response()->json([
+                'error' => 'Incorrect credentials.'
+            ], 401);
+        }
+
+        if (Hash::check($request->new_password, $user->password)) {
+            return response()->json([
+                'error' => 'New password cannot be the same as current password.'
+            ], 406);
+        }
+
+        $user->password = bcrypt($request->new_password);
+        $user->save();
+
+        $details = [
+            'email' => $user->email,
+            'subject' => 'Password changed',
+            'title' => "Your account password has been changed.",
+            'body' => "If you have recently changed your password, you don't have to do anything. If you haven't, your account is at risk. Contact ABC Library as soon as possible.",
+        ];
+
+        if (!str_contains($details['email'], '@abc.com')) {
+            SendEmail::dispatch($details);
+        }
+
+        return response()->json([
+            'message' => 'Successfully changed password.'
             ]);
     }
 

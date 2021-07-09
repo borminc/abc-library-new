@@ -68,7 +68,7 @@ const Borrow = props => {
 				aria-labelledby='exampleModalLabel'
 				aria-hidden='true'
 			>
-				<div className='modal-dialog'>
+				<div className='modal-dialog modal-dialog-centered'>
 					<div className='modal-content'>
 						<div className='modal-header'>
 							<h5 className='modal-title' id='staticBackdropLabel'>
@@ -80,7 +80,7 @@ const Borrow = props => {
 								data-bs-dismiss='modal'
 								aria-label='Close'
 							></button>
-						</div>{' '}
+						</div>
 						<div className='modal-body'>
 							{msg && msg.text == '' && (
 								<p>
@@ -134,22 +134,21 @@ const Borrow = props => {
 				<div className='container pt-5 mt-5'>
 					<div className='row'>
 						<div className='col-12'>
-							<div className='row'>
-								<div className='col-lg-3 col-sm-12 col-md-12'>
+							<div className='row d-flex justify-content-center'>
+								<div className='col-10 col-md-8 col-lg-4'>
 									<img
 										src={book.image || '/img/book-null-img.png'}
 										className='card-img-top'
 										alt='...'
 									/>
 								</div>
-								<div className='col-8'>
+								<div className='col-12 col-lg-8  mt-2'>
 									<table className='table small'>
 										<thead>
 											<tr>
-												<th>
+												<th colSpan='2'>
 													<h3>{book.title}</h3>
 												</th>
-												<th></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -177,19 +176,19 @@ const Borrow = props => {
 													<td>{book.stock}</td>
 												)}
 											</tr>
+											<tr>
+												<td className='fw-bold'>Description</td>
+												<td>{book.description}</td>
+											</tr>
 										</tbody>
 									</table>
 								</div>
 							</div>
 						</div>
-						<div className='container pt-2'>
-							<h3>Description</h3>
-							<p>{book.description}</p>
-						</div>
 					</div>
 
-					<div className='container mt-3'>
-						<div className='card-group shadow-lg p-3 mb-5 bg-body rounded'>
+					<div className='mt-4'>
+						<div className='card-group shadow p-3 mb-5 border border-2 bg-body rounded'>
 							<div className='card'>
 								<div className='card-header'>
 									<h5>Rules and Policies</h5>
@@ -251,12 +250,12 @@ const Borrow = props => {
 						</div>
 					</div>
 
-					<div className='p-5'>
-						<p>
+					<div className='mt-5 mb-5 row'>
+						<p className='col-8'>
 							By clicking Borrow, you agree to all the rules and policies of ABC
 							Library.
 						</p>
-						<p>
+						<p className='col-8'>
 							<b className='text-danger'>
 								You will PICK UP the book at the library in a timely manner.
 								OVERDUE FEES will still apply after the return date even if you
@@ -265,7 +264,7 @@ const Borrow = props => {
 						</p>
 						<button
 							type='submit'
-							className='btn btn-primary'
+							className='btn btn-outline-primary mt-3'
 							data-bs-toggle='modal'
 							data-bs-target={'#myModal' + book.id}
 						>

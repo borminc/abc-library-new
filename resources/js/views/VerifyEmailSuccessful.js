@@ -16,10 +16,7 @@ const VerifyEmailSuccessful = () => {
 		<PrivateRoute
 			component={
 				<div className='d-flex flex-column justify-content-center align-items-center'>
-					<div
-						className='d-flex flex-column justify-content-center align-items-center text-center p-5 mt-5'
-						style={{ marginBottom: '2vh' }}
-					>
+					<div className='d-flex flex-column justify-content-center align-items-center text-center p-3 mt-5 mb-3'>
 						<img
 							className='mb-5'
 							src={'/img/verify-user.svg'}
@@ -27,13 +24,13 @@ const VerifyEmailSuccessful = () => {
 							alt='verify-user'
 						/>
 						<div className='display-6'>Your account is verified!</div>
-						<p className='mt-3 w-75'>
+						<p className='mt-3'>
 							Start browsing our library and find your next favorite book!
 						</p>
 					</div>
 
 					<button
-						className='btn btn-primary w-25 mt-5 mb-5'
+						className='btn btn-primary mb-5'
 						onClick={() => history.push('/')}
 					>
 						Start browsing

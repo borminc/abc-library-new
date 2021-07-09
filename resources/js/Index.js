@@ -27,6 +27,7 @@ import './views/imports/sb-admin-2.js';
 import './views/imports/sb-admin-2.min.js';
 import ScrollArrow from './components/ScrollArrow';
 import VerifyEmailSuccessful from './views/VerifyEmailSuccessful';
+import DeleteAccountSuccessful from './views/DeleteAccountSuccessful';
 
 const Index = () => {
 	const [user, setUser] = useState('loading');
@@ -110,6 +111,10 @@ const Index = () => {
 
 						<Route path='/verify-email-success'>
 							<VerifyEmailSuccessful />
+						</Route>
+
+						<Route path='/delete-account-success'>
+							<DeleteAccountSuccessful />
 						</Route>
 
 						<Route path='/categories/:categoryId' children={<Categories />} />

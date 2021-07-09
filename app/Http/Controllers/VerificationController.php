@@ -26,8 +26,8 @@ class VerificationController extends Controller
                     'title' => 'You have successfully verified your account!',
                     'body' => 'ABC Library would like to welcome you to our platform. Have fun exploring the wide variety of books that we carry. Start reading!',
                 ];
-            SendEmail::dispatch($details);
-        }
+                SendEmail::dispatch($details);
+            }
         }
 
         return redirect()->to('/verify-email-success');

@@ -67,34 +67,29 @@ const VerifiyEmail = props => {
 
 	return (
 		<div className='d-flex flex-column justify-content-center align-items-center'>
-			<div
-				className='d-flex flex-column justify-content-center align-items-center text-center p-5 mt-5'
-				style={{ marginBottom: '2vh' }}
-			>
+			<div className='d-flex flex-column justify-content-center align-items-center text-center p-3 mt-5 mb-3'>
 				<img
 					className='mb-5'
 					src={'/img/email.svg'}
-					style={{ width: '15rem', maxWidth: '100%', opacity: '50%' }}
+					style={{ width: '13rem', maxWidth: '100%', opacity: '50%' }}
 					alt='email'
 				/>
 				<div className='display-6'>Verifiy your email address to continue.</div>
-				<p className='mt-3 w-75'>
+				<p className='mt-3'>
 					We need to prove that the email you used is real. It won't take more
 					than 5 seconds. Just click on the link sent to the email you
 					registered with.
 				</p>
 			</div>
+
 			{msg && msg.text && <MessageAlert msg={msg.text} success={msg.success} />}
 
 			{isSending ? (
-				<span className='btn p-0 w-25 mt-5'>
+				<span className='btn p-0 w-25 mb-5'>
 					<LoadingButton />
 				</span>
 			) : (
-				<button
-					className='btn btn-primary w-25 mt-5 mb-5'
-					onClick={resendEmailHandler}
-				>
+				<button className='btn btn-primary mb-5' onClick={resendEmailHandler}>
 					Resend email verification
 				</button>
 			)}
