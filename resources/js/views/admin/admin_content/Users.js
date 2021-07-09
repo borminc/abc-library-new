@@ -111,7 +111,13 @@ const Users = () => {
 			});
 	};
 
-	const deleteUserHandler = user_id => {
+	const deleteUserHandler = user => {
+		if (user.is_admin || user.books.length > 0) {
+			setMsg({ text: 'Cannot delete user!', success: 0 });
+			return;
+		}
+
+		const user_id = user.id;
 		setDeleteingUser(true);
 		axios
 			.post('/api/delete-user', { user_id: user_id })
@@ -260,8 +266,24 @@ const Users = () => {
 													className='btn btn-outline-danger mr-2 mb-2'
 													data-bs-toggle='modal'
 													data-bs-target={'#delete-user-modal' + user.id}
-													onClick={() => setMsg({ text: '', success: '' })}
-													disabled={user.books.length > 0}
+													onClick={() => {
+														if (user.is_admin) {
+															setMsg({
+																text: 'Cannot delete an admin.',
+																success: 0,
+															});
+														} else if (user.books.length > 0) {
+															setMsg({
+																text: 'User must return all books before deleting account.',
+																success: 0,
+															});
+														} else {
+															setMsg({
+																text: '',
+																success: 1,
+															});
+														}
+													}}
 												>
 													Delete
 												</button>
@@ -291,40 +313,42 @@ const Users = () => {
 																></button>
 															</div>
 															<div className='modal-body'>
-																{msg && msg.text && (
+																{msg && msg.text ? (
 																	<MessageAlert
 																		msg={msg.text}
 																		success={msg.success}
 																	/>
+																) : (
+																	<>
+																		<p>
+																			Are you sure you want to delete this
+																			user's account?
+																		</p>
+																		<table className='table'>
+																			<tbody>
+																				<tr>
+																					<th scope='row'>ID</th>
+																					<td>{user.id}</td>
+																				</tr>
+																				<tr>
+																					<th scope='row'>Name</th>
+																					<td>{user.name}</td>
+																				</tr>
+																				<tr>
+																					<th scope='row'>Email</th>
+																					<td>{user.email}</td>
+																				</tr>
+																				<tr>
+																					<th scope='row'>Phone</th>
+																					<td>{user.phone}</td>
+																				</tr>
+																			</tbody>
+																		</table>
+																		<p className='text-danger'>
+																			This action cannot be undone.
+																		</p>
+																	</>
 																)}
-
-																<p>
-																	Are you sure you want to delete this user's
-																	account?
-																</p>
-																<table className='table'>
-																	<tbody>
-																		<tr>
-																			<th scope='row'>ID</th>
-																			<td>{user.id}</td>
-																		</tr>
-																		<tr>
-																			<th scope='row'>Name</th>
-																			<td>{user.name}</td>
-																		</tr>
-																		<tr>
-																			<th scope='row'>Email</th>
-																			<td>{user.email}</td>
-																		</tr>
-																		<tr>
-																			<th scope='row'>Phone</th>
-																			<td>{user.phone}</td>
-																		</tr>
-																	</tbody>
-																</table>
-																<p className='text-danger'>
-																	This action cannot be undone.
-																</p>
 															</div>
 															<div className='modal-footer'>
 																<button
@@ -342,15 +366,15 @@ const Users = () => {
 																	>
 																		<LoadingButton color='danger' />
 																	</span>
-																) : (
+																) : msg && msg.text === '' ? (
 																	<button
 																		type='button'
 																		className='btn btn-danger'
-																		onClick={() => deleteUserHandler(user.id)}
+																		onClick={() => deleteUserHandler(user)}
 																	>
 																		Delete
 																	</button>
-																)}
+																) : null}
 															</div>
 														</div>
 													</div>
