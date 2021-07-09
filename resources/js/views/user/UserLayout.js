@@ -19,6 +19,7 @@ import '../imports/sb-admin-2.min.js';
 
 import CurrentlyBorrowedBooks from './user_content/CurrentlyBorrowedBooks';
 import DeleteAccount from './user_content/DeleteAccount';
+import ChangePassword from './user_content/ChangePassword';
 
 const UserLayout = props => {
 	let { path, url } = useRouteMatch();
@@ -81,6 +82,11 @@ const UserLayout = props => {
 							Delete Account
 						</Link>
 					</li>
+					<li className='nav-item'>
+						<Link to={`${url}/change-password`} className='nav-link'>
+							Change Password
+						</Link>
+					</li>
 
 					{/* Divider */}
 
@@ -118,6 +124,10 @@ const UserLayout = props => {
 
 								<Route path={`${path}/delete-account`}>
 									<DeleteAccount user={user} setUser={setUser} />
+								</Route>
+
+								<Route path={`${path}/change-password`}>
+									<ChangePassword user={user} setUser={setUser} />
 								</Route>
 
 								<Route exact path={path}>
