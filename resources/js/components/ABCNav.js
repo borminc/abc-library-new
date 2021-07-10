@@ -42,7 +42,7 @@ function ABCNav(props) {
 	return (
 		<Navbar
 			collapseOnSelect
-			expand='md'
+			expand='lg'
 			bg='light'
 			variant='light'
 			className='p-2 shadow'

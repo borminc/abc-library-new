@@ -57,6 +57,7 @@ Route::group([
         Route::get('user/books', [BookUserController::class, 'getUserBooks']);
 
         Route::get('user/logs', [LogController::class, 'getUserLogs']);
+        Route::post('user/change-email', [AuthController::class, 'changeEmail']);
         Route::post('user/change-password', [AuthController::class, 'changePassword']);
         Route::post('user/delete-account', [AuthController::class, 'deleteAccount']);
     }

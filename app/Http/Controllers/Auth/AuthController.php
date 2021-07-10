@@ -247,12 +247,19 @@ class AuthController extends Controller
     public function changePassword(Request $request) {
         $validator = Validator::make($request->all(), [
             'old_password' => 'required',
-            'new_password' => 'required'
+            'new_password' => 'required',
+            'confirm_password' => 'required'
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'error' => 'Input is valid'
+            ], 400);
+        }
+
+        if ($request->new_password != $request->confirm_password) {
+            return response()->json([
+                'error' => 'Password does not match.'
             ], 400);
         }
 
@@ -297,6 +304,74 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Successfully changed password.'
+            ]);
+    }
+
+    public function changeEmail(Request $request) {
+        $user = auth()->user();
+        
+        if ($user->email == $request->email) {
+            return response()->json([
+                'error' => 'New email cannot be the same as the current email.'
+            ], 401);
+        }
+
+        if (User::where('email', $request->email)->first()) {
+            return response()->json([
+                'error' => 'This email is already associated with an account.'
+            ], 406);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+            'email' => 'required|string|email|unique:users',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Input is valid'
+            ], 400);
+        }
+
+        if (!Hash::check($request->password, $user->password)) {
+            $details = [
+                'email' => $user->email,
+                'subject' => 'Email change attempted',
+                'title' => "Did you attempt to change your email?",
+                'body' => "This is a security notice. You (or someone) may have attempted to change the email of your account, but the credentials were incorrect. If you did this, you don't have to do anything. If you didn't, your account is at risk. We advice changing your password immediately. Contact ABC Library for further help.",
+            ];
+
+            if (!str_contains($details['email'], '@abc.com')) {
+                SendEmail::dispatch($details);
+            }
+
+            return response()->json([
+                'error' => 'Incorrect credentials.'
+            ], 401);
+        }
+
+        $old_email = $user->email;
+        $user->email = $request->email;
+        $user->email_verified_at = null;
+        $user->save();
+
+        if (!str_contains($user->email, '@abc.com')) {
+            SendVerificationEmail::dispatch(['user' => $user]);
+        }
+
+        $details = [
+            'email' => $old_email,
+            'subject' => 'Email changed',
+            'title' => "Your account email has been changed.",
+            'body' => "This email will no longer be associated with ABC Library. The email for your account has been changed to " . $user->email . ". If you have recently changed your email, you don't have to do anything. If you haven't, your account is at risk. Contact ABC Library as soon as possible.",
+        ];
+
+        if (!str_contains($details['email'], '@abc.com')) {
+            SendEmail::dispatch($details);
+        }
+
+        return response()->json([
+            'message' => 'Successfully changed email.'
             ]);
     }
 

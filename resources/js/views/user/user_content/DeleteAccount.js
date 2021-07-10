@@ -60,7 +60,7 @@ const DeleteAccount = props => {
 			<div className='row mt-2 mb-2'>
 				<h4 className='col-lg-4'>Delete Account</h4>
 			</div>
-			<p>
+			<p className='text-danger'>
 				Deleting your ABC Library account is an IRREVERSIBLE action. After you
 				click delete, there will be no going back.
 			</p>

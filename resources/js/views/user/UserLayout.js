@@ -19,10 +19,16 @@ import '../imports/sb-admin-2.min.js';
 
 import CurrentlyBorrowedBooks from './user_content/CurrentlyBorrowedBooks';
 import DeleteAccount from './user_content/DeleteAccount';
+import ChangePassword from './user_content/ChangePassword';
+import ChangeEmail from './user_content/ChangeEmail';
 
 const UserLayout = props => {
 	let { path, url } = useRouteMatch();
 	const [user, setUser] = [props.user, props.setUser];
+	const [needsToVerifyAcc, setNeedsToVerifyAcc] = [
+		props.needsToVerifyAcc,
+		props.setNeedsToVerifyAcc,
+	];
 	const history = useHistory();
 
 	const [showsSideBar, setShowsSideBar] = useState(false);
@@ -77,6 +83,18 @@ const UserLayout = props => {
 					<div className='sidebar-heading'>Account</div>
 
 					<li className='nav-item'>
+						<Link to={`${url}/change-email`} className='nav-link'>
+							Change Email
+						</Link>
+					</li>
+
+					<li className='nav-item'>
+						<Link to={`${url}/change-password`} className='nav-link'>
+							Change Password
+						</Link>
+					</li>
+
+					<li className='nav-item'>
 						<Link to={`${url}/delete-account`} className='nav-link'>
 							Delete Account
 						</Link>
@@ -118,6 +136,19 @@ const UserLayout = props => {
 
 								<Route path={`${path}/delete-account`}>
 									<DeleteAccount user={user} setUser={setUser} />
+								</Route>
+
+								<Route path={`${path}/change-email`}>
+									<ChangeEmail
+										user={user}
+										setUser={setUser}
+										needsToVerifyAcc={needsToVerifyAcc}
+										setNeedsToVerifyAcc={setNeedsToVerifyAcc}
+									/>
+								</Route>
+
+								<Route path={`${path}/change-password`}>
+									<ChangePassword />
 								</Route>
 
 								<Route exact path={path}>

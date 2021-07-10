@@ -94,7 +94,14 @@ const Index = () => {
 						</Route>
 						<Route path='/user'>
 							<PrivateRoute
-								component={<UserLayout user={user} setUser={setUser} />}
+								component={
+									<UserLayout
+										user={user}
+										setUser={setUser}
+										needsToVerifyAcc={needsToVerifyAcc}
+										setNeedsToVerifyAcc={setNeedsToVerifyAcc}
+									/>
+								}
 							/>
 						</Route>
 						<Route path='/admin'>
