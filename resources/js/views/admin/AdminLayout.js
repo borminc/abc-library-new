@@ -39,7 +39,7 @@ const AdminLayout = () => {
 				{/* Sidebar */}
 				<ul
 					className={
-						'navbar-nav bg-gradient-primary sidebar sidebar-dark accordion ' +
+						'navbar-nav bg-gradient-primary sidebar sidebar-dark accordion' +
 						(showsSideBar ? '' : ' toggled')
 					}
 					id='accordionSidebar'
@@ -145,7 +145,7 @@ const AdminLayout = () => {
 						<div className='container-fluid'>
 							<button
 								id='sidebarToggleTop'
-								className='btn btn-link d-md-none rounded mr-3'
+								className='btn btn-link d-md-none rounded mr-3 mb-3'
 								onClick={() => setShowsSideBar(!showsSideBar)}
 							>
 								<img
