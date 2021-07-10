@@ -58,7 +58,7 @@ const UserLayout = props => {
 					<hr className='sidebar-divider' />
 
 					{/* Nav Item - Dashboard */}
-					<div className='sidebar-heading'>Activity</div>
+					{/* <div className='sidebar-heading'>Activity</div> */}
 					<li className='nav-item'>
 						<Link to={`${url}/borrowed-books`} className='nav-link'>
 							Currently Borrowed books
@@ -74,7 +74,7 @@ const UserLayout = props => {
 					<hr className='sidebar-divider' />
 
 					<button
-						className='btn btn-primary m-2 d-flex justify-content-between align-items-center'
+						className='btn btn-primary text-left m-2 d-flex justify-content-between align-items-center'
 						type='button'
 						data-bs-toggle='collapse'
 						data-bs-target='#userAccount'
