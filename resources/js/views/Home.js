@@ -347,7 +347,7 @@ const Home = props => {
 									ABC Library
 								</h1>
 								<p className='mb-5' id='search-area'>
-									Part of ABC Library project. More than 1,000 books to borrow.
+									An entire physical library. Now at your fingertips.
 								</p>
 								<form className='d-flex' onSubmit={handleSubmit}>
 									<div className='input-group-lg'>
@@ -391,7 +391,11 @@ const Home = props => {
 												});
 											}}
 										>
-											Search
+											{/* Search */}
+											<img
+												src='/img/search-icon.svg'
+												style={{ width: '25px' }}
+											/>
 										</button>
 									</div>
 								</form>

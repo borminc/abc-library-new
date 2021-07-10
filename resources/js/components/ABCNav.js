@@ -57,6 +57,19 @@ function ABCNav(props) {
 				className='justify-content-end'
 			>
 				<Nav className='mr-auto ms-3'>
+					<Nav.Link onClick={() => history.push('/about-us')}>
+						About Us
+					</Nav.Link>
+
+					<Nav.Link onClick={() => history.push('/all-books')}>
+						All books
+					</Nav.Link>
+					<Nav.Link onClick={() => history.push('/latest-books')}>
+						Latest
+					</Nav.Link>
+					<Nav.Link onClick={() => history.push('/popular-books')}>
+						Popular
+					</Nav.Link>
 					<NavDropdown title='Categories' id='collasible-nav-dropdown'>
 						{categories.map((cate, i) => (
 							<div key={i}>
@@ -68,15 +81,6 @@ function ABCNav(props) {
 							</div>
 						))}
 					</NavDropdown>
-					<Nav.Link onClick={() => history.push('/all-books')}>
-						All books
-					</Nav.Link>
-					<Nav.Link onClick={() => history.push('/latest-books')}>
-						Latest
-					</Nav.Link>
-					<Nav.Link onClick={() => history.push('/popular-books')}>
-						Popular
-					</Nav.Link>
 				</Nav>
 				<Nav className='ms-3'>
 					<Router>

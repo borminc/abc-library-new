@@ -21,6 +21,7 @@ import AllBooks from './views/AllBooks';
 import LatestBooks from './views/LatestBooks';
 import PopularBooks from './views/PopularBooks';
 import VerifyEmail from './views/VerifyEmail';
+import AboutUs from './views/AboutUs';
 
 import './views/imports/sb-admin-2.min.css';
 import './views/imports/sb-admin-2.js';
@@ -145,6 +146,10 @@ const Index = () => {
 
 						<Route path='/popular-books'>
 							<PopularBooks />
+						</Route>
+
+						<Route path='/about-us'>
+							<AboutUs />
 						</Route>
 
 						<Route exact path='/'>

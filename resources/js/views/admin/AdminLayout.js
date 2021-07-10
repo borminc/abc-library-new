@@ -60,7 +60,7 @@ const AdminLayout = () => {
 					{/* Heading */}
 					{/* <div className='sidebar-heading'>Resources</div> */}
 					<button
-						className='btn btn-primary m-1'
+						className='btn btn-primary m-2 d-flex justify-content-between align-items-center'
 						type='button'
 						data-bs-toggle='collapse'
 						data-bs-target='#adminResource'
@@ -71,7 +71,7 @@ const AdminLayout = () => {
 						<FaChevronDown />
 					</button>
 					<div
-						className='collapse bg-primary text-center rounded m-1'
+						className='collapse text-center rounded m-2 nav-item-block'
 						id='adminResource'
 					>
 						<li className='nav-item'>
@@ -95,7 +95,7 @@ const AdminLayout = () => {
 					{/* <hr className='sidebar-divider' /> */}
 					{/* <div className='sidebar-heading'>Management</div> */}
 					<button
-						className='btn btn-primary m-1'
+						className='btn btn-primary m-2 d-flex justify-content-between align-items-center'
 						type='button'
 						data-bs-toggle='collapse'
 						data-bs-target='#adminManagement'
@@ -106,7 +106,8 @@ const AdminLayout = () => {
 						<FaChevronDown />
 					</button>
 					<div
-						className='collapse bg-primary text-center rounded m-1'
+						className='collapse text-center rounded m-2 nav-item-block'
+						style={{ backgroundColor: 'rgba(255, 255, 255, 0.095)' }}
 						id='adminManagement'
 					>
 						<li className='nav-item'>

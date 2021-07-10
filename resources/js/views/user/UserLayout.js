@@ -74,7 +74,7 @@ const UserLayout = props => {
 					<hr className='sidebar-divider' />
 
 					<button
-						className='btn btn-primary m-1'
+						className='btn btn-primary m-2 d-flex justify-content-between align-items-center'
 						type='button'
 						data-bs-toggle='collapse'
 						data-bs-target='#userAccount'
@@ -86,7 +86,7 @@ const UserLayout = props => {
 					</button>
 					{/* <div className='sidebar-heading'>Account</div> */}
 					<div
-						className='collapse bg-primary text-center rounded m-1'
+						className='collapse text-center rounded m-2 nav-item-block'
 						id='userAccount'
 					>
 						<li className='nav-item'>

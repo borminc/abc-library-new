@@ -67,7 +67,7 @@ class LogController extends Controller
         $log = new Log();
         $log->title = $request->title;
         $log->description = $request->description;
-        $log->date_time = date('d.m.y h:m A', time());
+        $log->date_time = date('d.m.y', time());
         $log->user_id = $request->user_id;
         $log->book_id = $request->book_id;
         $log->save();
