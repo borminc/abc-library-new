@@ -86,12 +86,12 @@ const DeleteAccount = props => {
 
 					{isProcessing ? (
 						<span className='btn p-0' style={{ width: '90px' }}>
-							<LoadingButton color='danger' />
+							<LoadingButton color='outline-danger' />
 						</span>
 					) : (
 						<button
 							type='submit'
-							className='btn btn-danger'
+							className='btn btn-outline-danger'
 							onClick={deleteAccountHandler}
 							disabled={passwordErr || password === ''}
 						>

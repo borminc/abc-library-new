@@ -11,33 +11,34 @@ import {
 import MessageAlert from './../../../components/MessageAlert';
 import { Loading, LoadingButton } from './../../../components/Loading';
 
-const ChangeEmail = props => {
+const UserInfo = props => {
 	const history = useHistory();
 	const [user, setUser] = [props.user, props.setUser];
 	const [needsToVerifyAcc, setNeedsToVerifyAcc] = [
 		props.needsToVerifyAcc,
 		props.setNeedsToVerifyAcc,
 	];
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+
+	const [name, setName] = useState(user.name);
+	const [phone, setPhone] = useState(user.phone);
+
 	const [isProcessing, setProcessing] = useState(false);
 	const [msg, setMsg] = useState({ text: '', success: 0 });
 	const [errors, setErrors] = useState({
-		email: false,
-		password: false,
+		name: false,
+		phone: false,
 	});
 
+	useEffect(() => {
+		setName(user.name);
+		setPhone(user.phone);
+	}, [user]);
+
 	const hasInputErrors = () => {
-		return (
-			errors.email ||
-			errors.password ||
-			email == '' ||
-			!validator.isEmail(email) ||
-			password == ''
-		);
+		return errors.name || errors.phone || name == '' || phone == '';
 	};
 
-	const changeEmailHandler = e => {
+	const changeInfoHandler = e => {
 		e.preventDefault();
 		setProcessing(true);
 		setMsg({ text: '', success: 0 });
@@ -47,20 +48,19 @@ const ChangeEmail = props => {
 			return;
 		}
 
-		const changeEmailInfo = {
-			email: email,
-			password: password,
+		const info = {
+			name: name,
+			phone: phone,
 		};
 
-		var success = false;
 		axios
-			.post('/api/user/change-email', changeEmailInfo)
+			.post('/api/user/change-info', info)
 			.then(res => {
 				setMsg({
 					text: res.data.message,
 					success: 1,
 				});
-				success = true;
+				setUser({ ...user, name: name, phone: phone });
 			})
 			.catch(err => {
 				setMsg({
@@ -70,95 +70,98 @@ const ChangeEmail = props => {
 			})
 			.finally(() => {
 				setProcessing(false);
-				if (success) {
-					setUser({ ...user, email: email });
-					setNeedsToVerifyAcc({
-						username: user.name,
-						status: true,
-					});
-					history.push('/verify-email');
-				}
 			});
 	};
 
 	return (
 		<div>
 			<div className='row mt-2 mb-2'>
-				<h4 className='col-lg-4'>Change Email</h4>
+				<h4 className='col-lg-4'> User Information</h4>
 			</div>
 			<p>
-				Changing your email will delete your current email from this account and
-				the ABC Library system.{' '}
-			</p>
-			<p>
-				<span className='text-danger'>This action is IRREVERSIBLE.</span> Once
-				you have changed your email, your account cannot do anything until you
-				verify your new email. A verification link will be sent.
+				You can make changes to your information below. Note that name changes
+				will be reflected even in past logs.
 			</p>
 
 			<div className='col-12 col-lg-6 pl-0'>
 				{msg && msg.text && (
 					<MessageAlert msg={msg.text} success={msg.success} />
 				)}
+
 				<form>
 					<div className='form-group mb-3'>
+						<small>Name</small>
 						<input
-							id='email'
-							type='email'
-							className={'form-control' + (errors.email ? ' is-invalid' : '')}
-							placeholder='New email'
+							id='name'
+							type='text'
+							className={'form-control' + (errors.name ? ' is-invalid' : '')}
+							value={name || ''}
+							placeholder='Name...'
 							onChange={e => {
-								setEmail(e.target.value);
+								setName(e.target.value);
 								setMsg({ text: '', success: 0 });
-								if (!validator.isEmail(e.target.value) && e.target.value != '')
-									setErrors({ ...errors, email: true });
-								else setErrors({ ...errors, email: false });
+								if (e.target.value === '') setErrors({ ...errors, name: true });
+								else setErrors({ ...errors, name: false });
 							}}
 							required
 						/>
-						{errors.email && (
+						{errors.name && (
 							<small className='form-text text-danger'>
-								Enter a valid email.
+								Name cannot be empty.
 							</small>
 						)}
 					</div>
 					<div className='form-group mb-3'>
+						<small>Phone</small>
 						<input
-							id='password'
-							type='password'
-							className={
-								'form-control' + (errors.password ? ' is-invalid' : '')
-							}
-							placeholder='Current password'
+							id='phone'
+							type='text'
+							className={'form-control' + (errors.phone ? ' is-invalid' : '')}
+							value={phone || ''}
+							placeholder='Phone...'
 							onChange={e => {
-								setPassword(e.target.value);
+								setPhone(e.target.value);
 								setMsg({ text: '', success: 0 });
-								if (e.target.value === '')
-									setErrors({ ...errors, password: true });
-								else setErrors({ ...errors, password: false });
+								if (e.target.value === '' || isNaN(e.target.value)) {
+									setErrors({ ...errors, phone: true });
+								} else setErrors({ ...errors, phone: false });
 							}}
 							required
 						/>
-						{errors.password && (
+						{errors.phone && (
 							<small className='form-text text-danger'>
-								Password cannot be empty.
+								Enter a valid phone number.
 							</small>
 						)}
 					</div>
-
 					<div className='form-group'>
+						{(name !== user.name || phone !== user.phone) && (
+							<button
+								type='button'
+								className='btn btn-outline-secondary mr-2 mb-2'
+								onClick={() => {
+									setName(user.name);
+									setPhone(user.phone);
+									setErrors({ name: false, phone: false });
+								}}
+							>
+								Cancel
+							</button>
+						)}
 						{isProcessing ? (
-							<span className='btn p-0' style={{ width: '90px' }}>
+							<span className='btn mr-2 mb-2 p-0' style={{ width: '90px' }}>
 								<LoadingButton />
 							</span>
 						) : (
 							<button
 								type='submit'
-								className='btn btn-outline-primary'
-								disabled={hasInputErrors()}
-								onClick={changeEmailHandler}
+								className='btn btn-outline-primary mr-2 mb-2'
+								disabled={
+									hasInputErrors() || (name == user.name && phone == user.phone)
+								}
+								onClick={changeInfoHandler}
 							>
-								Change Email
+								Save
 							</button>
 						)}
 					</div>
@@ -167,4 +170,5 @@ const ChangeEmail = props => {
 		</div>
 	);
 };
-export default ChangeEmail;
+
+export default UserInfo;

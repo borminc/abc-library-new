@@ -375,6 +375,49 @@ class AuthController extends Controller
             ]);
     }
 
+    public function changeUserInfo(Request $request) {
+        function str_replace_first($from, $to, $content){
+            $from = '/'.preg_quote($from, '/').'/';
+            return preg_replace($from, $to, $content, 1);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'string',
+            'phone' => 'string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Input is valid'
+            ], 400);
+        }
+
+        if (!isset($request->name) && !isset($request->phone)) {
+            return response()->json([
+                'error' => 'No info was passed.'
+            ], 400);
+        }
+
+        $user = auth()->user();
+        if (isset($request->name)) {            
+            // change name in all logs
+            foreach ($user->logs as $log) {
+                $log->description = str_replace_first($user->name, $request->name, $log->description);
+                $log->save();
+            }
+            $user->name = $request->name;
+        }
+            
+        if (isset($request->phone))
+            $user->phone = $request->phone;
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'Successfully changed user info.'
+            ]);
+    }
+
     public function search(Request $request) {
         $params = ['name', 'email', 'phone'];
 

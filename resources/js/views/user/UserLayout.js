@@ -16,11 +16,13 @@ import UserProfile from './user_content/UserProfile';
 import './../imports/sb-admin-2.min.css';
 import '../imports/sb-admin-2.js';
 import '../imports/sb-admin-2.min.js';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 import CurrentlyBorrowedBooks from './user_content/CurrentlyBorrowedBooks';
 import DeleteAccount from './user_content/DeleteAccount';
 import ChangePassword from './user_content/ChangePassword';
 import ChangeEmail from './user_content/ChangeEmail';
+import UserInfo from './user_content/UserInfo';
 
 const UserLayout = props => {
 	let { path, url } = useRouteMatch();
@@ -32,16 +34,6 @@ const UserLayout = props => {
 	const history = useHistory();
 
 	const [showsSideBar, setShowsSideBar] = useState(false);
-	const [UserInfo, setUserInfo] = useState();
-
-	useEffect(() => {
-		axios
-			.get('/api/auth/user')
-			.then(res => {
-				setUserInfo(res.data);
-			})
-			.catch(err => {});
-	}, []);
 
 	return (
 		<div id='page-top'>
@@ -49,7 +41,7 @@ const UserLayout = props => {
 				{/* Sidebar */}
 				<ul
 					className={
-						'navbar-nav bg-gradient-primary sidebar sidebar-dark accordion ' +
+						'navbar-nav bg-gradient-primary sidebar sidebar-dark accordion' +
 						(showsSideBar ? '' : ' toggled')
 					}
 					id='accordionSidebar'
@@ -80,25 +72,47 @@ const UserLayout = props => {
 					</li>
 
 					<hr className='sidebar-divider' />
-					<div className='sidebar-heading'>Account</div>
 
-					<li className='nav-item'>
-						<Link to={`${url}/change-email`} className='nav-link'>
-							Change Email
-						</Link>
-					</li>
+					<button
+						className='btn btn-primary m-1'
+						type='button'
+						data-bs-toggle='collapse'
+						data-bs-target='#userAccount'
+						aria-expanded='false'
+						aria-controls='userAccount'
+					>
+						Account Settings
+						<FaChevronDown />
+					</button>
+					{/* <div className='sidebar-heading'>Account</div> */}
+					<div
+						className='collapse bg-primary text-center rounded m-1'
+						id='userAccount'
+					>
+						<li className='nav-item'>
+							<Link to={`${url}/info`} className='nav-link'>
+								User Info
+							</Link>
+						</li>
 
-					<li className='nav-item'>
-						<Link to={`${url}/change-password`} className='nav-link'>
-							Change Password
-						</Link>
-					</li>
+						<li className='nav-item'>
+							<Link to={`${url}/change-email`} className='nav-link'>
+								Change Email
+							</Link>
+						</li>
 
-					<li className='nav-item'>
-						<Link to={`${url}/delete-account`} className='nav-link'>
-							Delete Account
-						</Link>
-					</li>
+						<li className='nav-item'>
+							<Link to={`${url}/change-password`} className='nav-link'>
+								Change Password
+							</Link>
+						</li>
+
+						<li className='nav-item'>
+							<Link to={`${url}/delete-account`} className='nav-link'>
+								Delete Account
+							</Link>
+						</li>
+					</div>
 
 					{/* Divider */}
 
@@ -136,6 +150,15 @@ const UserLayout = props => {
 
 								<Route path={`${path}/delete-account`}>
 									<DeleteAccount user={user} setUser={setUser} />
+								</Route>
+
+								<Route path={`${path}/info`}>
+									<UserInfo
+										user={user}
+										setUser={setUser}
+										needsToVerifyAcc={needsToVerifyAcc}
+										setNeedsToVerifyAcc={setNeedsToVerifyAcc}
+									/>
 								</Route>
 
 								<Route path={`${path}/change-email`}>

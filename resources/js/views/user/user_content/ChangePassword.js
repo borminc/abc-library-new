@@ -158,7 +158,7 @@ const ChangePassword = props => {
 						) : (
 							<button
 								type='submit'
-								className='btn btn-primary'
+								className='btn btn-outline-primary'
 								disabled={hasInputErrors()}
 								onClick={changePasswordHandler}
 							>

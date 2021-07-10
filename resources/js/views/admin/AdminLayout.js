@@ -1,6 +1,7 @@
 import axios from '../../functions/axios';
 import { set } from 'lodash';
 import React, { useState, useEffect } from 'react';
+import { FaChevronDown } from 'react-icons/fa';
 import ReactDOM from 'react-dom';
 import {
 	BrowserRouter as Router,
@@ -31,28 +32,6 @@ const AdminLayout = () => {
 	const history = useHistory();
 
 	const [showsSideBar, setShowsSideBar] = useState(false);
-	const [adminInfo, setAdminInfo] = useState();
-
-	useEffect(() => {
-		axios
-			.get('/api/auth/user')
-			.then(res => {
-				setAdminInfo(res.data);
-			})
-			.catch(err => {});
-	}, []);
-
-	const logoutHandler = () => {
-		axios
-			.get('/api/auth/logout')
-			.then(res => {
-				deleteCookie('token');
-				history.push('/login');
-			})
-			.catch(err => {
-				console.log(err);
-			});
-	};
 
 	return (
 		<div id='page-top'>
@@ -65,18 +44,6 @@ const AdminLayout = () => {
 					}
 					id='accordionSidebar'
 				>
-					{/* Sidebar - Brand */}
-					{/* <Link
-						to={`${url}`}
-						className='sidebar-brand d-flex align-items-center'
-						href='/'
-					>
-						<div className='sidebar-brand-icon rotate-n-15'>
-							<i className='fas fa-laugh-wink'></i>
-						</div>
-						<div className='sidebar-brand-text'>Admin Dashboard</div>
-					</Link> */}
-
 					{/* Divider */}
 					<hr className='sidebar-divider' />
 
@@ -91,50 +58,81 @@ const AdminLayout = () => {
 					<hr className='sidebar-divider' />
 
 					{/* Heading */}
-					<div className='sidebar-heading'>Resources</div>
-					<li className='nav-item'>
-						<Link to={`${url}/categories`} className='nav-link'>
-							Categories
-						</Link>
-					</li>
+					{/* <div className='sidebar-heading'>Resources</div> */}
+					<button
+						className='btn btn-primary m-1'
+						type='button'
+						data-bs-toggle='collapse'
+						data-bs-target='#adminResource'
+						aria-expanded='false'
+						aria-controls='adminResource'
+					>
+						Resources
+						<FaChevronDown />
+					</button>
+					<div
+						className='collapse bg-primary text-center rounded m-1'
+						id='adminResource'
+					>
+						<li className='nav-item'>
+							<Link to={`${url}/categories`} className='nav-link'>
+								Categories
+							</Link>
+						</li>
 
-					<li className='nav-item'>
-						<Link to={`${url}/publishers`} className='nav-link'>
-							Publishers
-						</Link>
-					</li>
+						<li className='nav-item'>
+							<Link to={`${url}/publishers`} className='nav-link'>
+								Publishers
+							</Link>
+						</li>
 
-					<li className='nav-item'>
-						<Link to={`${url}/books`} className='nav-link'>
-							Books
-						</Link>
-					</li>
+						<li className='nav-item'>
+							<Link to={`${url}/books`} className='nav-link'>
+								Books
+							</Link>
+						</li>
+					</div>
+					{/* <hr className='sidebar-divider' /> */}
+					{/* <div className='sidebar-heading'>Management</div> */}
+					<button
+						className='btn btn-primary m-1'
+						type='button'
+						data-bs-toggle='collapse'
+						data-bs-target='#adminManagement'
+						aria-expanded='false'
+						aria-controls='adminManagement'
+					>
+						Manage
+						<FaChevronDown />
+					</button>
+					<div
+						className='collapse bg-primary text-center rounded m-1'
+						id='adminManagement'
+					>
+						<li className='nav-item'>
+							<Link to={`${url}/users`} className='nav-link'>
+								Users
+							</Link>
+						</li>
 
-					<hr className='sidebar-divider' />
-					<div className='sidebar-heading'>Management</div>
-					<li className='nav-item'>
-						<Link to={`${url}/users`} className='nav-link'>
-							Users
-						</Link>
-					</li>
+						<li className='nav-item'>
+							<Link to={`${url}/borrowers`} className='nav-link'>
+								Borrowers
+							</Link>
+						</li>
 
-					<li className='nav-item'>
-						<Link to={`${url}/borrowers`} className='nav-link'>
-							Borrowers
-						</Link>
-					</li>
+						<li className='nav-item'>
+							<Link to={`${url}/logs`} className='nav-link'>
+								Logs
+							</Link>
+						</li>
 
-					<li className='nav-item'>
-						<Link to={`${url}/logs`} className='nav-link'>
-							Logs
-						</Link>
-					</li>
-
-					<li className='nav-item'>
-						<Link to={`${url}/rules`} className='nav-link'>
-							Rules
-						</Link>
-					</li>
+						<li className='nav-item'>
+							<Link to={`${url}/rules`} className='nav-link'>
+								Rules
+							</Link>
+						</li>
+					</div>
 				</ul>
 				{/* -----------------------------------------  End of Sidebar ----------------------------------------- */}
 
@@ -146,7 +144,7 @@ const AdminLayout = () => {
 						<div className='container-fluid'>
 							<button
 								id='sidebarToggleTop'
-								className='btn btn-link d-md-none rounded-circle mr-3'
+								className='btn btn-link d-md-none rounded mr-3'
 								onClick={() => setShowsSideBar(!showsSideBar)}
 							>
 								<img
