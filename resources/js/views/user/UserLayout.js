@@ -1,5 +1,6 @@
 import axios from '../../functions/axios';
 import React, { useState, useEffect } from 'react';
+import { FaChevronDown,FaChevronUp } from 'react-icons/fa';
 import ReactDOM from 'react-dom';
 import {
 	BrowserRouter as Router,
@@ -20,6 +21,7 @@ import '../imports/sb-admin-2.min.js';
 import CurrentlyBorrowedBooks from './user_content/CurrentlyBorrowedBooks';
 import DeleteAccount from './user_content/DeleteAccount';
 import ChangePassword from './user_content/ChangePassword';
+import ChangeName from './user_content/ChangeName';
 
 const UserLayout = props => {
 	let { path, url } = useRouteMatch();
@@ -49,9 +51,7 @@ const UserLayout = props => {
 					}
 					id='accordionSidebar'
 				>
-					{/* Divider */}
 					<hr className='sidebar-divider' />
-
 					<li className='nav-item'>
 						<Link to={`${url}`} className='nav-link'>
 							My Profile
@@ -59,35 +59,41 @@ const UserLayout = props => {
 					</li>
 
 					<hr className='sidebar-divider' />
-
-					{/* Nav Item - Dashboard */}
 					<div className='sidebar-heading'>Activity</div>
-					<li className='nav-item'>
-						<Link to={`${url}/borrowed-books`} className='nav-link'>
-							Currently Borrowed books
-						</Link>
-					</li>
+						<li className='nav-item'>
+							<Link to={`${url}/borrowed-books`} className='nav-link'>
+								Currently Borrowed books
+							</Link>
+						</li>
 
-					<li className='nav-item'>
-						<Link to={`${url}/logs`} className='nav-link'>
-							Logs
-						</Link>
-					</li>
-
+						<li className='nav-item'>
+							<Link to={`${url}/logs`} className='nav-link'>
+								Logs
+							</Link>
+						</li>
 					<hr className='sidebar-divider' />
-					<div className='sidebar-heading'>Account</div>
-
-					<li className='nav-item'>
-						<Link to={`${url}/delete-account`} className='nav-link'>
-							Delete Account
-						</Link>
-					</li>
-					<li className='nav-item'>
-						<Link to={`${url}/change-password`} className='nav-link'>
-							Change Password
-						</Link>
-					</li>
-
+					<button className="btn btn-primary m-2" type="button" data-bs-toggle="collapse" data-bs-target="#userAccount" aria-expanded="false" aria-controls="userAccount">
+						Account <FaChevronDown />
+					</button>
+					{/* <div className='sidebar-heading'>Account</div> */}
+					<div className="collapse bg-primary text-center" id="userAccount">
+						<li className='nav-item'>
+							<Link to={`${url}/delete-account`} className='nav-link'>
+								Delete Account
+							</Link>
+						</li>
+						<hr className='sidebar-divider' />
+						<li className='nav-item'>
+							<Link to={`${url}/change-password`} className='nav-link'>
+								Change Password
+							</Link>
+						</li>
+						<li className='nav-item'>
+							<Link to={`${url}/change-name`} className='nav-link'>
+								Change Name
+							</Link>
+						</li>
+					</div>
 					{/* Divider */}
 
 					{/* Heading */}
@@ -105,12 +111,13 @@ const UserLayout = props => {
 						<div className='container-fluid'>
 							<button
 								id='sidebarToggleTop'
-								className='btn btn-link d-md-none rounded-circle mr-3'
+								className='btn btn-link d-md-none rounded mr-3'
 								onClick={() => setShowsSideBar(!showsSideBar)}
 							>
 								<img
 									style={{ maxHeight: '5vw', opacity: '50%' }}
 									src='/img/icons8-menu.svg'
+
 								/>
 							</button>
 
@@ -128,6 +135,9 @@ const UserLayout = props => {
 
 								<Route path={`${path}/change-password`}>
 									<ChangePassword user={user} setUser={setUser} />
+								</Route>
+								<Route path={`${path}/change-name`}>
+									<ChangeName user={user} setUser={setUser} />
 								</Route>
 
 								<Route exact path={path}>

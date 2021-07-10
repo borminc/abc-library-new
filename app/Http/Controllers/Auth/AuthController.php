@@ -293,6 +293,56 @@ class AuthController extends Controller
             ]);
     }
 
+    public function changeName(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'old_name' => 'required',
+            'new_name' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Input is valid'
+            ], 400);
+        }
+        $user = auth()->user();
+        if (ucwords($request->old_name) !== ucwords($user->name)) {
+            return response()->json([
+                'error' => 'Incorrect credentials.'
+            ], 401);
+        }
+        if (ucwords($request->new_name) === ucwords($user->name)) {
+            return response()->json([
+                'error' => 'New name cannot be the same as current name.'
+            ], 406);
+        }
+        $user->name = ucwords($request->new_name);
+        $user->save();
+
+        $details = [
+            'email' => $user->email,
+            'subject' => 'Password changed',
+            'title' => "Your account password has been changed.",
+            'body' => "If you have recently changed your password, you don't have to do anything. If you haven't, your account is at risk. Contact ABC Library as soon as possible.",
+        ];
+
+        if (!str_contains($details['email'], '@abc.com')) {
+            SendEmail::dispatch($details);
+        }
+
+        return response()->json([
+            'message' => 'Successfully changed name.'
+        ]);
+    }
+
+    // public function updatePhone(Request $request)
+    // {
+    //     $user = User::findOrFail($request->user_id);
+    //     $user->phone = $request->phone;
+    //     $user->save();
+    //     return response()->json([
+    //         'message' => 'Successfully updated ' . $request->phone . '!'
+    //     ]);
+    // }
+
     public function search(Request $request) {
         $params = ['name', 'email', 'phone'];
 
@@ -303,7 +353,7 @@ class AuthController extends Controller
             // invalid params
             return response()->json([
                 'error' => 'Bad request'
-            ], 400); 
+            ], 400);
         }
         return User::where($by, 'LIKE', '%'.$value.'%')->get(); 
     }

@@ -59,6 +59,7 @@ Route::group([
         Route::get('user/logs', [LogController::class, 'getUserLogs']);
         Route::post('user/change-password', [AuthController::class, 'changePassword']);
         Route::post('user/delete-account', [AuthController::class, 'deleteAccount']);
+        Route::post('user/change-name', [AuthController::class, 'changeName']);
     }
 );
 
