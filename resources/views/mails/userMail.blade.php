@@ -49,7 +49,9 @@
     
     <div style='margin-top: 25px'>
         <a href='{{ config('app.url') }}' target="_blank" style='margin-right: 25px'>Go to ABC Library</a>
-        <a href='{{ config('app.url') }}/user/borrowed-books' target="_blank">See all my borrowed books</a>
+        @if(isset($details['book']))
+            <a href='{{ config('app.url') }}/user/borrowed-books' target="_blank">See all my borrowed books</a>
+        @endif
     </div>
 
     <div style='margin-top: 25px'>

@@ -13,30 +13,24 @@ import { setCookie, getCookie, deleteCookie } from '../functions/cookies';
 
 function ABCNav(props) {
 	const history = useHistory();
+	const [categories, setCategories] = [props.categories, props.setCategories];
+	const NUM_CATEGORIES_SHOW = 5;
 
-	const [categories, setCategory] = useState([]);
+	const [isLoggingOut, setLoggingOut] = useState(false);
+
 	const [user, setUser] = [props.user, props.setUser];
 	const [needsToVerifyAcc, setNeedsToVerifyAcc] = [
 		props.needsToVerifyAcc,
 		props.setNeedsToVerifyAcc,
 	];
 
-	useEffect(() => {
-		axios.get('/api/categories').then(res => {
-			setCategory(res.data);
-		});
-	}, []);
-
 	const logoutHandler = () => {
-		axios
-			.get('/api/auth/logout')
-			.then(res => {
-				deleteCookie('token');
-				location.href = '/';
-			})
-			.catch(err => {
-				console.log(err);
-			});
+		setLoggingOut(true);
+		axios.get('/api/auth/logout').finally(() => {
+			setLoggingOut(false);
+			deleteCookie('token');
+			location.href = '/';
+		});
 	};
 
 	return (
@@ -71,20 +65,33 @@ function ABCNav(props) {
 						Popular
 					</Nav.Link>
 					<NavDropdown title='Categories' id='collasible-nav-dropdown'>
-						{categories.map((cate, i) => (
-							<div key={i}>
-								<NavDropdown.Item
-									onClick={e => history.push('/categories/' + cate.id)}
-								>
-									{cate.name}
-								</NavDropdown.Item>
-							</div>
-						))}
+						{categories &&
+							categories.map((cate, i) => {
+								if (i + 1 <= NUM_CATEGORIES_SHOW)
+									return (
+										<div key={i}>
+											<NavDropdown.Item
+												onClick={e => history.push('/categories/' + cate.id)}
+											>
+												{cate.name}
+											</NavDropdown.Item>
+										</div>
+									);
+							})}
+
+						{categories && categories.length > NUM_CATEGORIES_SHOW && (
+							<NavDropdown.Item
+								className='text-primary'
+								onClick={e => history.push('/categories')}
+							>
+								See more...
+							</NavDropdown.Item>
+						)}
 					</NavDropdown>
 				</Nav>
 				<Nav className='ms-3'>
 					<Router>
-						{user == 'loading' ? (
+						{user == 'loading' || isLoggingOut ? (
 							<div
 								className='spinner-border spinner-border-sm p-2 mr-4'
 								role='status'

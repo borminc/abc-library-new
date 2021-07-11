@@ -27,9 +27,10 @@ import Publishers from './admin_content/Publishers';
 import Borrowers from './admin_content/Borrowers';
 import Logs from './admin_content/Logs';
 
-const AdminLayout = () => {
+const AdminLayout = props => {
 	let { path, url } = useRouteMatch();
 	const history = useHistory();
+	const [categories, setCategories] = [props.categories, props.setCategories];
 
 	const [showsSideBar, setShowsSideBar] = useState(false);
 
@@ -158,7 +159,10 @@ const AdminLayout = () => {
 							{/* <Router> */}
 							<Switch>
 								<Route path={`${path}/categories`}>
-									<Categories />
+									<Categories
+										categories={categories}
+										setCategories={setCategories}
+									/>
 								</Route>
 
 								<Route path={`${path}/publishers`}>

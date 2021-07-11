@@ -9666,7 +9666,7 @@ a:focus {
 	}
 	.sidebar.toggled {
 		overflow: visible;
-		width: 10rem !important;
+		width: 14rem !important;
 	}
 	.sidebar.toggled .nav-item .collapse {
 		position: absolute;
@@ -9701,7 +9701,7 @@ a:focus {
 	.sidebar.toggled .nav-item .nav-link {
 		text-align: left;
 		padding: 0.75rem 1rem;
-		width: 10rem;
+		width: 14rem;
 	}
 	.sidebar.toggled .nav-item .nav-link span {
 		font-size: 0.65rem;

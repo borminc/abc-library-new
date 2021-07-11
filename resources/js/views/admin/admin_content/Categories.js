@@ -14,9 +14,14 @@ import {
 import MessageAlert from './../../../components/MessageAlert';
 import { Loading, LoadingButton } from './../../../components/Loading';
 
-const Categories = () => {
+const Categories = props => {
 	let { path, url } = useRouteMatch();
 	const history = useHistory();
+	const [navCategories, setNavCategories] = [
+		props.categories,
+		props.setCategories,
+	];
+
 	const [msg, setMsg] = useState({ text: '', success: 0 });
 	const [isLoading, setLoading] = useState(false);
 
@@ -71,7 +76,15 @@ const Categories = () => {
 		axios
 			.get('/api/categories')
 			.then(res => {
-				setCategories(res.data);
+				const data = res.data;
+				setCategories(data);
+
+				const sorted = [...data].sort((a, b) => {
+					if (a.name > b.name) return 1;
+					else if (a.name < b.name) return -1;
+					return 0;
+				});
+				setNavCategories(sorted);
 			})
 			.finally(() => {
 				setLoading(false);

@@ -22,6 +22,7 @@ import LatestBooks from './views/LatestBooks';
 import PopularBooks from './views/PopularBooks';
 import VerifyEmail from './views/VerifyEmail';
 import AboutUs from './views/AboutUs';
+import CategoryList from './views/CategoryList';
 
 import './views/imports/sb-admin-2.min.css';
 import './views/imports/sb-admin-2.js';
@@ -36,6 +37,7 @@ const Index = () => {
 		username: '',
 		status: false,
 	});
+	const [categories, setCategories] = useState([]);
 
 	useEffect(() => {
 		if (getCookie('token')) {
@@ -63,6 +65,18 @@ const Index = () => {
 		}
 	}, []);
 
+	useEffect(() => {
+		axios.get('/api/categories').then(res => {
+			const data = res.data;
+			const sorted = [...data].sort((a, b) => {
+				if (a.name > b.name) return 1;
+				else if (a.name < b.name) return -1;
+				return 0;
+			});
+			setCategories(sorted);
+		});
+	}, []);
+
 	return (
 		<div>
 			<Router>
@@ -72,6 +86,8 @@ const Index = () => {
 						setUser={setUser}
 						needsToVerifyAcc={needsToVerifyAcc}
 						setNeedsToVerifyAcc={setNeedsToVerifyAcc}
+						categories={categories}
+						setCategories={setCategories}
 					/>
 				</div>
 
@@ -106,7 +122,14 @@ const Index = () => {
 							/>
 						</Route>
 						<Route path='/admin'>
-							<AdminRoute component={<AdminLayout />} />
+							<AdminRoute
+								component={
+									<AdminLayout
+										categories={categories}
+										setCategories={setCategories}
+									/>
+								}
+							/>
 						</Route>
 
 						<Route path='/unauthorized'>
@@ -123,6 +146,13 @@ const Index = () => {
 
 						<Route path='/delete-account-success'>
 							<DeleteAccountSuccessful />
+						</Route>
+
+						<Route exact path='/categories'>
+							<CategoryList
+								categories={categories}
+								setCategories={setCategories}
+							/>
 						</Route>
 
 						<Route path='/categories/:categoryId' children={<Categories />} />

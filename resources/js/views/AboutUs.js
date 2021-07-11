@@ -4,14 +4,14 @@ const AboutUs = () => {
 	return (
 		<div>
 			<header
-				className='masthead'
+				className='masthead m-0'
 				style={{ backgroundImage: `url("/img/bookshelf.jpg")` }}
 			>
 				<div className='container position-relative px-4 px-lg-5'>
 					<div className='row gx-4 gx-lg-5 justify-content-center'>
 						<div className='col-md-10 col-lg-8 col-xl-7'>
 							<div className='page-heading'>
-								<h1>About Us</h1>
+								<h1 className='display-1 fw-bold'>About Us</h1>
 								<span className='subheading'>This is what we do.</span>
 							</div>
 						</div>
@@ -19,7 +19,7 @@ const AboutUs = () => {
 				</div>
 			</header>
 
-			<section className='container-fluid mb-5 pb-5'>
+			<section className='container-fluid mt-5 mb-5 pb-5'>
 				<div className='container px-4 px-lg-5'>
 					<div className='row gx-4 gx-lg-5'>
 						<div className='col-lg-3 col-md-6 text-center'>
@@ -78,7 +78,7 @@ const AboutUs = () => {
 			<main className='mb-4 p-3'>
 				<div className='container px-4 px-lg-5'>
 					<div className='row gx-4 gx-lg-5 justify-content-center'>
-						<div className='col-md-2 col-lg-4 col-xl-5'>
+						<div className='col-md-12 col-lg-4 col-xl-5'>
 							<img
 								src={'/img/abc-library.jpg'}
 								alt='abc-library'
@@ -108,6 +108,13 @@ const AboutUs = () => {
 			<main className='mb-4 p-3'>
 				<div className='container px-4 px-lg-5'>
 					<div className='row gx-4 gx-lg-5 justify-content-center'>
+						<div className='col-md-12 col-lg-4 col-xl-5'>
+							<img
+								src={'/img/policy.jpg'}
+								alt='policy'
+								style={{ width: `100%`, height: `100%` }}
+							/>
+						</div>
 						<div className='col-md-10 col-lg-8 col-xl-7'>
 							<h5 className='fw-bold'>Rules &#38; Policies</h5>
 							<ul>
@@ -131,13 +138,6 @@ const AboutUs = () => {
 									replacement will be issued.
 								</li>
 							</ul>
-						</div>
-						<div className='col-md-2 col-lg-4 col-xl-5'>
-							<img
-								src={'/img/policy.jpg'}
-								alt='policy'
-								style={{ width: `100%`, height: `100%` }}
-							/>
 						</div>
 					</div>
 				</div>
