@@ -344,11 +344,22 @@ const Books = () => {
 			});
 	};
 
-	const addNewPublisherHandler = () => {
+	const addNewPublisherHandler = e => {
+		e.preventDefault();
+
 		if (newPublisher === '') {
 			setNewPublisherErr(true);
 			return;
 		}
+
+		for (const i in publishers) {
+			if (publishers[i].name === newPublisher) {
+				setNewBook({ ...newBook, publisher_id: '' + publishers[i].id });
+				setNewPublisher('');
+				return;
+			}
+		}
+
 		setAddingPublisher(true);
 		axios
 			.post('/api/publishers', { name: newPublisher })
@@ -387,11 +398,21 @@ const Books = () => {
 			});
 	};
 
-	const addNewCategoryHandler = () => {
+	const addNewCategoryHandler = e => {
+		e.preventDefault();
 		if (newCategory === '') {
 			setNewCategoryErr(true);
 			return;
 		}
+
+		for (const i in categories) {
+			if (categories[i].name === newCategory) {
+				setNewBook({ ...newBook, category_id: '' + categories[i].id });
+				setNewCategory('');
+				return;
+			}
+		}
+
 		setAddingCategory(true);
 		axios
 			.post('/api/categories', { name: newCategory })
@@ -426,6 +447,7 @@ const Books = () => {
 			})
 			.catch(err => {
 				console.log(err.response);
+				setAddingCategory(false);
 			});
 	};
 
@@ -744,35 +766,38 @@ const Books = () => {
 
 								{/* add new category */}
 								<div className='ml-2 mb-2 flex-grow-1'>
-									<small>or</small>
-									<div className='input-group'>
-										<input
-											className={
-												'form-control' + (newCategoryErr ? ' is-invalid' : '')
-											}
-											placeholder='New category...'
-											onChange={e => {
-												setNewCategory(e.target.value);
-												setNewCategoryErr(false);
-											}}
-											value={newCategory}
-										/>
-										<button
-											className='btn btn-outline-primary'
-											onClick={addNewCategoryHandler}
-											disabled={isAddingCategory}
-										>
-											{isAddingCategory ? (
-												<span
-													className='spinner-border spinner-border-sm'
-													role='status'
-													aria-hidden='true'
-												></span>
-											) : (
-												'Add'
-											)}
-										</button>
-									</div>
+									<form>
+										<small>or</small>
+										<div className='input-group'>
+											<input
+												className={
+													'form-control' + (newCategoryErr ? ' is-invalid' : '')
+												}
+												placeholder='New category...'
+												onChange={e => {
+													setNewCategory(e.target.value);
+													setNewCategoryErr(false);
+												}}
+												value={newCategory}
+											/>
+											<button
+												type='submit'
+												className='btn btn-outline-primary'
+												onClick={addNewCategoryHandler}
+												disabled={isAddingCategory}
+											>
+												{isAddingCategory ? (
+													<span
+														className='spinner-border spinner-border-sm'
+														role='status'
+														aria-hidden='true'
+													></span>
+												) : (
+													'Add'
+												)}
+											</button>
+										</div>
+									</form>
 								</div>
 							</div>
 
@@ -809,35 +834,39 @@ const Books = () => {
 
 								{/* add new publisher */}
 								<div className='ml-2 mb-2 flex-grow-1'>
-									<small>or</small>
-									<div className='input-group'>
-										<input
-											className={
-												'form-control' + (newPublisherErr ? ' is-invalid' : '')
-											}
-											placeholder='New publisher...'
-											onChange={e => {
-												setNewPublisher(e.target.value);
-												setNewPublisherErr(false);
-											}}
-											value={newPublisher}
-										/>
-										<button
-											className='btn btn-outline-primary'
-											onClick={addNewPublisherHandler}
-											disabled={isAddingPublisher}
-										>
-											{isAddingPublisher ? (
-												<span
-													className='spinner-border spinner-border-sm'
-													role='status'
-													aria-hidden='true'
-												></span>
-											) : (
-												'Add'
-											)}
-										</button>
-									</div>
+									<form>
+										<small>or</small>
+										<div className='input-group'>
+											<input
+												className={
+													'form-control' +
+													(newPublisherErr ? ' is-invalid' : '')
+												}
+												placeholder='New publisher...'
+												onChange={e => {
+													setNewPublisher(e.target.value);
+													setNewPublisherErr(false);
+												}}
+												value={newPublisher}
+											/>
+											<button
+												type='submit'
+												className='btn btn-outline-primary'
+												onClick={addNewPublisherHandler}
+												disabled={isAddingPublisher}
+											>
+												{isAddingPublisher ? (
+													<span
+														className='spinner-border spinner-border-sm'
+														role='status'
+														aria-hidden='true'
+													></span>
+												) : (
+													'Add'
+												)}
+											</button>
+										</div>
+									</form>
 								</div>
 							</div>
 
