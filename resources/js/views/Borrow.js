@@ -178,7 +178,9 @@ const Borrow = props => {
 											</tr>
 											<tr>
 												<td className='fw-bold'>Description</td>
-												<td>{book.description}</td>
+												<td style={{ whiteSpace: 'pre-wrap' }}>
+													{book.description}
+												</td>
 											</tr>
 										</tbody>
 									</table>

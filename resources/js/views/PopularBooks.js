@@ -272,7 +272,9 @@ const PopularBooks = props => {
 									</div>
 									<div className='col-lg-5'>
 										<h4>Description</h4>
-										<small>{value.description}</small>
+										<small style={{ whiteSpace: 'pre-wrap' }}>
+											{value.description}
+										</small>
 										<br />
 									</div>
 								</div>
