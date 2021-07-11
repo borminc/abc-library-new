@@ -15,6 +15,8 @@ const Home = props => {
 	const [isProcessing, setProcessing] = useState(false);
 	const [isLoading, setLoading] = useState(false);
 
+	const LONGEST_LEN_TITLE_TO_DISPLAY = 70;
+
 	useEffect(() => {
 		setLoading(true);
 		axios
@@ -215,7 +217,15 @@ const Home = props => {
 								/>
 								<div className='card-body'>
 									<ul className='small list-unstyled'>
-										<li>{value.title}</li>
+										<li>
+											{value.title.substring(
+												0,
+												LONGEST_LEN_TITLE_TO_DISPLAY - 1
+											) +
+												(value.title.length > LONGEST_LEN_TITLE_TO_DISPLAY
+													? '...'
+													: '')}
+										</li>
 										<li className='fst-italic text-primary'>{value.author}</li>
 										<li className='fw-lighter'>{value.year}</li>
 										{value.stock == 0 ? (
@@ -225,11 +235,14 @@ const Home = props => {
 										)}
 									</ul>
 								</div>
-								<div className='card-footer'>
+								<div
+									className='card-footer'
+									style={{ backgroundColor: '#fff' }}
+								>
 									{value.stock == 0 ? (
 										<button
 											disabled
-											className='btn btn-outline-primary btn-sm'
+											className='btn btn-block btn-outline-primary btn-sm'
 											onClick={e => history.push('/borrow/' + value.id)}
 											data-bs-dismiss='modal'
 											aria-label='Close'
@@ -238,7 +251,7 @@ const Home = props => {
 										</button>
 									) : (
 										<button
-											className='btn btn-outline-primary btn-sm'
+											className='btn btn-block btn-outline-primary btn-sm'
 											onClick={e => history.push('/borrow/' + value.id)}
 											data-bs-dismiss='modal'
 											aria-label='Close'

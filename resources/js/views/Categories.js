@@ -164,11 +164,14 @@ const Categories = () => {
 										)}
 									</ul>
 								</div>
-								<div className='card-footer'>
+								<div
+									className='card-footer'
+									style={{ backgroundColor: '#fff' }}
+								>
 									{value.stock == 0 ? (
 										<button
 											disabled
-											className='btn btn-outline-primary btn-sm'
+											className='btn btn-block btn-outline-primary btn-sm'
 											onClick={e => history.push('/borrow/' + value.id)}
 											data-bs-dismiss='modal'
 											aria-label='Close'
@@ -177,7 +180,7 @@ const Categories = () => {
 										</button>
 									) : (
 										<button
-											className='btn btn-outline-primary btn-sm'
+											className='btn btn-block btn-outline-primary btn-sm'
 											onClick={e => history.push('/borrow/' + value.id)}
 											data-bs-dismiss='modal'
 											aria-label='Close'

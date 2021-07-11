@@ -252,12 +252,12 @@ const Borrow = props => {
 						</div>
 					</div>
 
-					<div className='mt-5 mb-5 row'>
-						<p className='col-8'>
+					<div className='mt-5 mb-5'>
+						<p className=''>
 							By clicking Borrow, you agree to all the rules and policies of ABC
 							Library.
 						</p>
-						<p className='col-8'>
+						<p className=''>
 							<b className='text-danger'>
 								You will PICK UP the book at the library in a timely manner.
 								OVERDUE FEES will still apply after the return date even if you
@@ -266,7 +266,7 @@ const Borrow = props => {
 						</p>
 						<button
 							type='submit'
-							className='btn btn-outline-primary mt-3'
+							className='btn btn-block btn-outline-primary mt-3'
 							data-bs-toggle='modal'
 							data-bs-target={'#myModal' + book.id}
 						>
