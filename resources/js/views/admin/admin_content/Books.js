@@ -36,6 +36,13 @@ const Books = () => {
 	const NUM_INCREMENTS = 10;
 	const [numShow, setNumShow] = useState(NUM_INCREMENTS);
 
+	const [newPublisher, setNewPublisher] = useState('');
+	const [newPublisherErr, setNewPublisherErr] = useState(false);
+	const [isAddingPublisher, setAddingPublisher] = useState(false);
+	const [newCategory, setNewCategory] = useState('');
+	const [newCategoryErr, setNewCategoryErr] = useState(false);
+	const [isAddingCategory, setAddingCategory] = useState(false);
+
 	const [newBook, setNewBook] = useState({
 		title: '',
 		author: '',
@@ -125,7 +132,7 @@ const Books = () => {
 		setFileName('');
 	};
 
-	const getCategoriesFromServer = () => {
+	const getCategoriesFromServer = async () => {
 		axios.get('/api/categories').then(res => {
 			const data = res.data;
 			const sorted = [...data].sort((a, b) => {
@@ -337,6 +344,91 @@ const Books = () => {
 			});
 	};
 
+	const addNewPublisherHandler = () => {
+		if (newPublisher === '') {
+			setNewPublisherErr(true);
+			return;
+		}
+		setAddingPublisher(true);
+		axios
+			.post('/api/publishers', { name: newPublisher })
+			.then(res => {
+				axios
+					.get('/api/publishers')
+					.then(res1 => {
+						const publishers = res1.data;
+
+						for (const i in publishers) {
+							if (publishers[i].name === newPublisher) {
+								setNewBook({ ...newBook, publisher_id: '' + publishers[i].id });
+								setNewPublisher('');
+								break;
+							}
+						}
+
+						const sorted = [...publishers].sort((a, b) => {
+							const _a = a.name.toLowerCase();
+							const _b = b.name.toLowerCase();
+							if (_a > _b) return 1;
+							else if (_a < _b) return -1;
+							return 0;
+						});
+						setPublishers(sorted);
+						setAddingPublisher(false);
+					})
+					.catch(err => {
+						console.log(err.response);
+						setAddingPublisher(false);
+					});
+			})
+			.catch(err => {
+				console.log(err.response);
+				setAddingPublisher(false);
+			});
+	};
+
+	const addNewCategoryHandler = () => {
+		if (newCategory === '') {
+			setNewCategoryErr(true);
+			return;
+		}
+		setAddingCategory(true);
+		axios
+			.post('/api/categories', { name: newCategory })
+			.then(res => {
+				axios
+					.get('/api/categories')
+					.then(res1 => {
+						const categories = res1.data;
+
+						for (const i in categories) {
+							if (categories[i].name === newCategory) {
+								setNewBook({ ...newBook, category_id: '' + categories[i].id });
+								setNewCategory('');
+								break;
+							}
+						}
+
+						const sorted = [...categories].sort((a, b) => {
+							const _a = a.name.toLowerCase();
+							const _b = b.name.toLowerCase();
+							if (_a > _b) return 1;
+							else if (_a < _b) return -1;
+							return 0;
+						});
+						setCategories(sorted);
+						setAddingCategory(false);
+					})
+					.catch(err => {
+						console.log(err.response);
+						setAddingCategory(false);
+					});
+			})
+			.catch(err => {
+				console.log(err.response);
+			});
+	};
+
 	const searchMatches = (item, value) => {
 		return (
 			item.id == value ||
@@ -520,7 +612,7 @@ const Books = () => {
 				aria-hidden='true'
 			>
 				<div
-					className='modal-dialog modal-lg modal-dialog-scrollable'
+					className='modal-dialog modal-xl modal-dialog-scrollable'
 					role='document'
 				>
 					<div className='modal-content'>
@@ -604,7 +696,7 @@ const Books = () => {
 							<small>Description</small>
 							<textarea
 								className={
-									'form-control mb-2' +
+									'form-control mb-2 h-50' +
 									(addErrors.description ? ' is-invalid' : '')
 								}
 								placeholder='Description...'
@@ -619,33 +711,135 @@ const Books = () => {
 								}}
 							></textarea>
 
-							<small>Publisher</small>
-							<select
-								className={
-									'form-control mb-2' +
-									(addErrors.publisher_id ? ' is-invalid' : '')
-								}
-								id='publisherSelector'
-								onChange={e => {
-									if (e.target.value == '') {
-										setAddErrors({ ...addErrors, publisher_id: true });
-									} else {
-										setAddErrors({ ...addErrors, publisher_id: false });
-									}
-									setNewBook({ ...newBook, publisher_id: e.target.value });
-								}}
-								value={newBook.publisher_id}
-							>
-								<option defaultValue value=''>
-									Publisher...
-								</option>
-								{publishers &&
-									publishers.map((item, index) => (
-										<option key={index} value={item.id}>
-											{item.name}
+							<div className='d-flex'>
+								<div className='w-50'>
+									<small>Category</small>
+									<select
+										className={
+											'form-control mb-2' +
+											(addErrors.category_id ? ' is-invalid' : '')
+										}
+										id='categorySelector'
+										onChange={e => {
+											if (e.target.value == '') {
+												setAddErrors({ ...addErrors, category_id: true });
+											} else {
+												setAddErrors({ ...addErrors, category_id: false });
+											}
+											setNewBook({ ...newBook, category_id: e.target.value });
+										}}
+										value={newBook.category_id}
+									>
+										<option defaultValue value=''>
+											Select category...
 										</option>
-									))}
-							</select>
+										{categories &&
+											categories.map((item, index) => (
+												<option key={index} value={item.id}>
+													{item.name}
+												</option>
+											))}
+									</select>
+								</div>
+
+								{/* add new category */}
+								<div className='ml-2 mb-2 flex-grow-1'>
+									<small>or</small>
+									<div className='input-group'>
+										<input
+											className={
+												'form-control' + (newCategoryErr ? ' is-invalid' : '')
+											}
+											placeholder='New category...'
+											onChange={e => {
+												setNewCategory(e.target.value);
+												setNewCategoryErr(false);
+											}}
+											value={newCategory}
+										/>
+										<button
+											className='btn btn-outline-primary'
+											onClick={addNewCategoryHandler}
+											disabled={isAddingCategory}
+										>
+											{isAddingCategory ? (
+												<span
+													className='spinner-border spinner-border-sm'
+													role='status'
+													aria-hidden='true'
+												></span>
+											) : (
+												'Add'
+											)}
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div className='d-flex'>
+								<div className='w-50'>
+									<small>Publisher</small>
+									<select
+										className={
+											'form-control mb-2' +
+											(addErrors.publisher_id ? ' is-invalid' : '')
+										}
+										id='publisherSelector'
+										onChange={e => {
+											if (e.target.value == '') {
+												setAddErrors({ ...addErrors, publisher_id: true });
+											} else {
+												setAddErrors({ ...addErrors, publisher_id: false });
+											}
+											setNewBook({ ...newBook, publisher_id: e.target.value });
+										}}
+										value={newBook.publisher_id}
+									>
+										<option defaultValue value=''>
+											Select publisher...
+										</option>
+										{publishers &&
+											publishers.map((item, index) => (
+												<option key={index} value={item.id}>
+													{item.name}
+												</option>
+											))}
+									</select>
+								</div>
+
+								{/* add new publisher */}
+								<div className='ml-2 mb-2 flex-grow-1'>
+									<small>or</small>
+									<div className='input-group'>
+										<input
+											className={
+												'form-control' + (newPublisherErr ? ' is-invalid' : '')
+											}
+											placeholder='New publisher...'
+											onChange={e => {
+												setNewPublisher(e.target.value);
+												setNewPublisherErr(false);
+											}}
+											value={newPublisher}
+										/>
+										<button
+											className='btn btn-outline-primary'
+											onClick={addNewPublisherHandler}
+											disabled={isAddingPublisher}
+										>
+											{isAddingPublisher ? (
+												<span
+													className='spinner-border spinner-border-sm'
+													role='status'
+													aria-hidden='true'
+												></span>
+											) : (
+												'Add'
+											)}
+										</button>
+									</div>
+								</div>
+							</div>
 
 							<small>Year</small>
 							<input
@@ -663,33 +857,7 @@ const Books = () => {
 									setNewBook({ ...newBook, year: e.target.value });
 								}}
 							/>
-							<small>Category</small>
-							<select
-								className={
-									'form-control mb-2' +
-									(addErrors.category_id ? ' is-invalid' : '')
-								}
-								id='categorySelector'
-								onChange={e => {
-									if (e.target.value == '') {
-										setAddErrors({ ...addErrors, category_id: true });
-									} else {
-										setAddErrors({ ...addErrors, category_id: false });
-									}
-									setNewBook({ ...newBook, category_id: e.target.value });
-								}}
-								value={newBook.category_id}
-							>
-								<option defaultValue value=''>
-									Category...
-								</option>
-								{categories &&
-									categories.map((item, index) => (
-										<option key={index} value={item.id}>
-											{item.name}
-										</option>
-									))}
-							</select>
+
 							<small>Number available in stock</small>
 							<input
 								className={
@@ -756,7 +924,7 @@ const Books = () => {
 				aria-hidden='true'
 			>
 				<div
-					className='modal-dialog modal-lg modal-dialog-scrollable'
+					className='modal-dialog modal-xl modal-dialog-scrollable'
 					role='document'
 				>
 					<div className='modal-content'>
@@ -847,7 +1015,7 @@ const Books = () => {
 								<small>Description</small>
 								<textarea
 									className={
-										'form-control mb-2' +
+										'form-control mb-2 h-50' +
 										(editErrors.description ? ' is-invalid' : '')
 									}
 									placeholder='Description...'
@@ -864,6 +1032,37 @@ const Books = () => {
 										});
 									}}
 								></textarea>
+
+								<small>Category</small>
+								<select
+									className={
+										'form-control mb-2' +
+										(editErrors.category_id ? ' is-invalid' : '')
+									}
+									id='categorySelector'
+									onChange={e => {
+										if (e.target.value == '') {
+											setEditErrors({ ...editErrors, category_id: true });
+										} else {
+											setEditErrors({ ...editErrors, category_id: false });
+										}
+										setSelectedBook({
+											...selectedBook,
+											category_id: e.target.value,
+										});
+									}}
+									value={selectedBook.category_id}
+								>
+									<option defaultValue value=''>
+										Category...
+									</option>
+									{categories &&
+										categories.map((item, index) => (
+											<option key={index} value={item.id}>
+												{item.name}
+											</option>
+										))}
+								</select>
 
 								<small>Publisher</small>
 								<select
@@ -912,36 +1111,6 @@ const Books = () => {
 										setSelectedBook({ ...selectedBook, year: e.target.value });
 									}}
 								/>
-								<small>Category</small>
-								<select
-									className={
-										'form-control mb-2' +
-										(editErrors.category_id ? ' is-invalid' : '')
-									}
-									id='categorySelector'
-									onChange={e => {
-										if (e.target.value == '') {
-											setEditErrors({ ...editErrors, category_id: true });
-										} else {
-											setEditErrors({ ...editErrors, category_id: false });
-										}
-										setSelectedBook({
-											...selectedBook,
-											category_id: e.target.value,
-										});
-									}}
-									value={selectedBook.category_id}
-								>
-									<option defaultValue value=''>
-										Category...
-									</option>
-									{categories &&
-										categories.map((item, index) => (
-											<option key={index} value={item.id}>
-												{item.name}
-											</option>
-										))}
-								</select>
 
 								<small>Number available in stock</small>
 								<div className='d-flex'>

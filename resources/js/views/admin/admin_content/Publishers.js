@@ -124,7 +124,7 @@ const Publishers = () => {
 			.catch(err => {
 				console.log(err);
 				setMsg({
-					text: 'The deletion encounted a problem.',
+					text: 'The deletion encounted a problem. Make sure no book is associated with this publisher.',
 					success: 0,
 				});
 			})

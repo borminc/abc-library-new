@@ -137,7 +137,7 @@ const Categories = props => {
 			.catch(err => {
 				console.log(err);
 				setMsg({
-					text: 'The deletion encounted a problem.',
+					text: 'The deletion encounted a problem. Make sure no book is associated with this category.',
 					success: 0,
 				});
 			})
