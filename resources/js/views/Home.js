@@ -53,6 +53,10 @@ const Home = props => {
 
 	function handleSubmit(event) {
 		event.preventDefault();
+		if (value === '') {
+			setSearch(null);
+			return;
+		}
 		setProcessing(true);
 		axios
 			.get('/api/books/search?by=' + by + '&value=' + value)
