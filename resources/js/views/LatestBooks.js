@@ -19,6 +19,8 @@ const LatestBooks = props => {
 	const [allBooksInDefaultOrder, setAllBooksInDefaultOrder] = useState([]);
 	const [sortType, setSortType] = useState('latest');
 
+	const LONGEST_LEN_TITLE_TO_DISPLAY = 70;
+
 	useEffect(() => {
 		sortArray(sortType);
 		setOffset(1);
@@ -151,7 +153,15 @@ const LatestBooks = props => {
 									/>
 									<div className='card-body'>
 										<ul className='small list-unstyled'>
-											<li>{value.title}</li>
+											<li>
+												{value.title.substring(
+													0,
+													LONGEST_LEN_TITLE_TO_DISPLAY - 1
+												) +
+													(value.title.length > LONGEST_LEN_TITLE_TO_DISPLAY
+														? '...'
+														: '')}
+											</li>
 											<li className='fst-italic text-primary'>
 												{value.author}
 											</li>

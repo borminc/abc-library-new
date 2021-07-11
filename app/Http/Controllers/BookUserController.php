@@ -284,7 +284,7 @@ class BookUserController extends Controller
         // create log
         $log = new Log();
         $log->title = 'Lost';
-        $log->description = $user->name . ' lost ' . $book->title . '.';
+        $log->description = $user->name . ' lost ' . $book->title . '. Fee paid.';
         $log->date_time = date('d.m.y h:m A', time());
         $log->user_id = $user->id;
         $log->book_id = $book->id;
